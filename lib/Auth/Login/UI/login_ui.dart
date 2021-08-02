@@ -40,14 +40,14 @@ class _LoginUIState extends State<LoginUI> {
             child: Stack(
               children: [
                 Container(
-                  height: size.height * 0.65,
+                  height: MediaQuery.of(context).size.height*.7,
                   color: theme.backgroundColor,
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                   child: Column(
                     children: [
-                      Spacer(),
+                   //   Spacer(),
                       Image.asset('assets/icons/doctor_logo.png', scale: 3),
-                      Spacer(),
+                     // Spacer(),
                       Image.asset('assets/hero_image.png'),
                     ],
                   ),
@@ -56,7 +56,7 @@ class _LoginUIState extends State<LoginUI> {
                   padding: EdgeInsets.all(20.0),
                   child: Column(
                     children: [
-                      SizedBox(height: size.height * 0.595),
+                      SizedBox(height: MediaQuery.of(context).size.height*.55),
                       EntryField(
                         hint: locale.enterMobileNumber,
                         prefixIcon: Icons.phone_iphone,

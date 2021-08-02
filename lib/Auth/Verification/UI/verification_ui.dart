@@ -49,6 +49,7 @@ class _VerificationUIState extends State<VerificationUI> {
     return Scaffold(
       appBar: AppBar(
         title: Text(locale.phoneVerification!),
+        textTheme: Theme.of(context).textTheme,
         centerTitle: true,
       ),
       body: FadedSlideAnimation(
@@ -59,13 +60,16 @@ class _VerificationUIState extends State<VerificationUI> {
               Spacer(),
               Text(
                 locale.weveSentAnOTP!,
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1!
+                    .copyWith(color: Theme.of(context).disabledColor),
                 textAlign: TextAlign.center,
               ),
               Spacer(flex: 2),
               EntryField(
                 controller: _controller,
-                hint: locale.enter4digitOTP!.padLeft(24),
+                hint: locale.enter4digitOTP,
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 20.0),
@@ -80,20 +84,24 @@ class _VerificationUIState extends State<VerificationUI> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    '$_counter' + locale.secLeft!,
+                    '$_counter ' + locale.secLeft!,
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
-                  CustomButton(
-                      label: locale.resend,
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      textColor: Theme.of(context).hintColor,
-                      padding: 0.0,
-                      onTap: _counter < 1
-                          ? () {
-                              _startTimer();
-                              widget.verificationInteractor.verifyNumber();
-                            }
-                          : null),
+                  Container(
+                    height: MediaQuery.of(context).size.height*.1,
+                    width: MediaQuery.of(context).size.width*.3,
+                    child: CustomButton(
+                        label: locale.resend,
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        textColor: Theme.of(context).hintColor,
+                        padding: 0.0,
+                        onTap: _counter < 1
+                            ? () {
+                          _startTimer();
+                          widget.verificationInteractor.verifyNumber();
+                        }
+                            : null),
+                  ),
                 ],
               ),
               Spacer(flex: 12),

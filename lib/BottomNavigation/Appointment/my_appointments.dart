@@ -166,6 +166,9 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
                                     end: 6,
                                     child: Row(
                                       children: [
+                                        SizedBox(
+                                          width: 10,
+                                        ),
                                         FadedScaleAnimation(
                                           Icon(
                                             Icons.call,
@@ -176,7 +179,7 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
                                           durationInMilliseconds: 400,
                                         ),
                                         SizedBox(
-                                          width: 18,
+                                          width: 10,
                                         ),
                                         GestureDetector(
                                           onTap: () {

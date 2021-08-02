@@ -10,6 +10,8 @@ class CustomButton extends StatelessWidget {
   final Color? textColor;
   final double? padding;
   final double? radius;
+  final Widget? trailing;
+  final double? textSize;
 
   CustomButton({
     this.label,
@@ -20,14 +22,18 @@ class CustomButton extends StatelessWidget {
     this.textColor,
     this.padding,
     this.radius,
+    this.trailing,
+    this.textSize,
   });
 
   @override
   Widget build(BuildContext context) {
+    var locale = AppLocalizations.of(context);
     var theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap as void Function()?,
       child: Container(
+        height: MediaQuery.of(context).size.height*.09,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radius ?? 8),
           color: color ?? theme.primaryColor,
@@ -38,12 +44,19 @@ class CustomButton extends StatelessWidget {
           children: [
             icon ?? SizedBox.shrink(),
             icon != null ? SizedBox(width: iconGap ?? 20) : SizedBox.shrink(),
-            Text(
-              label ?? AppLocalizations.of(context)!.continuee!,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.subtitle1!
-                  .copyWith(color: textColor ?? theme.scaffoldBackgroundColor),
+            Expanded(
+              child: Text(
+                label ?? locale!.continuee!,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.subtitle1!.copyWith(
+                  color: textColor ?? theme.backgroundColor,
+                  fontSize: textSize ?? 16,
+                ),
+              ),
             ),
+            trailing != null ? Spacer() : SizedBox.shrink(),
+            trailing ?? SizedBox.shrink(),
           ],
         ),
       ),
