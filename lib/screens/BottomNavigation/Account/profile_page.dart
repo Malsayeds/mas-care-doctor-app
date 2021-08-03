@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:animation_wrappers/Animations/faded_scale_animation.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
+import 'package:doctoworld_doctor/enums/image_type.dart';
+import 'package:doctoworld_doctor/utils/constants.dart';
+import 'package:doctoworld_doctor/utils/shared_widgets.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/entry_field.dart';
 import '../../../Locale/locale.dart';
@@ -29,6 +34,71 @@ class _ProfilePageState extends State<ProfilePage> {
     Availability(true, 'Sat'),
     Availability(false, 'Sun'),
   ];
+
+  Widget buildChangeImgBottomSheetBody(BuildContext ctx) {
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Upload Using'.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            SizedBox(
+              height: 48,
+              child: TextButton(
+                onPressed: () async {
+                  File? pickedImg =
+                      await SharedWidgets.pickImage(ImageType.Camera);
+                },
+                child: Text('Camera'),
+                style: TextButton.styleFrom(
+                  textStyle: TextStyle(
+                    fontSize: 18,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ),
+            ),
+            Divider(
+              color: Colors.grey,
+            ),
+            SizedBox(
+              height: 48,
+              child: TextButton(
+                onPressed: () async {
+                  File? pickedImg =
+                      await SharedWidgets.pickImage(ImageType.Gallery);
+                },
+                child: Text('Gallery'),
+                style: TextButton.styleFrom(
+                  textStyle: TextStyle(
+                    fontSize: 18,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
@@ -74,24 +144,36 @@ class _ProfilePageState extends State<ProfilePage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            CircleAvatar(
-                                radius: 14,
-                                backgroundColor: Theme.of(context).primaryColor,
-                                child: Icon(
-                                  Icons.camera_alt,
-                                  color:
-                                      Theme.of(context).scaffoldBackgroundColor,
-                                  size: 16,
-                                )),
                             SizedBox(height: 16),
-                            Text(
-                              locale.changeImage!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2!
-                                  .copyWith(
-                                      color: Theme.of(context).primaryColor),
-                            )
+                            TextButton.icon(
+                              icon: Icon(
+                                Icons.camera_alt,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              label: Text(
+                                locale.changeImage!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText2!
+                                    .copyWith(
+                                        color: Theme.of(context).primaryColor),
+                              ),
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(kBorderRadius),
+                                      topLeft: Radius.circular(kBorderRadius),
+                                    ),
+                                  ),
+                                  builder: (ctx) {
+                                    return buildChangeImgBottomSheetBody(ctx);
+                                  },
+                                );
+                              },
+                            ),
                           ],
                         ),
                       ],
@@ -130,9 +212,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         Text(
                           locale.servicesAt!,
-                          style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                              color: Theme.of(context).disabledColor,
-                              fontSize: 15),
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2!
+                              .copyWith(
+                                  color: Theme.of(context).disabledColor,
+                                  fontSize: 15),
                         ),
                         SizedBox(
                           height: 10,
@@ -159,9 +244,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         Text(
                           locale.expFees!,
-                          style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                              color: Theme.of(context).disabledColor,
-                              fontSize: 15),
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2!
+                              .copyWith(
+                                  color: Theme.of(context).disabledColor,
+                                  fontSize: 15),
                         ),
                         SizedBox(
                           height: 10,
@@ -323,9 +411,12 @@ class _ProfilePageState extends State<ProfilePage> {
                             horizontal: 16.0, vertical: 12),
                         child: Text(
                           locale.availability!,
-                          style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                              color: Theme.of(context).disabledColor,
-                              fontSize: 15),
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2!
+                              .copyWith(
+                                  color: Theme.of(context).disabledColor,
+                                  fontSize: 15),
                         ),
                       ),
                       SizedBox(

@@ -159,6 +159,7 @@ Map<String, String> english() {
     'totalPeopleRated': 'Total People Rated',
     'appointmentsBooked': 'Appointments Booked',
     'appointments': 'Appointments',
-    'changeLanguage': 'Change Language'
+    'changeLanguage': 'Change Language',
+    'uploadImage': 'Upload Image Using'
   };
 }

@@ -159,5 +159,6 @@ Map<String, String> arabic() {
     'appointmentsBooked': 'المواعيد المحجوزة',
     'appointments': 'حجوزات',
     'changeLanguage': 'تغيير اللغة',
+    'uploadImage': 'رفع الصورة بواسطة'
   };
 }
