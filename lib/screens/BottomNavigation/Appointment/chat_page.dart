@@ -3,6 +3,7 @@ import '../../../Locale/locale.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
+  static const String ROUTE_NAME = 'chat_screen';
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }

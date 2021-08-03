@@ -1,4 +1,6 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
+import 'package:doctoworld_doctor/screens/BottomNavigation/Account/change_language_page.dart';
+import 'package:doctoworld_doctor/screens/BottomNavigation/Account/profile_page.dart';
 import '../../../Locale/locale.dart';
 import '../../../utils/Routes/routes.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,11 +27,11 @@ class _AccountPageState extends State<AccountPage> {
     var locale = AppLocalizations.of(context)!;
     List<MenuTile> _menu = [
       MenuTile(locale.myProfile, locale.letUsHelpYou, Icons.store, () {
-        Navigator.pushNamed(context, PageRoutes.profilePage);
+        Navigator.pushNamed(context, ProfilePage.ROUTE_NAME);
       }),
       MenuTile(locale.changeLanguage, locale.changeLanguage, Icons.language,
           () {
-        Navigator.pushNamed(context, PageRoutes.languagePage);
+        Navigator.pushNamed(context, ChangeLanguagePage.ROUTE_NAME);
       }),
       MenuTile(locale.contactUs, locale.letUsHelpYou, Icons.mail, () {
         Navigator.pushNamed(context, PageRoutes.supportPage);

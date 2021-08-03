@@ -1,4 +1,5 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
+import 'package:doctoworld_doctor/screens/BottomNavigation/Appointment/chat_page.dart';
 import '../../../Locale/locale.dart';
 import '../../../utils/Routes/routes.dart';
 import 'package:flutter/cupertino.dart';
@@ -183,7 +184,7 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
                                         GestureDetector(
                                           onTap: () {
                                             Navigator.pushNamed(
-                                                context, PageRoutes.chatScreen);
+                                                context, ChatScreen.ROUTE_NAME);
                                           },
                                           child: FadedScaleAnimation(
                                             Icon(

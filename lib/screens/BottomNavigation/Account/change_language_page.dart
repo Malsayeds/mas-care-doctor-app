@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChangeLanguagePage extends StatefulWidget {
+  static const String ROUTE_NAME = 'language_page';
   @override
   _ChangeLanguagePageState createState() => _ChangeLanguagePageState();
 }
@@ -29,7 +30,6 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
     ];
     return BlocBuilder<LanguageCubit, Locale>(
       builder: (context, locale) {
-        _selectedLanguage = getCurrentLanguage(locale);
         return Scaffold(
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)!.changeLanguage!),
@@ -39,16 +39,17 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
               itemCount: _languages.length,
               itemBuilder: (context, index) => ListTile(
                 title: Text(_languages[index]),
-                onTap: () {
+                onTap: () async {
+                  _selectedLanguage = index;
+                  if (_selectedLanguage == 0) {
+                    await _languageCubit.selectEngLanguage();
+                  } else if (_selectedLanguage == 1) {
+                    await _languageCubit.selectArabicLanguage();
+                  }
                   setState(() {
                     _selectedLanguage = index;
                     Navigator.pushNamed(context, LoginScreen.ROUTE);
                   });
-                  if (_selectedLanguage == 0) {
-                    _languageCubit.selectEngLanguage();
-                  } else if (_selectedLanguage == 1) {
-                    _languageCubit.selectArabicLanguage();
-                  }
                 },
               ),
             ),
@@ -66,20 +67,6 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
       return 0;
     else if (locale == Locale('ar'))
       return 1;
-    else if (locale == Locale('fr'))
-      return 2;
-    else if (locale == Locale('id'))
-      return 3;
-    else if (locale == Locale('pt'))
-      return 4;
-    else if (locale == Locale('es'))
-      return 5;
-    else if (locale == Locale('it'))
-      return 6;
-    else if (locale == Locale('tr'))
-      return 7;
-    else if (locale == Locale('sw'))
-      return 8;
     else
       return -1;
   }

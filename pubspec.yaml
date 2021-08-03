@@ -16,9 +16,10 @@ dependencies:
   animation_wrappers: ^0.0.4
   cupertino_icons: ^1.0.3
   flutter_bloc: ^7.1.0
+  flutter_lints: ^1.0.4
   flutter_phoenix: ^1.0.0
   percent_indicator: ^3.0.1
-  flutter_lints: ^1.0.4
+  shared_preferences: ^2.0.6
 
 dev_dependencies:
   flutter_test:

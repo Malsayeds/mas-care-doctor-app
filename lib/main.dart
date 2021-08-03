@@ -1,4 +1,7 @@
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/change_language_page.dart';
+import 'package:doctoworld_doctor/screens/splash_screen.dart';
+import 'package:doctoworld_doctor/utils/bloc_observer.dart';
+import 'package:doctoworld_doctor/utils/providers.dart';
 
 import 'utils/Theme/colors.dart';
 import 'package:flutter/material.dart';
@@ -15,16 +18,17 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: transparentColor));
+  Bloc.observer = SimpleBlocObserver();
   runApp(Phoenix(child: DoctoWorldDoctor()));
 }
 
 class DoctoWorldDoctor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<LanguageCubit>(
-      create: (context) => LanguageCubit(),
+    return MultiBlocProvider(
+      providers: blocProviders,
       child: BlocBuilder<LanguageCubit, Locale>(
-        builder: (_, locale) {
+        builder: (context, locale) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             localizationsDelegates: [
@@ -39,8 +43,8 @@ class DoctoWorldDoctor extends StatelessWidget {
             ],
             locale: locale,
             theme: lightTheme,
-            home: ChangeLanguagePage(),
-            routes: PageRoutes().routes(),
+            home: SplashScreen(),
+            routes: PageRoutes.routes(),
           );
         },
       ),

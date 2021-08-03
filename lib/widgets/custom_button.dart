@@ -19,7 +19,7 @@ class CustomButton extends StatelessWidget {
     this.iconGap,
     this.onTap,
     this.color,
-    this.textColor,
+    this.textColor : Colors.white,
     this.padding,
     this.radius,
     this.trailing,
