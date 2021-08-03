@@ -11,32 +11,4 @@ class LanguageCubit extends Cubit<Locale> {
   void selectArabicLanguage() {
     emit(Locale('ar'));
   }
-
-  void selectPortugueseLanguage() {
-    emit(Locale('pt'));
-  }
-
-  void selectFrenchLanguage() {
-    emit(Locale('fr'));
-  }
-
-  void selectIndonesianLanguage() {
-    emit(Locale('id'));
-  }
-
-  void selectSpanishLanguage() {
-    emit(Locale('es'));
-  }
-
-  void selectItalianLanguage() {
-    emit(Locale('it'));
-  }
-
-  void selectTurkishLanguage() {
-    emit(Locale('tr'));
-  }
-
-  void selectSwahiliLanguage() {
-    emit(Locale('sw'));
-  }
 }

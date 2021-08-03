@@ -1,15 +1,8 @@
-import 'package:doctoworld_doctor/Locale/Languages/italian.dart';
-import 'package:doctoworld_doctor/Locale/Languages/turkish.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'Languages/arabic.dart';
 import 'Languages/english.dart';
-import 'Languages/french.dart';
-import 'Languages/indonesian.dart';
-import 'Languages/portuguese.dart';
-import 'Languages/spanish.dart';
-import 'Languages/swahili.dart';
 
 class AppLocalizations {
   final Locale locale;
@@ -22,13 +15,6 @@ class AppLocalizations {
   static Map<String, Map<String, String>> _localizedValues = {
     'en': english(),
     'ar': arabic(),
-    'pt': portuguese(),
-    'fr': french(),
-    'id': indonesian(),
-    'es': spanish(),
-    'it': italian(),
-    'tr': turkish(),
-    'sw': swahili(),
   };
 
   String? get myOrders {
