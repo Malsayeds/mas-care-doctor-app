@@ -2,17 +2,17 @@ import 'package:doctoworld_doctor/screens/BottomNavigation/Account/change_langua
 import 'package:doctoworld_doctor/screens/splash_screen.dart';
 import 'package:doctoworld_doctor/utils/bloc_observer.dart';
 import 'package:doctoworld_doctor/utils/providers.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'utils/Theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'Locale/language_cubit.dart';
-import 'Locale/locale.dart';
 import 'utils/Routes/routes.dart';
 import 'utils/Theme/style.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +32,7 @@ class DoctoWorldDoctor extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             localizationsDelegates: [
-              const AppLocalizationsDelegate(),
+              AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,

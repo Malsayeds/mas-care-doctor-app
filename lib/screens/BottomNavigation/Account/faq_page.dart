@@ -1,5 +1,5 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
-import '../../../Locale/locale.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class FAQPage extends StatefulWidget {
@@ -66,7 +66,7 @@ class _FAQPageState extends State<FAQPage> {
     ];
     return Scaffold(
       appBar: AppBar(
-        title: Text(locale.faq!),
+        title: Text(locale.faq),
         textTheme: Theme.of(context).textTheme,
         centerTitle: true,
       ),

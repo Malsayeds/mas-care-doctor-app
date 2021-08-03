@@ -2,7 +2,7 @@ import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:doctoworld_doctor/screens/Auth/Registration/UI/registration_screen.dart';
 import '../../../../widgets/custom_button.dart';
 import '../../../../widgets/entry_field.dart';
-import '../../../../Locale/locale.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../utils/Theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: size.height * 0.05,
                     ),
                     Text(
-                      locale.orQuickContinueWith!,
+                      locale.orQuickContinueWith,
                       style: theme.textTheme.subtitle1,
                     ),
                     SizedBox(

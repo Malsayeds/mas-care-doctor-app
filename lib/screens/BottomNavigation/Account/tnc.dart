@@ -1,5 +1,5 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
-import '../../../Locale/locale.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class TnCPage extends StatefulWidget {
@@ -13,7 +13,7 @@ class _TnCPageState extends State<TnCPage> {
     var locale = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(locale.termsNConditions!),
+        title: Text(locale.termsNConditions),
         textTheme: Theme.of(context).textTheme,
         centerTitle: true,
       ),

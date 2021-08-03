@@ -1,5 +1,5 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
-import '../../../Locale/locale.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../utils/Theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -50,7 +50,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: Text(locale.reviews!),
+        title: Text(locale.reviews),
       ),
       body: ListView(
         physics: BouncingScrollPhysics(),
@@ -77,7 +77,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                             .headline5!
                             .copyWith(fontSize: 22)),
                     SizedBox(height: 12.0),
-                    Text(locale.avgReview!,
+                    Text(locale.avgReview,
                         style: Theme.of(context).textTheme.bodyText1),
                     SizedBox(height: 12.0),
                     Row(
@@ -122,7 +122,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                     Expanded(
                       child: ListTile(
                         title: Text(
-                          locale.totalPeopleRated!,
+                          locale.totalPeopleRated,
                           style: Theme.of(context)
                               .textTheme
                               .subtitle2!
@@ -155,7 +155,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                     Expanded(
                       child: ListTile(
                         title: Text(
-                          locale.appointmentsBooked!,
+                          locale.appointmentsBooked,
                           style: Theme.of(context)
                               .textTheme
                               .subtitle2!
@@ -193,7 +193,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
           Container(
             padding: EdgeInsets.all(20.0),
             color: Theme.of(context).primaryColorLight,
-            child: Text(locale.recent!,
+            child: Text(locale.recent,
                 style: Theme.of(context).textTheme.bodyText1),
           ),
           ListView.builder(
@@ -246,7 +246,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                           RichText(
                               text: TextSpan(children: <TextSpan>[
                             TextSpan(
-                                text: locale.forr! + ' ',
+                                text: locale.forr + ' ',
                                 style: Theme.of(context).textTheme.caption),
                             TextSpan(
                               text: locale.coldFever,

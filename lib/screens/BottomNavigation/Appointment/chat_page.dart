@@ -1,5 +1,5 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
-import '../../../Locale/locale.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -58,7 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     padding:
                         EdgeInsets.symmetric(horizontal: 125, vertical: 12),
                     child: Text(
-                      locale.deliveryPartner!,
+                      locale.deliveryPartner,
                       style: Theme.of(context).textTheme.subtitle2,
                     ),
                   ),

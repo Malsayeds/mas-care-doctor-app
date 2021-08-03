@@ -1,6 +1,6 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Appointment/chat_page.dart';
-import '../../../Locale/locale.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../utils/Routes/routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +61,7 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: FadedScaleAnimation(
-          Text(locale.myAppointments!),
+          Text(locale.myAppointments),
           durationInMilliseconds: 400,
         ),
         centerTitle: true,

@@ -1,7 +1,7 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/entry_field.dart';
-import '../../../Locale/locale.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../utils/Theme/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +16,7 @@ class _SupportPageState extends State<SupportPage> {
     var locale = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(locale.support!),
+        title: Text(locale.support),
         textTheme: Theme.of(context).textTheme,
         centerTitle: true,
       ),
@@ -28,7 +28,7 @@ class _SupportPageState extends State<SupportPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  locale.howMayWeHelpYou!,
+                  locale.howMayWeHelpYou,
                   style: Theme.of(context)
                       .textTheme
                       .headline4!
@@ -36,7 +36,7 @@ class _SupportPageState extends State<SupportPage> {
                 ),
                 SizedBox(height: 12.0),
                 Text(
-                  locale.letUsKnowUrQueriesFeedbacks!,
+                  locale.letUsKnowUrQueriesFeedbacks,
                   style: Theme.of(context)
                       .textTheme
                       .subtitle1!

@@ -1,5 +1,6 @@
-import '../Locale/locale.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomButton extends StatelessWidget {
   final String? label;
@@ -46,7 +47,7 @@ class CustomButton extends StatelessWidget {
             icon != null ? SizedBox(width: iconGap ?? 20) : SizedBox.shrink(),
             Expanded(
               child: Text(
-                label ?? locale!.continuee!,
+                label ?? locale!.continuee,
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.subtitle1!.copyWith(

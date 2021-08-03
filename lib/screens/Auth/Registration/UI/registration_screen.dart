@@ -2,7 +2,7 @@ import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:doctoworld_doctor/screens/Auth/Verification/UI/verification_screen.dart';
 import '../../../../widgets/custom_button.dart';
 import '../../../../widgets/entry_field.dart';
-import '../../../../Locale/locale.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -27,7 +27,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     var locale = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(locale.registerNow!),
+        title: Text(locale.registerNow),
         centerTitle: true,
       ),
       body: FadedSlideAnimation(
@@ -37,28 +37,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             child: Column(
               children: [
                 Text(
-                  locale.phoneNumberNotRegistered!,
+                  locale.phoneNumberNotRegistered,
                   style: Theme.of(context).textTheme.bodyText1,
                   textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                EntryField(
-                  prefixIcon: Icons.phone_iphone,
-                  hint: locale.mobileNumber,
-                  readOnly: true,
                 ),
                 SizedBox(height: 20.0),
                 EntryField(
                   controller: _nameController,
                   prefixIcon: Icons.person,
-                  hint: locale.fullName,
+                  hint: locale.emailAddress,
                 ),
                 SizedBox(height: 20.0),
                 EntryField(
                   controller: _emailController,
-                  prefixIcon: Icons.mail,
+                  prefixIcon: Icons.lock,
                   hint: locale.emailAddress,
                 ),
                 SizedBox(height: 20.0),
@@ -77,7 +69,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   },
                 ),
                 Text(
-                  locale.wellSendAnOTP!,
+                  locale.wellSendAnOTP,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyText1,
                 ),

@@ -1,7 +1,7 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/entry_field.dart';
-import '../../../Locale/locale.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class AddService extends StatefulWidget {
@@ -43,7 +43,7 @@ class _AddServiceState extends State<AddService> {
     ];
     return Scaffold(
       appBar: AppBar(
-        title: Text(locale.addService!),
+        title: Text(locale.addService),
         centerTitle: true,
       ),
       body: FadedSlideAnimation(
@@ -64,7 +64,7 @@ class _AddServiceState extends State<AddService> {
                   padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                   color: Theme.of(context).dividerColor,
                   child: Text(
-                    locale.selectServiceToAdd!,
+                    locale.selectServiceToAdd,
                     style: Theme.of(context)
                         .textTheme
                         .subtitle2!

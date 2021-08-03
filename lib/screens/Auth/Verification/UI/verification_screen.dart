@@ -3,7 +3,7 @@ import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:doctoworld_doctor/utils/Routes/routes.dart';
 import '../../../../widgets/custom_button.dart';
 import '../../../../widgets/entry_field.dart';
-import '../../../../Locale/locale.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class VerificationScreen extends StatefulWidget {
@@ -44,7 +44,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
     var locale = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(locale.phoneVerification!),
+        title: Text(locale.phoneVerification),
         textTheme: Theme.of(context).textTheme,
         centerTitle: true,
       ),
@@ -55,7 +55,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
             children: [
               Spacer(),
               Text(
-                locale.weveSentAnOTP!,
+                locale.weveSentAnOTP,
                 style: Theme.of(context)
                     .textTheme
                     .bodyText1!
@@ -80,7 +80,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    '$_counter ' + locale.secLeft!,
+                    '$_counter ' + locale.secLeft,
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                   Container(

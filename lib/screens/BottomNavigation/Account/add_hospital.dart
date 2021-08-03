@@ -1,7 +1,7 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/entry_field.dart';
-import '../../../Locale/locale.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class AddHospital extends StatefulWidget {
@@ -49,7 +49,7 @@ class _AddHospitalState extends State<AddHospital> {
     var locale = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(locale.addHospital!),
+        title: Text(locale.addHospital),
         centerTitle: true,
       ),
       body: FadedSlideAnimation(
@@ -70,7 +70,7 @@ class _AddHospitalState extends State<AddHospital> {
                   padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                   color: Theme.of(context).dividerColor,
                   child: Text(
-                    locale.selectHospitalsToAdd!,
+                    locale.selectHospitalsToAdd,
                     style: Theme.of(context)
                         .textTheme
                         .subtitle2!

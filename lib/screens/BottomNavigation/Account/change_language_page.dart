@@ -1,7 +1,7 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
 import '../../../Locale/language_cubit.dart';
-import '../../../Locale/locale.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../utils/Routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,7 +32,7 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
       builder: (context, locale) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.changeLanguage!),
+            title: Text(AppLocalizations.of(context)!.changeLanguage),
           ),
           body: FadedSlideAnimation(
             ListView.builder(

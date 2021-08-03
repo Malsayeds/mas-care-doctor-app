@@ -1,7 +1,7 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/change_language_page.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/profile_page.dart';
-import '../../../Locale/locale.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../utils/Routes/routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +49,7 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(locale.account!),
+        title: Text(locale.account),
         centerTitle: true,
       ),
       body: ListView(
