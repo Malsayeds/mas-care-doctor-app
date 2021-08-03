@@ -43,11 +43,11 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
           body: FadedSlideAnimation(
             ListView.builder(
               itemCount: _languages.length,
-              itemBuilder: (context, index) => RadioListTile(
-                activeColor: Theme.of(context).primaryColor,
-                onChanged: (dynamic value) async {
+              itemBuilder: (context, index) => ListTile(
+                title: Text(_languages[index]),
+                onTap: () {
                   setState(() {
-                    _selectedLanguage = value;
+                    _selectedLanguage = index;
                     Navigator.pushNamed(context, PageRoutes.loginNavigator);
                   });
                   if (_selectedLanguage == 0) {
@@ -70,9 +70,6 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
                     _languageCubit.selectSwahiliLanguage();
                   }
                 },
-                groupValue: _selectedLanguage,
-                value: index,
-                title: Text(_languages[index]),
               ),
             ),
             beginOffset: Offset(0, 0.3),
