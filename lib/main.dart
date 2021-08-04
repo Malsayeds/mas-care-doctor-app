@@ -1,4 +1,3 @@
-import 'package:doctoworld_doctor/screens/BottomNavigation/Account/change_language_page.dart';
 import 'package:doctoworld_doctor/screens/splash_screen.dart';
 import 'package:doctoworld_doctor/utils/bloc_observer.dart';
 import 'package:doctoworld_doctor/utils/providers.dart';

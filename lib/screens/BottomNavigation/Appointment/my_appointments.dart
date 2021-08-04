@@ -151,16 +151,6 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
                                     ),
                                   ],
                                 ),
-                                Align(
-                                    alignment: Alignment.topRight,
-                                    child: FadedScaleAnimation(
-                                      Icon(
-                                        Icons.more_vert,
-                                        color: Theme.of(context).primaryColor,
-                                        size: 18,
-                                      ),
-                                      durationInMilliseconds: 400,
-                                    )),
                                 PositionedDirectional(
                                     bottom: 0,
                                     end: 6,
@@ -169,31 +159,40 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
                                         SizedBox(
                                           width: 10,
                                         ),
-                                        FadedScaleAnimation(
-                                          Icon(
-                                            Icons.call,
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            size: 18,
+                                        InkWell(
+                                          onTap: () {},
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: FadedScaleAnimation(
+                                              Icon(
+                                                Icons.call,
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                size: 18,
+                                              ),
+                                              durationInMilliseconds: 400,
+                                            ),
                                           ),
-                                          durationInMilliseconds: 400,
                                         ),
                                         SizedBox(
                                           width: 10,
                                         ),
-                                        GestureDetector(
+                                        InkWell(
                                           onTap: () {
                                             Navigator.pushNamed(
                                                 context, ChatScreen.ROUTE_NAME);
                                           },
-                                          child: FadedScaleAnimation(
-                                            Icon(
-                                              Icons.message,
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              size: 18,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: FadedScaleAnimation(
+                                              Icon(
+                                                Icons.message,
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                size: 18,
+                                              ),
+                                              durationInMilliseconds: 400,
                                             ),
-                                            durationInMilliseconds: 400,
                                           ),
                                         )
                                       ],

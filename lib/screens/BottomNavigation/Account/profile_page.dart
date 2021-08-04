@@ -66,7 +66,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   File? pickedImg =
                       await SharedWidgets.pickImage(ImageType.Camera);
                 },
-                child: Text('Camera'),
+                child: Text(locale.camera),
                 style: TextButton.styleFrom(
                   textStyle: TextStyle(
                     fontSize: 18,
@@ -85,7 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   File? pickedImg =
                       await SharedWidgets.pickImage(ImageType.Gallery);
                 },
-                child: Text('Gallery'),
+                child: Text(locale.gallery),
                 style: TextButton.styleFrom(
                   textStyle: TextStyle(
                     fontSize: 18,

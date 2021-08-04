@@ -157,5 +157,8 @@
   "appointmentsBooked": "Appointments Booked",
   "appointments": "Appointments",
   "changeLanguage": "Change Language",
-  "uploadImage": "Upload Image Using"
+  "uploadImage": "Upload Image Using",
+  "password": "Password",
+  "camera": "Camera",
+  "gallery": "Gallery"
 }

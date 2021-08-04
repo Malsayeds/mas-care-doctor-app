@@ -51,7 +51,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 EntryField(
                   controller: _emailController,
                   prefixIcon: Icons.lock,
-                  hint: locale.emailAddress,
+                  hint: locale.password,
                 ),
                 SizedBox(height: 20.0),
                 CustomButton(

@@ -157,5 +157,8 @@
   "appointmentsBooked": "المواعيد المحجوزة",
   "appointments": "حجوزات",
   "changeLanguage": "تغيير اللغة",
-  "uploadImage": "رفع الصورة بواسطة"
+  "uploadImage": "رفع الصورة بواسطة",
+  "password": "كلمة المرور",
+  "camera": "الكاميرا",
+  "gallery": "الوسائط"
 }

@@ -61,11 +61,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   children: [
                     SizedBox(
-                      height: size.height * 0.5,
+                      height: size.height * 0.4,
                     ),
                     EntryField(
-                      hint: locale.enterMobileNumber,
+                      label: 'Text',
+                      hint: locale.emailAddress,
                       prefixIcon: Icons.phone_iphone,
+                      color: theme.scaffoldBackgroundColor,
+                      controller: _numberController,
+                    ),
+                    SizedBox(
+                      height: size.height * 0.025,
+                    ),
+                    EntryField(
+                      hint: locale.password,
+                      prefixIcon: Icons.lock,
                       color: theme.scaffoldBackgroundColor,
                       controller: _numberController,
                     ),
