@@ -26,11 +26,11 @@
   "update": "Update",
   "enterMobileNumber": "Enter Mobile Number",
   "continuee": "Continue",
-  "orQuickContinueWith": "Or quick continue with",
+  "orQuickContinueWith": "Quick Continue with",
   "facebook": "Facebook",
   "gmail": "Gmail",
   "registerNow": "Register Now",
-  "phoneNumberNotRegistered": "Your phone number is not registered yet.\nLet us know basic details for registration.",
+  "phoneNumberNotRegistered": "Let us know basic details for registration.",
   "mobileNumber": "Mobile Number",
   "fullName": "Full Name",
   "emailAddress": "Email Address",
@@ -160,5 +160,6 @@
   "uploadImage": "Upload Image Using",
   "password": "Password",
   "camera": "Camera",
-  "gallery": "Gallery"
+  "gallery": "Gallery",
+  "or": "OR"
 }

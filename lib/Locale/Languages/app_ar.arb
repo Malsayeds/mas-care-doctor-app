@@ -26,11 +26,11 @@
   "update": "تحديث",
   "enterMobileNumber": "أدخل رقم الجوال",
   "continuee": "استمر",
-  "orQuickContinueWith": "أو الاستمرار سريعا مع",
+  "orQuickContinueWith": "الاستمرار سريعا مع",
   "facebook": "الفيسبوك",
   "gmail": "الجيميل",
   "registerNow": "سجل الان",
-  "phoneNumberNotRegistered": "لم يتم تسجيل رقم هاتفك yet.\nLet لنا أن نعرف التفاصيل الأساسية للتسجيل.",
+  "phoneNumberNotRegistered": "إسمح لنا أن نعرف بعض التفاصيل الأساسية للتسجيل",
   "mobileNumber": "رقم الهاتف المحمول",
   "fullName": "الاسم الكامل",
   "emailAddress": "عنوان البريد الإلكتروني",
@@ -160,5 +160,6 @@
   "uploadImage": "رفع الصورة بواسطة",
   "password": "كلمة المرور",
   "camera": "الكاميرا",
-  "gallery": "الوسائط"
+  "gallery": "الوسائط",
+  "or": "أو"
 }

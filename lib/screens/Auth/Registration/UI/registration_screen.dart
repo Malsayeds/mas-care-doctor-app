@@ -1,5 +1,7 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
+import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
 import 'package:doctoworld_doctor/screens/Auth/Verification/UI/verification_screen.dart';
+import 'package:doctoworld_doctor/utils/Theme/colors.dart';
 import '../../../../widgets/custom_button.dart';
 import '../../../../widgets/entry_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -60,13 +62,34 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   },
                 ),
                 SizedBox(height: 20.0),
-                CustomButton(
-                  label: locale.backToSignIn,
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  textColor: Theme.of(context).hintColor,
+                GestureDetector(
                   onTap: () {
-                    Navigator.of(context).pushNamed(VerificationScreen.ROUTE);
+                    Navigator.of(context)
+                        .pushReplacementNamed(LoginScreen.ROUTE);
                   },
+                  child: RichText(
+                    text: TextSpan(
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: 'Already have an account?',
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                        TextSpan(
+                          text: ' Sign In',
+                          style: TextStyle(
+                            color: primaryColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 SizedBox(height: 32.0),
                 Text(

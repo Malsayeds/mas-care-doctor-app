@@ -22,7 +22,7 @@ class PageRoutes {
   static const String addHospital = 'add_hospital';
   static const String addService = 'add_service';
   static const String addSpecialization = 'add_specialization';
-  
+
   static Map<String, WidgetBuilder> routes() {
     return {
       ChatScreen.ROUTE_NAME: (context) => ChatScreen(),

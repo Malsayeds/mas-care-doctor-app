@@ -27,7 +27,8 @@ class _SplashScreenState extends State<SplashScreen> {
           langData.setLocale(localeCode);
           Navigator.of(context).pushReplacementNamed(LoginScreen.ROUTE);
         } else {
-          Navigator.of(context).pushReplacementNamed(ChangeLanguagePage.ROUTE_NAME);
+          Navigator.of(context)
+              .pushReplacementNamed(ChangeLanguagePage.ROUTE_NAME);
         }
       },
     );

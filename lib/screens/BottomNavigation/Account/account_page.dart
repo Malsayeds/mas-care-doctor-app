@@ -93,8 +93,7 @@ class _AccountPageState extends State<AccountPage> {
                     onTap: _menu[index].onTap as void Function()?,
                     child: Container(
                       margin: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+                      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(4),
                         color: Theme.of(context).scaffoldBackgroundColor,
@@ -105,7 +104,7 @@ class _AccountPageState extends State<AccountPage> {
                         children: [
                           FadedScaleAnimation(
                             Container(
-                              width: MediaQuery.of(context).size.width*.4,
+                              width: MediaQuery.of(context).size.width * .4,
                               child: Text(
                                 _menu[index].title!,
                                 overflow: TextOverflow.fade,
@@ -114,11 +113,10 @@ class _AccountPageState extends State<AccountPage> {
                             ),
                             durationInMilliseconds: 400,
                           ),
-
                           Row(
                             children: [
                               Container(
-                                width: MediaQuery.of(context).size.width*.3,
+                                width: MediaQuery.of(context).size.width * .3,
                                 child: Text(
                                   _menu[index].subtitle!,
                                   overflow: TextOverflow.ellipsis,

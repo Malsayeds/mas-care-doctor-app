@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-const String API_URL = 'https://soulgymegypt.com/system/public/api';
+const String API_BASE_URL = 'https://soulgymegypt.com/system/public/api';
 const String imagePlaceHolderError =
-    'https://via.placeholder.com/150.png?text=Soul+Gym';
+    'https://via.placeholder.com/200.png?text=404';
 
 const String LOCALE_KEY = 'locale';
 

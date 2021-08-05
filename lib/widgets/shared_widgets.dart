@@ -47,4 +47,53 @@ class SharedWidgets {
       textColor: Colors.white,
     );
   }
+
+  static Widget buildImgNetwork({
+    required String imgUrl,
+    double? width,
+    double? height,
+  }) {
+    return Image.network(
+      '',
+      width: width,
+      height: height,
+      loadingBuilder: (
+        BuildContext context,
+        Widget child,
+        ImageChunkEvent? loadingProgress,
+      ) {
+        if (loadingProgress == null) {
+          return child;
+        }
+        return Center(
+          child: CircularProgressIndicator.adaptive(
+            value: loadingProgress.expectedTotalBytes != null
+                ? loadingProgress.cumulativeBytesLoaded /
+                    loadingProgress.expectedTotalBytes!
+                : null,
+          ),
+        );
+      },
+      errorBuilder:
+          (BuildContext context, Object exception, StackTrace? trace) {
+        return Container(
+          height: height,
+          width: width,
+          decoration: BoxDecoration(
+            color: Colors.grey,
+            borderRadius: BorderRadius.circular(kBorderRadius),
+          ),
+          child: Center(
+            child: Text(
+              '404',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
