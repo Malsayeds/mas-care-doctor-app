@@ -161,5 +161,8 @@
   "password": "Password",
   "camera": "Camera",
   "gallery": "Gallery",
-  "or": "OR"
+  "or": "OR",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "confirmPassword": "Confirm Password"
 }

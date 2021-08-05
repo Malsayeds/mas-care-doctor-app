@@ -16,13 +16,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool isHidden = true;
-  final TextEditingController _numberController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool isHidden = true;
 
   @override
   void dispose() {
-    _numberController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           hint: locale.emailAddress,
                           prefixIcon: Icons.phone_iphone,
                           color: theme.scaffoldBackgroundColor,
-                          controller: _numberController,
+                          controller: _emailController,
                           onValidate: (text) {
                             if (text!.isEmpty) {
                               return 'Enter your Email Address';
