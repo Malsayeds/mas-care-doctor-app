@@ -4,7 +4,7 @@ import 'package:animation_wrappers/Animations/faded_scale_animation.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:doctoworld_doctor/enums/image_type.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
-import 'package:doctoworld_doctor/utils/shared_widgets.dart';
+import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/entry_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

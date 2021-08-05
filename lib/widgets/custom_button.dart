@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -20,7 +19,7 @@ class CustomButton extends StatelessWidget {
     this.iconGap,
     this.onTap,
     this.color,
-    this.textColor : Colors.white,
+    this.textColor: Colors.white,
     this.padding,
     this.radius,
     this.trailing,
@@ -31,34 +30,40 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context);
     var theme = Theme.of(context);
-    return GestureDetector(
-      onTap: onTap as void Function()?,
-      child: Container(
-        height: MediaQuery.of(context).size.height*.09,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(radius ?? 8),
-          color: color ?? theme.primaryColor,
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * .09,
+      child: ElevatedButton(
+        onPressed: onTap as void Function()?,
+        style: ElevatedButton.styleFrom(
+          primary: color ?? theme.primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radius ?? 8),
+          ),
         ),
-        padding: EdgeInsets.all(padding ?? (icon != null ? 16.0 : 18.0)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            icon ?? SizedBox.shrink(),
-            icon != null ? SizedBox(width: iconGap ?? 20) : SizedBox.shrink(),
-            Expanded(
-              child: Text(
-                label ?? locale!.continuee,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.subtitle1!.copyWith(
-                  color: textColor ?? theme.backgroundColor,
-                  fontSize: textSize ?? 16,
+        child: Padding(
+          padding: EdgeInsets.all(
+            padding ?? (icon != null ? 16.0 : 18.0),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              icon ?? SizedBox.shrink(),
+              icon != null ? SizedBox(width: iconGap ?? 20) : SizedBox.shrink(),
+              Expanded(
+                child: Text(
+                  label ?? locale!.continuee,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.subtitle1!.copyWith(
+                    color: textColor ?? theme.backgroundColor,
+                    fontSize: textSize ?? 16,
+                  ),
                 ),
               ),
-            ),
-            trailing != null ? Spacer() : SizedBox.shrink(),
-            trailing ?? SizedBox.shrink(),
-          ],
+              trailing != null ? Spacer() : SizedBox.shrink(),
+              trailing ?? SizedBox.shrink(),
+            ],
+          ),
         ),
       ),
     );

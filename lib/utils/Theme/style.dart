@@ -7,8 +7,8 @@ final ThemeData lightTheme = ThemeData(
   scaffoldBackgroundColor: scaffoldBackgroundColor,
   backgroundColor: backgroundColor,
   primaryColor: primaryColor,
+  accentColor: primaryColor,
   primaryColorLight: secondaryBackgroundColor,
-  hintColor: textColor,
   disabledColor: disabledColor,
   dividerColor: secondaryBackgroundColor,
 

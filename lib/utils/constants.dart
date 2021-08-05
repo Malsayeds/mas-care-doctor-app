@@ -10,7 +10,7 @@ const Color mainColor = Color(0xffc59433);
 final Color redColor = Colors.red[600]!;
 final Color greenColor = Colors.greenAccent[700]!;
 
-const double kBorderRadius = 12.0;
+const double kBorderRadius = 8.0;
 
 const String INTERNET_WARNING_MESSAGE =
     'Check your internet connection then try again.';

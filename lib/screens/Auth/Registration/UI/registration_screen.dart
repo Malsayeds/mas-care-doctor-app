@@ -53,13 +53,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   prefixIcon: Icons.lock,
                   hint: locale.password,
                 ),
-                SizedBox(height: 20.0),
+                SizedBox(height: 32.0),
                 CustomButton(
                   onTap: () {
                     Navigator.of(context).pushNamed(VerificationScreen.ROUTE);
                   },
                 ),
-                SizedBox(height: 10.0),
+                SizedBox(height: 20.0),
                 CustomButton(
                   label: locale.backToSignIn,
                   color: Theme.of(context).scaffoldBackgroundColor,
@@ -68,6 +68,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     Navigator.of(context).pushNamed(VerificationScreen.ROUTE);
                   },
                 ),
+                SizedBox(height: 32.0),
                 Text(
                   locale.wellSendAnOTP,
                   textAlign: TextAlign.center,
