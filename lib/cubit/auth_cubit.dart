@@ -24,17 +24,19 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       print(ApiRoutes.REGISTER);
-      Response response = await dio.post(
-        ApiRoutes.REGISTER,
-        data: {
-          "email": email,
-          "password": password,
-          "first_name": firstName,
-          "last_name": lastName,
-          "phone": phone,
-          "role_name": ROLE_NAME,
-        },
-      );
+      Response response = await dio.post(ApiRoutes.REGISTER,
+          data: {
+            "email": email,
+            "password": password,
+            "first_name": firstName,
+            "last_name": lastName,
+            "phone": phone,
+            "role_name": ROLE_NAME,
+          },
+          options: Options(headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          }));
       final decodedResponseBody = response.data;
       print(decodedResponseBody);
       print(response.statusCode);
@@ -64,32 +66,34 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> loginWithEmailAndPassword(
       {required String email, required String password}) async {
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       print(ApiRoutes.LOGIN);
-      Response response = await dio.post(
-        ApiRoutes.LOGIN,
-        data: {
-          "email": email,
-          "password": password,
-          "role_name": ROLE_NAME,
-        },
-      );
+      Response response = await dio.post(ApiRoutes.LOGIN,
+          data: {
+            "email": email,
+            "password": password,
+            "role_name": ROLE_NAME,
+          },
+          options: Options(headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          }));
       final decodedResponseBody = response.data;
       print(decodedResponseBody);
       print(response.statusCode);
       if (response.statusCode == 200) {
+        print(decodedResponseBody['token']);
+        await prefs.setString(TOKEN_KEY, decodedResponseBody['token']);
         emit(UserLoggedInSuccessfullyState());
-      } else {
-        throw AuthException(
-            (response.data['error'] as Map<String, dynamic>).values.first);
+        //17|S8tgzygZt2o4CLtSNEPu4RRmhC7sdpyrtGsgfcoR
       }
-    } on AuthException catch (e) {
-      print(e.message);
-      throw e;
     } on DioError catch (e) {
       print(e.error);
       print(e.response?.data);
-      String errorMessage = '';
       if (e.type == DioErrorType.response) {
+        if (e.response?.statusCode == 400) {
+          throw e.response?.data['error'][0];
+        }
         throw AuthException(
             (e.response?.data as Map<String, List<String>>)['error']![0]);
       }
@@ -108,6 +112,8 @@ class AuthCubit extends Cubit<AuthState> {
         options: Options(
           headers: {
             'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
           },
         ),
       );

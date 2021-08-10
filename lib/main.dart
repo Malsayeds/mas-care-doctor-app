@@ -1,5 +1,6 @@
 import 'package:doctoworld_doctor/screens/splash_screen.dart';
 import 'package:doctoworld_doctor/utils/bloc_observer.dart';
+import 'package:doctoworld_doctor/utils/keys.dart';
 import 'package:doctoworld_doctor/utils/providers.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -29,6 +30,7 @@ class DoctoWorldDoctor extends StatelessWidget {
       child: BlocBuilder<LanguageCubit, Locale>(
         builder: (context, locale) {
           return MaterialApp(
+            navigatorKey: Keys.navKey,
             debugShowCheckedModeBanner: false,
             localizationsDelegates: [
               AppLocalizations.delegate,

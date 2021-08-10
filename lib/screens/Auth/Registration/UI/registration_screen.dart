@@ -26,7 +26,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+
   bool isHidden = true;
+  bool isLoading = false;
 
   final passwordValidator = MultiValidator([
     RequiredValidator(errorText: 'Enter your password'),
@@ -38,6 +40,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     final isValid = Keys.registerFormKey.currentState?.validate();
     if (isValid ?? false) {
       try {
+        setState(() {
+          isLoading = true;
+        });
         final authData = BlocProvider.of<AuthCubit>(context, listen: false);
         await authData.registerWithEmailAndPasswrod(
           email: _emailController.text,
@@ -47,14 +52,23 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           phone: _phoneController.text,
         );
         Navigator.of(context).pushNamed(VerificationScreen.ROUTE);
+        setState(() {
+          isLoading = false;
+        });
       } on AuthException catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(error.message),
           ),
         );
+        setState(() {
+          isLoading = false;
+        });
       } catch (e) {
         SharedWidgets.showToast(msg: INTERNET_WARNING_MESSAGE);
+        setState(() {
+          isLoading = false;
+        });
       }
     }
   }
@@ -63,6 +77,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -176,7 +193,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ),
                   SizedBox(height: 32.0),
                   CustomButton(
-                    onTap: registerUser,
+                    onTap: isLoading ? null : registerUser,
                   ),
                   SizedBox(height: 20.0),
                   GestureDetector(

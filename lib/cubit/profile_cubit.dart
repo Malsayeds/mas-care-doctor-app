@@ -148,14 +148,12 @@ class ProfileCubit extends Cubit<ProfileState> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       print(ApiRoutes.FAQ);
       print('Bearer ${prefs.getString(TOKEN_KEY)}');
-      Response<Map<String, dynamic>?> response = await dio.get(
-        ApiRoutes.FAQ,
-        options: Options(
-          headers: {
+      Response<Map<String, dynamic>?> response = await dio.get(ApiRoutes.FAQ,
+          options: Options(headers: {
             'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
-          },
-        ),
-      );
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          }));
       final Map<String, dynamic>? decodedResponseBody = response.data;
 
       print(decodedResponseBody);
@@ -186,14 +184,13 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       print(ApiRoutes.TERMS_AND_CONDITIONS);
-      Response<Map<String, dynamic>?> response = await dio.get(
-        ApiRoutes.TERMS_AND_CONDITIONS,
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
-          },
-        ),
-      );
+      Response<Map<String, dynamic>?> response =
+          await dio.get(ApiRoutes.TERMS_AND_CONDITIONS,
+              options: Options(headers: {
+                'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              }));
       final Map<String, dynamic>? decodedResponseBody = response.data;
 
       print(decodedResponseBody);
@@ -214,6 +211,36 @@ class ProfileCubit extends Cubit<ProfileState> {
     } catch (e) {
       print(e.toString());
       throw Exception();
+    }
+  }
+
+  Future<void> sendSupportMessage(
+      {required String email, required String message}) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(ApiRoutes.CONTACT_SUPPORT);
+      Response response = await dio.post(ApiRoutes.CONTACT_SUPPORT,
+          data: {
+            "email": email,
+            "message": message,
+          },
+          options: Options(headers: {
+            'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          }));
+      final decodedResponseBody = response.data;
+      print(decodedResponseBody);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        SharedWidgets.showToast(msg: decodedResponseBody['message']);
+        emit(SupportMessageSentState());
+      } else {
+        throw INTERNET_WARNING_MESSAGE;
+      }
+    } on DioError catch (e) {
+      print(e.error);
+      throw INTERNET_WARNING_MESSAGE;
     }
   }
 }

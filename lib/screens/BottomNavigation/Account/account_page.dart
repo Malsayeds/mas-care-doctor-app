@@ -1,7 +1,9 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:doctoworld_doctor/cubit/auth_cubit.dart';
+import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/change_language_page.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/profile_page.dart';
+import 'package:doctoworld_doctor/utils/keys.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../utils/Routes/routes.dart';
@@ -74,6 +76,8 @@ class _AccountPageState extends State<AccountPage> {
         () async {
           final authData = BlocProvider.of<AuthCubit>(context, listen: false);
           await authData.logout();
+          Keys.navKey.currentState?.pushNamedAndRemoveUntil(
+              LoginScreen.ROUTE, (Route<dynamic> route) => false);
         },
       ),
     ];

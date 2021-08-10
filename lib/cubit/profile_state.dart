@@ -12,3 +12,5 @@ class ToTimeChangedState extends ProfileState {}
 class DayTimeChangedState extends ProfileState {}
 
 class FAQsLoadedSuccessfullyState extends ProfileState {}
+
+class SupportMessageSentState extends ProfileState {}

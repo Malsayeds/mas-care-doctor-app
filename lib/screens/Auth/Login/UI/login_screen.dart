@@ -25,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool isHidden = true;
+  bool isLoading = false;
 
   final passwordValidator = MultiValidator([
     RequiredValidator(errorText: 'Enter your password'),
@@ -38,20 +39,32 @@ class _LoginScreenState extends State<LoginScreen> {
     final isValid = Keys.loginFormKey.currentState?.validate();
     if (isValid ?? false) {
       try {
+        setState(() {
+          isLoading = true;
+        });
         final authData = BlocProvider.of<AuthCubit>(context, listen: false);
         await authData.loginWithEmailAndPassword(
           email: _emailController.text,
           password: _passwordController.text,
         );
         Navigator.of(context).pushNamed(PageRoutes.bottomNavigation);
+        setState(() {
+          isLoading = false;
+        });
       } on AuthException catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(error.message),
           ),
         );
+        setState(() {
+          isLoading = false;
+        });
       } catch (e) {
-        SharedWidgets.showToast(msg: INTERNET_WARNING_MESSAGE);
+        SharedWidgets.showToast(msg: e.toString());
+        setState(() {
+          isLoading = false;
+        });
       }
     }
   }
@@ -59,6 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void dispose() {
     _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -137,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: size.height * 0.025,
                         ),
                         CustomButton(
-                          onTap: loginUser,
+                          onTap: isLoading ? null : loginUser,
                         ),
                         SizedBox(
                           height: size.height * 0.05,
