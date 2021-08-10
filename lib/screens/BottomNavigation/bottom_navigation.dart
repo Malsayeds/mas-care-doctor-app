@@ -1,4 +1,7 @@
+import 'package:doctoworld_doctor/cubit/auth_cubit.dart';
+import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
 import 'package:doctoworld_doctor/utils/Theme/colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
@@ -31,33 +34,41 @@ class _BottomNavigationState extends State<BottomNavigation> {
       BottomNavigationBarItem(icon: Icon(Icons.person), label: locale.account),
     ];
     var size = MediaQuery.of(context).size;
-    return Scaffold(
-      body: Stack(
-        children: [
-          _children[_currentIndex],
-          AnimatedPositionedDirectional(
-            bottom: 0,
-            start: start,
-            child: Container(
-              color: Theme.of(context).primaryColor,
-              height: 2,
-              width: size.width / 3,
-            ),
-            duration: Duration(milliseconds: 200),
-          )
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        currentIndex: _currentIndex,
-        selectedItemColor: primaryColor,
-        items: items,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-            start = size.width * index / items.length;
-          });
-        },
+    return BlocListener<AuthCubit, AuthState>(
+      listener: (context, state) {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          LoginScreen.ROUTE,
+          (route) => false,
+        );
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            _children[_currentIndex],
+            AnimatedPositionedDirectional(
+              bottom: 0,
+              start: start,
+              child: Container(
+                color: Theme.of(context).primaryColor,
+                height: 2,
+                width: size.width / 3,
+              ),
+              duration: Duration(milliseconds: 200),
+            )
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          currentIndex: _currentIndex,
+          selectedItemColor: primaryColor,
+          items: items,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+              start = size.width * index / items.length;
+            });
+          },
+        ),
       ),
     );
   }

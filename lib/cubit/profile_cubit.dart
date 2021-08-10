@@ -22,6 +22,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   late Dio dio;
 
   List<FAQQuestion> faqs = [];
+  String termsAndConditionsText = '';
 
   Profile profile = Profile(
     imgUrl: imagePlaceHolderError,
@@ -146,6 +147,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       print(ApiRoutes.FAQ);
+      print('Bearer ${prefs.getString(TOKEN_KEY)}');
       Response<Map<String, dynamic>?> response = await dio.get(
         ApiRoutes.FAQ,
         options: Options(
@@ -168,13 +170,50 @@ class ProfileCubit extends Cubit<ProfileState> {
         }
       } else {
         print('sadcscd');
+        throw INTERNET_WARNING_MESSAGE;
+      }
+    } on DioError catch (e) {
+      print(e.response?.data);
+      print(e.error);
+      throw INTERNET_WARNING_MESSAGE;
+    } catch (e) {
+      print(e.toString());
+      throw INTERNET_WARNING_MESSAGE;
+    }
+  }
+
+  Future<void> getTermsAndConditions() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(ApiRoutes.TERMS_AND_CONDITIONS);
+      Response<Map<String, dynamic>?> response = await dio.get(
+        ApiRoutes.TERMS_AND_CONDITIONS,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
+          },
+        ),
+      );
+      final Map<String, dynamic>? decodedResponseBody = response.data;
+
+      print(decodedResponseBody);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        if (decodedResponseBody != null) {
+          termsAndConditionsText = decodedResponseBody['body'];
+          print(faqs);
+          emit(FAQsLoadedSuccessfullyState());
+        }
+      } else {
         throw Exception();
       }
     } on DioError catch (e) {
       print(e.response?.data);
       print(e.error);
+      throw Exception();
     } catch (e) {
       print(e.toString());
+      throw Exception();
     }
   }
 }

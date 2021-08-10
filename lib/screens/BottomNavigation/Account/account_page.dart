@@ -1,12 +1,13 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
+import 'package:doctoworld_doctor/cubit/auth_cubit.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/change_language_page.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/profile_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../utils/Routes/routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 class AccountPage extends StatefulWidget {
   @override
@@ -26,25 +27,55 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
     List<MenuTile> _menu = [
-      MenuTile(locale.myProfile, locale.letUsHelpYou, Icons.store, () {
-        Navigator.pushNamed(context, ProfilePage.ROUTE_NAME);
-      }),
-      MenuTile(locale.changeLanguage, locale.changeLanguage, Icons.language,
-          () {
-        Navigator.pushNamed(context, ChangeLanguagePage.ROUTE_NAME);
-      }),
-      MenuTile(locale.contactUs, locale.letUsHelpYou, Icons.mail, () {
-        Navigator.pushNamed(context, PageRoutes.supportPage);
-      }),
-      MenuTile(locale.tnC, locale.companyPolicies, Icons.assignment, () {
-        Navigator.pushNamed(context, PageRoutes.tncPage);
-      }),
-      MenuTile(locale.faqs, locale.quickAnswers, Icons.announcement, () {
-        Navigator.pushNamed(context, PageRoutes.faqPage);
-      }),
-      MenuTile(locale.logout, locale.seeYouSoon, Icons.exit_to_app, () {
-        Phoenix.rebirth(context);
-      }),
+      MenuTile(
+        locale.myProfile,
+        locale.letUsHelpYou,
+        Icons.store,
+        () {
+          Navigator.pushNamed(context, ProfilePage.ROUTE_NAME);
+        },
+      ),
+      MenuTile(
+        locale.changeLanguage,
+        locale.changeLanguage,
+        Icons.language,
+        () {
+          Navigator.pushNamed(context, ChangeLanguagePage.ROUTE_NAME);
+        },
+      ),
+      MenuTile(
+        locale.contactUs,
+        locale.letUsHelpYou,
+        Icons.mail,
+        () {
+          Navigator.pushNamed(context, PageRoutes.supportPage);
+        },
+      ),
+      MenuTile(
+        locale.tnC,
+        locale.companyPolicies,
+        Icons.assignment,
+        () {
+          Navigator.pushNamed(context, PageRoutes.tncPage);
+        },
+      ),
+      MenuTile(
+        locale.faqs,
+        locale.quickAnswers,
+        Icons.announcement,
+        () {
+          Navigator.pushNamed(context, PageRoutes.faqPage);
+        },
+      ),
+      MenuTile(
+        locale.logout,
+        locale.seeYouSoon,
+        Icons.exit_to_app,
+        () async {
+          final authData = BlocProvider.of<AuthCubit>(context, listen: false);
+          await authData.logout();
+        },
+      ),
     ];
     return Scaffold(
       appBar: AppBar(

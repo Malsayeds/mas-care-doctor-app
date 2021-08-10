@@ -7,7 +7,6 @@ import 'utils/Theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'Locale/language_cubit.dart';
 import 'utils/Routes/routes.dart';
 import 'utils/Theme/style.dart';
@@ -19,7 +18,7 @@ void main() {
     SystemUiOverlayStyle(statusBarColor: transparentColor),
   );
   Bloc.observer = SimpleBlocObserver();
-  runApp(Phoenix(child: DoctoWorldDoctor()));
+  runApp(DoctoWorldDoctor());
 }
 
 class DoctoWorldDoctor extends StatelessWidget {

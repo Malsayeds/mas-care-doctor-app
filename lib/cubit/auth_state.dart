@@ -8,3 +8,5 @@ class AuthInitial extends AuthState {}
 class UserRegisteredSuccessfullyState extends AuthState {}
 
 class UserLoggedInSuccessfullyState extends AuthState {}
+
+class UserLoggedOutSuccessfullyState extends AuthState {}

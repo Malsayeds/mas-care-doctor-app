@@ -98,4 +98,31 @@ class AuthCubit extends Cubit<AuthState> {
       throw e;
     }
   }
+
+  Future<void> logout() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(ApiRoutes.LOGOUT);
+      Response response = await dio.post(
+        ApiRoutes.LOGOUT,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
+          },
+        ),
+      );
+      final decodedResponseBody = response.data;
+      print(decodedResponseBody);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        SharedWidgets.showToast(msg: decodedResponseBody['message']);
+        await prefs.remove(TOKEN_KEY);
+        emit(UserLoggedOutSuccessfullyState());
+      } else {
+        throw INTERNET_WARNING_MESSAGE;
+      }
+    } on DioError catch (e) {
+      throw INTERNET_WARNING_MESSAGE;
+    }
+  }
 }

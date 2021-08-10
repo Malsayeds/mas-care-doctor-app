@@ -1,6 +1,7 @@
 import 'package:doctoworld_doctor/Locale/language_cubit.dart';
 import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/change_language_page.dart';
+import 'package:doctoworld_doctor/utils/Routes/routes.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +26,12 @@ class _SplashScreenState extends State<SplashScreen> {
         String? localeCode = prefs.getString(LOCALE_KEY);
         if (localeCode != null && (localeCode == 'en' || localeCode == 'ar')) {
           langData.setLocale(localeCode);
-          Navigator.of(context).pushReplacementNamed(LoginScreen.ROUTE);
+          if (prefs.getString(TOKEN_KEY) != null) {
+            Navigator.of(context)
+                .pushReplacementNamed(PageRoutes.bottomNavigation);
+          } else {
+            Navigator.of(context).pushReplacementNamed(LoginScreen.ROUTE);
+          }
         } else {
           Navigator.of(context)
               .pushReplacementNamed(ChangeLanguagePage.ROUTE_NAME);

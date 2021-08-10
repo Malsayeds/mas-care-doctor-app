@@ -1,5 +1,7 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
+import 'package:doctoworld_doctor/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Locale/language_cubit.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../utils/Routes/routes.dart';
@@ -40,6 +42,8 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
               itemBuilder: (context, index) => ListTile(
                 title: Text(_languages[index]),
                 onTap: () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
                   _selectedLanguage = index;
                   if (_selectedLanguage == 0) {
                     await _languageCubit.selectEngLanguage();
@@ -48,8 +52,15 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
                   }
                   setState(() {
                     _selectedLanguage = index;
-                    Navigator.pushNamed(context, LoginScreen.ROUTE);
                   });
+                  if (prefs.getString(TOKEN_KEY) != null) {
+                    Navigator.of(context)
+                        .pushReplacementNamed(PageRoutes.bottomNavigation);
+                  } else {
+                    Navigator.of(context)
+                        .pushReplacementNamed(LoginScreen.ROUTE);
+                  }
+                  Navigator.pushNamed(context, LoginScreen.ROUTE);
                 },
               ),
             ),
