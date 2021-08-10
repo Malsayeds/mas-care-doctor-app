@@ -164,5 +164,6 @@
   "or": "OR",
   "firstName": "First Name",
   "lastName": "Last Name",
-  "confirmPassword": "Confirm Password"
+  "confirmPassword": "Confirm Password",
+  "phoneNumber": "Phone Number"
 }

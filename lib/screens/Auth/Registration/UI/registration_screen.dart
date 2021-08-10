@@ -1,8 +1,14 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
+import 'package:doctoworld_doctor/cubit/auth_cubit.dart';
+import 'package:doctoworld_doctor/exceptions/auth_exception.dart';
 import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
 import 'package:doctoworld_doctor/screens/Auth/Verification/UI/verification_screen.dart';
 import 'package:doctoworld_doctor/utils/Theme/colors.dart';
+import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/utils/keys.dart';
+import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import '../../../../widgets/custom_button.dart';
 import '../../../../widgets/entry_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -17,7 +23,41 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   bool isHidden = true;
+
+  final passwordValidator = MultiValidator([
+    RequiredValidator(errorText: 'Enter your password'),
+    MinLengthValidator(8,
+        errorText: 'Password characters must be greater than 8'),
+  ]);
+
+  Future<void> registerUser() async {
+    final isValid = Keys.registerFormKey.currentState?.validate();
+    if (isValid ?? false) {
+      try {
+        final authData = BlocProvider.of<AuthCubit>(context, listen: false);
+        await authData.registerWithEmailAndPasswrod(
+          email: _emailController.text,
+          password: _passwordController.text,
+          firstName: _firstNameController.text,
+          lastName: _lastNameController.text,
+          phone: _phoneController.text,
+        );
+        Navigator.of(context).pushNamed(VerificationScreen.ROUTE);
+      } on AuthException catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.message),
+          ),
+        );
+      } catch (e) {
+        SharedWidgets.showToast(msg: INTERNET_WARNING_MESSAGE);
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -52,7 +92,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     children: [
                       Expanded(
                         child: EntryField(
-                          controller: _passwordController,
+                          controller: _firstNameController,
                           hint: 'First Name',
                           onValidate: (text) {
                             if (text == null || text.isEmpty) {
@@ -68,7 +108,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       ),
                       Expanded(
                         child: EntryField(
-                          controller: _passwordController,
+                          controller: _lastNameController,
                           hint: 'Last Name',
                           onValidate: (text) {
                             if (text == null || text.isEmpty) {
@@ -83,16 +123,25 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ),
                   SizedBox(height: 20.0),
                   EntryField(
-                    controller: _emailController,
-                    prefixIcon: Icons.person,
-                    hint: locale.emailAddress,
+                    controller: _phoneController,
+                    prefixIcon: Icons.phone,
+                    hint: locale.phoneNumber,
                     onValidate: (text) {
                       if (text == null || text.isEmpty) {
-                        return 'Enter Email Address';
+                        return 'Enter Phone Number';
                       } else {
                         return null;
                       }
                     },
+                  ),
+                  SizedBox(height: 20.0),
+                  EntryField(
+                    controller: _emailController,
+                    prefixIcon: Icons.person,
+                    hint: locale.emailAddress,
+                    onValidate: EmailValidator(
+                      errorText: 'Enter a valid email address',
+                    ),
                   ),
                   SizedBox(height: 20.0),
                   EntryField(
@@ -107,15 +156,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         isHidden = !isHidden;
                       });
                     },
-                    onValidate: (text) {
-                      if (text == null || text.isEmpty) {
-                        return 'Enter Password';
-                      } else if (text.length < 8) {
-                        return 'Password characters must be greater than 8';
-                      } else {
-                        return null;
-                      }
-                    },
+                    onValidate: passwordValidator,
                   ),
                   SizedBox(height: 20.0),
                   EntryField(
@@ -129,25 +170,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         isHidden = !isHidden;
                       });
                     },
-                    onValidate: (text) {
-                      if (text == null || text.isEmpty) {
-                        return 'Enter password confirmation';
-                      } else if (text.length < 8) {
-                        return 'Password characters must be greater than 8';
-                      } else if (text != _passwordController.text) {
-                        return 'Password doesn\'t match';
-                      } else {
-                        return null;
-                      }
-                    },
+                    onValidate: (val) =>
+                        MatchValidator(errorText: 'Passwords don\'t match')
+                            .validateMatch(val!, _passwordController.text),
                   ),
                   SizedBox(height: 32.0),
                   CustomButton(
-                    onTap: () {
-                      final isValid =
-                          Keys.registerFormKey.currentState?.validate();
-                      Navigator.of(context).pushNamed(VerificationScreen.ROUTE);
-                    },
+                    onTap: registerUser,
                   ),
                   SizedBox(height: 20.0),
                   GestureDetector(

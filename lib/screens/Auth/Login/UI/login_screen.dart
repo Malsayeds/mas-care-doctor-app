@@ -1,13 +1,19 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
+import 'package:doctoworld_doctor/cubit/auth_cubit.dart';
+import 'package:doctoworld_doctor/exceptions/auth_exception.dart';
 import 'package:doctoworld_doctor/screens/Auth/Registration/UI/registration_screen.dart';
+import 'package:doctoworld_doctor/utils/Routes/routes.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/utils/keys.dart';
+import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../widgets/custom_button.dart';
 import '../../../../widgets/entry_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../utils/Theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String ROUTE = 'loginScreen';
@@ -19,6 +25,36 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool isHidden = true;
+
+  final passwordValidator = MultiValidator([
+    RequiredValidator(errorText: 'Enter your password'),
+    MinLengthValidator(
+      8,
+      errorText: 'Password characters must be greater than 8',
+    ),
+  ]);
+
+  Future<void> loginUser() async {
+    final isValid = Keys.loginFormKey.currentState?.validate();
+    if (isValid ?? false) {
+      try {
+        final authData = BlocProvider.of<AuthCubit>(context, listen: false);
+        await authData.loginWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+        Navigator.of(context).pushNamed(PageRoutes.bottomNavigation);
+      } on AuthException catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.message),
+          ),
+        );
+      } catch (e) {
+        SharedWidgets.showToast(msg: INTERNET_WARNING_MESSAGE);
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -74,13 +110,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           prefixIcon: Icons.phone_iphone,
                           color: theme.scaffoldBackgroundColor,
                           controller: _emailController,
-                          onValidate: (text) {
-                            if (text!.isEmpty) {
-                              return 'Enter your Email Address';
-                            } else {
-                              return null;
-                            }
-                          },
+                          onValidate: EmailValidator(
+                            errorText: 'Enter a valid email address',
+                          ),
                         ),
                         SizedBox(
                           height: size.height * 0.025,
@@ -99,28 +131,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             });
                           },
                           color: theme.scaffoldBackgroundColor,
-                          onValidate: (text) {
-                            if (text == null || text.isEmpty) {
-                              return 'Enter your Password';
-                            } else if (text.length < 8) {
-                              return 'Password characters must be greater than 8';
-                            } else {
-                              return null;
-                            }
-                          },
+                          onValidate: passwordValidator,
                         ),
                         SizedBox(
                           height: size.height * 0.025,
                         ),
                         CustomButton(
-                          onTap: () {
-                            final isValid =
-                                Keys.loginFormKey.currentState?.validate();
-                            if (isValid!) {
-                              Navigator.of(context)
-                                  .pushNamed(RegistrationScreen.ROUTE);
-                            }
-                          },
+                          onTap: loginUser,
                         ),
                         SizedBox(
                           height: size.height * 0.05,
@@ -200,7 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 label: locale.facebook,
                                 onTap: () {
                                   Navigator.of(context)
-                                      .pushNamed(RegistrationScreen.ROUTE);
+                                      .pushNamed(PageRoutes.bottomNavigation);
                                 },
                               ),
                             ),
@@ -216,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 textColor: theme.hintColor,
                                 onTap: () {
                                   Navigator.of(context)
-                                      .pushNamed(RegistrationScreen.ROUTE);
+                                      .pushNamed(PageRoutes.bottomNavigation);
                                 },
                               ),
                             ),

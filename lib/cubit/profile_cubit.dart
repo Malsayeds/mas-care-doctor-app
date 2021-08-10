@@ -1,29 +1,27 @@
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:doctoworld_doctor/models/availability.dart';
+import 'package:doctoworld_doctor/models/faq_question.dart';
 import 'package:doctoworld_doctor/models/profile.dart';
 import 'package:doctoworld_doctor/models/service.dart';
 import 'package:doctoworld_doctor/models/specification.dart';
+import 'package:doctoworld_doctor/utils/api_routes.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit() : super(ProfileInitialState()) {
-    var options = BaseOptions(
-      baseUrl: API_BASE_URL,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    );
-    dio = Dio(options);
+    dio = Dio();
   }
 
   late Dio dio;
+
+  List<FAQQuestion> faqs = [];
 
   Profile profile = Profile(
     imgUrl: imagePlaceHolderError,
@@ -141,6 +139,42 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> updateServices() async {
     try {} on DioError catch (e) {
       SharedWidgets.showToast(msg: e.message);
+    }
+  }
+
+  Future<void> getFAQs() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(ApiRoutes.FAQ);
+      Response<Map<String, dynamic>?> response = await dio.get(
+        ApiRoutes.FAQ,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
+          },
+        ),
+      );
+      final Map<String, dynamic>? decodedResponseBody = response.data;
+
+      print(decodedResponseBody);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        if (decodedResponseBody != null) {
+          faqs = (decodedResponseBody['data'] as List<dynamic>)
+              .map((e) => FAQQuestion.fromJson(e))
+              .toList();
+          print(faqs);
+          emit(FAQsLoadedSuccessfullyState());
+        }
+      } else {
+        print('sadcscd');
+        throw Exception();
+      }
+    } on DioError catch (e) {
+      print(e.response?.data);
+      print(e.error);
+    } catch (e) {
+      print(e.toString());
     }
   }
 }

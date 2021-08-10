@@ -42,7 +42,7 @@ class SharedWidgets {
     Fluttertoast.showToast(
       msg: msg,
       toastLength: Toast.LENGTH_LONG,
-      gravity: ToastGravity.CENTER,
+      gravity: ToastGravity.BOTTOM,
       backgroundColor: isError ?? false ? redColor : primaryColor,
       textColor: Colors.white,
     );
@@ -95,5 +95,9 @@ class SharedWidgets {
         );
       },
     );
+  }
+
+  static Widget showLoader() {
+    return CircularProgressIndicator.adaptive();
   }
 }

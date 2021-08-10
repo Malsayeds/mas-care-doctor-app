@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
-const String API_BASE_URL = 'https://soulgymegypt.com/system/public/api';
 const String imagePlaceHolderError =
     'https://via.placeholder.com/200.png?text=404';
 
 const String LOCALE_KEY = 'locale';
+const String TOKEN_KEY = 'accessToken';
 
 const Color mainColor = Color(0xffc59433);
 final Color redColor = Colors.red[600]!;
 final Color greenColor = Colors.greenAccent[700]!;
+
+const String ROLE_NAME = 'doctor';
 
 const double kBorderRadius = 8.0;
 

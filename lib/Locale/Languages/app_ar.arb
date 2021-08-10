@@ -164,5 +164,6 @@
   "or": "أو",
   "firstName": "الإسم الأول",
   "lastName": "الإسم الأخير",
-  "confirmPassword": "تأكيد كلمة المرور"
+  "confirmPassword": "تأكيد كلمة المرور",
+  "phoneNumber": "رقم الهاتف"
 }

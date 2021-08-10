@@ -16,7 +16,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(statusBarColor: transparentColor));
+    SystemUiOverlayStyle(statusBarColor: transparentColor),
+  );
   Bloc.observer = SimpleBlocObserver();
   runApp(Phoenix(child: DoctoWorldDoctor()));
 }

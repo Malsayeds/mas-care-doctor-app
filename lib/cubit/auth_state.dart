@@ -5,6 +5,6 @@ abstract class AuthState {}
 
 class AuthInitial extends AuthState {}
 
-class IsRegistered extends AuthState {}
+class UserRegisteredSuccessfullyState extends AuthState {}
 
-class IsLoggedIn extends AuthState {}
+class UserLoggedInSuccessfullyState extends AuthState {}

@@ -1,4 +1,9 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
+import 'package:doctoworld_doctor/cubit/profile_cubit.dart';
+import 'package:doctoworld_doctor/models/faq_question.dart';
+import 'package:doctoworld_doctor/utils/constants.dart';
+import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
@@ -7,14 +12,8 @@ class FAQPage extends StatefulWidget {
   _FAQPageState createState() => _FAQPageState();
 }
 
-class FAQ {
-  String? question;
-  String answer;
-
-  FAQ(this.question, this.answer);
-}
-
 class _FAQPageState extends State<FAQPage> {
+  bool _isLoading = false;
   List<double> _isActive = [
     0,
     70,
@@ -31,86 +30,92 @@ class _FAQPageState extends State<FAQPage> {
     0,
     0,
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    getQuestions();
+  }
+
+  Future<void> getQuestions() async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
+      await profileData.getFAQs();
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      SharedWidgets.showToast(msg: e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
-    List<FAQ> _questionList = [
-      FAQ(locale.faq1,
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
-      FAQ(locale.faq2,
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
-      FAQ(locale.faq3,
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
-      FAQ(locale.faq4,
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
-      FAQ(locale.faq5,
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
-      FAQ(locale.faq6,
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
-      FAQ(locale.faq7,
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
-      FAQ(locale.faq8,
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
-      FAQ(locale.faq9,
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
-      FAQ(locale.faq5,
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
-      FAQ(locale.faq6,
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
-      FAQ(locale.faq7,
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
-      FAQ(locale.faq8,
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
-      FAQ(locale.faq9,
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
-    ];
+    final profileData = BlocProvider.of<ProfileCubit>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(locale.faq),
         textTheme: Theme.of(context).textTheme,
         centerTitle: true,
       ),
-      body: FadedSlideAnimation(
-        ListView.builder(
-            itemCount: _questionList.length,
-            itemBuilder: (context, index) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _isActive[index] = _isActive[index] == 0 ? 70 : 0;
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 16),
-                      child: Text(
-                        (index + 1).toString() +
-                            '. ' +
-                            _questionList[index].question!,
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                    ),
-                  ),
-                  AnimatedContainer(
-                    duration: Duration(milliseconds: 300),
-                    padding: EdgeInsets.only(left: 34, right: 34, top: 4),
-                    height: _isActive[index],
-                    child: Text(
-                      _questionList[index].answer,
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                  ),
-                  Divider(thickness: 4),
-                ],
-              );
-            }),
-        beginOffset: Offset(0, 0.3),
-        endOffset: Offset(0, 0),
-        slideCurve: Curves.linearToEaseOut,
-      ),
+      body: _isLoading
+          ? Center(
+              child: SharedWidgets.showLoader(),
+            )
+          : FadedSlideAnimation(
+              profileData.faqs.length == 0
+                  ? Center(
+                      child: Text('No FAQs Found.'),
+                    )
+                  : ListView.builder(
+                      itemCount: profileData.faqs.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _isActive[index] =
+                                      _isActive[index] == 0 ? 70 : 0;
+                                });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 16),
+                                child: Text(
+                                  (index + 1).toString() +
+                                      '. ' +
+                                      profileData.faqs[index].question,
+                                  style: Theme.of(context).textTheme.headline6,
+                                ),
+                              ),
+                            ),
+                            AnimatedContainer(
+                              duration: Duration(milliseconds: 300),
+                              padding:
+                                  EdgeInsets.only(left: 34, right: 34, top: 4),
+                              height: _isActive[index],
+                              child: Text(
+                                profileData.faqs[index].answer,
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ),
+                            Divider(thickness: 4),
+                          ],
+                        );
+                      }),
+              beginOffset: Offset(0, 0.3),
+              endOffset: Offset(0, 0),
+              slideCurve: Curves.linearToEaseOut,
+            ),
     );
   }
 }
