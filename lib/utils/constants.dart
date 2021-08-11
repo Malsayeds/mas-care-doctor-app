@@ -10,7 +10,7 @@ const Color mainColor = Color(0xffc59433);
 final Color redColor = Colors.red[600]!;
 final Color greenColor = Colors.greenAccent[700]!;
 
-const String ROLE_NAME = 'doctor';
+const String ROLE_NAME = 'Doctor';
 
 const double kBorderRadius = 8.0;
 

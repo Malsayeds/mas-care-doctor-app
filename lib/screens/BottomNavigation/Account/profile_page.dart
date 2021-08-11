@@ -9,7 +9,6 @@ import 'package:doctoworld_doctor/utils/Theme/colors.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../widgets/custom_button.dart';
 import '../../../widgets/entry_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../utils/Routes/routes.dart';
@@ -192,7 +191,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   FadedScaleAnimation(
                     SharedWidgets.buildImgNetwork(
-                      imgUrl: profileData.profile.imgUrl,
+                      imgUrl: profileData.user?.image ?? imagePlaceHolderError,
                       width: MediaQuery.of(context).size.width / 2.5,
                       height: MediaQuery.of(context).size.width / 2.5,
                     ),
@@ -261,19 +260,20 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   EntryField(
                     prefixIcon: Icons.account_circle,
-                    initialValue: profileData.profile.name,
+                    initialValue:
+                        '${profileData.user?.firstName ?? ''} ${profileData.user?.lastName ?? ''}',
                     hint: 'Enter your Name',
                   ),
                   SizedBox(height: 20),
                   EntryField(
                     prefixIcon: Icons.phone_iphone,
-                    initialValue: profileData.profile.phoneNumber,
+                    initialValue: profileData.user?.phone,
                     hint: 'Enter your Phone Number',
                   ),
                   SizedBox(height: 20),
                   EntryField(
                     prefixIcon: Icons.mail,
-                    initialValue: profileData.profile.mail,
+                    initialValue: profileData.user?.email,
                     hint: 'Enter your Email Address',
                   ),
                 ],
@@ -349,15 +349,15 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   EntryField(
                     prefixIcon: Icons.work,
-                    initialValue: '${profileData.profile.experience.toInt()} ' +
-                        locale.years,
+                    initialValue:
+                        '${profileData.user?.experience} ' + locale.years,
                   ),
                   SizedBox(
                     height: 10,
                   ),
                   EntryField(
                     prefixIcon: Icons.paid,
-                    initialValue: '${profileData.profile.fees.toInt()}',
+                    initialValue: '${profileData.user?.fees}',
                   ),
                 ],
               ),
@@ -400,7 +400,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4.0),
                           child: Text(
-                            profileData.services[index].title,
+                            profileData.services[index].name,
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
                         );
@@ -454,7 +454,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4.0),
                         child: Text(
-                          profileData.specifications[index].title,
+                          profileData.specifications[index].name,
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                       );

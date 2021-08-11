@@ -2,9 +2,9 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:doctoworld_doctor/models/availability.dart';
 import 'package:doctoworld_doctor/models/faq_question.dart';
-import 'package:doctoworld_doctor/models/profile.dart';
 import 'package:doctoworld_doctor/models/service.dart';
 import 'package:doctoworld_doctor/models/specification.dart';
+import 'package:doctoworld_doctor/models/user.dart';
 import 'package:doctoworld_doctor/utils/api_routes.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
@@ -24,14 +24,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   List<FAQQuestion> faqs = [];
   String termsAndConditionsText = '';
 
-  Profile profile = Profile(
-    imgUrl: imagePlaceHolderError,
-    experience: 0,
-    fees: 0,
-    mail: '',
-    name: '',
-    phoneNumber: '',
-  );
+  User? user;
 
   List<Availability> _availabilities = [
     Availability(
@@ -78,31 +71,8 @@ class ProfileCubit extends Cubit<ProfileState> {
     ),
   ];
 
-  List<Service> _services = [
-    Service(
-      id: 0,
-      isChecked: true,
-      title: 'test 1',
-    ),
-    Service(
-      id: 0,
-      isChecked: false,
-      title: 'test 2',
-    ),
-  ];
-
-  List<Specification> _specifications = [
-    Specification(
-      id: 0,
-      title: 'Test 3',
-      isChecked: true,
-    ),
-    Specification(
-      id: 1,
-      title: 'Test 5',
-      isChecked: false,
-    ),
-  ];
+  List<Service> _services = [];
+  List<Specification> _specifications = [];
 
   List<Availability> get availabilities => _availabilities;
 
@@ -133,7 +103,44 @@ class ProfileCubit extends Cubit<ProfileState> {
         minute: int.parse(s.split(":")[1]),
       );
 
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(ApiRoutes.PROFILE);
+      print('Bearer ${prefs.getString(TOKEN_KEY)}');
+      Response<Map<String, dynamic>?> response = await dio.get(
+        ApiRoutes.PROFILE,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+      final Map<String, dynamic>? decodedResponseBody = response.data;
+
+      print(decodedResponseBody);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        if (decodedResponseBody != null) {
+          user = User.fromJson(decodedResponseBody['data']['user']);
+          _services = (decodedResponseBody['data']['services'] as List<dynamic>)
+              .map((serv) => Service.fromJson(serv))
+              .toList();
+          _specifications =
+              (decodedResponseBody['data']['specifications'] as List<dynamic>)
+                  .map((spec) => Specification.fromJson(spec))
+                  .toList();
+          emit(ProfileLoadedState());
+        }
+      } else {
+        throw INTERNET_WARNING_MESSAGE;
+      }
+
       print(_startTime);
+    } on DioError catch (e) {
+      print(e.response?.data);
+      print(e.error);
+      throw INTERNET_WARNING_MESSAGE;
     } catch (e) {}
   }
 

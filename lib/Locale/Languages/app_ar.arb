@@ -165,5 +165,8 @@
   "firstName": "الإسم الأول",
   "lastName": "الإسم الأخير",
   "confirmPassword": "تأكيد كلمة المرور",
-  "phoneNumber": "رقم الهاتف"
+  "phoneNumber": "رقم الهاتف",
+  "noApptsFoundToday": "لا يوجد مواعيد محجوزة اليوم",
+  "noApptsFoundTomorrow": "لا يوجد مواعيد محجوزة غدا",
+  "noReviewsAvailable": "لا يوجد تقييمات"
 }

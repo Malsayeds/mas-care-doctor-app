@@ -76,7 +76,7 @@
   "newOrders": "New Orders",
   "pastOrders": "Past Orders",
   "support": "Support",
-  "howMayWeHelpYou": "How may we\nhelp you?",
+  "howMayWeHelpYou": "How can we\nhelp you?",
   "letUsKnowUrQueriesFeedbacks": "Let us know your queries & feedbacks",
   "writeYourMsg": "Write your message",
   "termsNConditions": "Terms & Conditions",
@@ -165,5 +165,8 @@
   "firstName": "First Name",
   "lastName": "Last Name",
   "confirmPassword": "Confirm Password",
-  "phoneNumber": "Phone Number"
+  "phoneNumber": "Phone Number",
+  "noApptsFoundToday": "No appointments found for today.",
+  "noApptsFoundTomorrow": "No appointments found for tomorrow.",
+  "noReviewsAvailable": "No reviews available"
 }

@@ -14,3 +14,5 @@ class DayTimeChangedState extends ProfileState {}
 class FAQsLoadedSuccessfullyState extends ProfileState {}
 
 class SupportMessageSentState extends ProfileState {}
+
+class ProfileLoadedState extends ProfileState {}
