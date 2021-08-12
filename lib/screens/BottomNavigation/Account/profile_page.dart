@@ -22,6 +22,24 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  bool isImgUploading = false;
+  Future<void> changeProfilePic(File img) async {
+    try {
+      setState(() {
+        isImgUploading = true;
+      });
+      final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
+      await profileData.changeProfilePic(img);
+      setState(() {
+        isImgUploading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isImgUploading = false;
+      });
+    }
+  }
+
   Widget _buildTimeSlotButton({
     required bool isFrom,
     required Availability availabilityItem,
@@ -118,6 +136,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 onPressed: () async {
                   File? pickedImg =
                       await SharedWidgets.pickImage(ImageType.Camera);
+                  if (pickedImg != null) {
+                    await changeProfilePic(pickedImg);
+                  }
                 },
                 child: Text(locale.camera),
                 style: TextButton.styleFrom(
@@ -137,6 +158,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 onPressed: () async {
                   File? pickedImg =
                       await SharedWidgets.pickImage(ImageType.Gallery);
+                  if (pickedImg != null) {
+                    await changeProfilePic(pickedImg);
+                  }
                 },
                 child: Text(locale.gallery),
                 style: TextButton.styleFrom(
@@ -190,11 +214,24 @@ class _ProfilePageState extends State<ProfilePage> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   FadedScaleAnimation(
-                    SharedWidgets.buildImgNetwork(
-                      imgUrl: profileData.user?.image ?? imagePlaceHolderError,
-                      width: MediaQuery.of(context).size.width / 2.5,
-                      height: MediaQuery.of(context).size.width / 2.5,
-                    ),
+                    isImgUploading
+                        ? Container(
+                            width: MediaQuery.of(context).size.width / 2.5,
+                            height: MediaQuery.of(context).size.width / 2.5,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.circular(kBorderRadius),
+                            ),
+                            child: Center(
+                              child: SharedWidgets.showLoader(),
+                            ),
+                          )
+                        : SharedWidgets.buildImgNetwork(
+                            imgUrl: profileData.user?.image ??
+                                imagePlaceHolderError,
+                            width: MediaQuery.of(context).size.width / 2.5,
+                            height: MediaQuery.of(context).size.width / 2.5,
+                          ),
                     durationInMilliseconds: 400,
                   ),
                   SizedBox(width: 20),
@@ -384,7 +421,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         text: locale.edit,
                         onPress: () {
                           Navigator.pushNamed(
-                              context, PageRoutes.addSpecialization);
+                            context,
+                            PageRoutes.addService,
+                            arguments: profileData.services,
+                          );
                         },
                       ),
                     ],
@@ -438,7 +478,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         text: locale.edit,
                         onPress: () {
                           Navigator.pushNamed(
-                              context, PageRoutes.addSpecialization);
+                            context,
+                            PageRoutes.addSpecialization,
+                            arguments: profileData.specifications,
+                          );
                         },
                       ),
                     ],
@@ -516,8 +559,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Row(
                             children: [
                               Checkbox(
-                                value:
-                                    profileData.availabilities[index].isChecked,
+                                value: availabilityItem.isChecked,
                                 onChanged: (val) {
                                   if (val != null) {
                                     profileData.setDayCheck(index, val);

@@ -107,7 +107,9 @@ class _AccountPageState extends State<AccountPage> {
           final authData = BlocProvider.of<AuthCubit>(context, listen: false);
           await authData.logout();
           Keys.navKey.currentState?.pushNamedAndRemoveUntil(
-              LoginScreen.ROUTE, (Route<dynamic> route) => false);
+            LoginScreen.ROUTE,
+            (Route<dynamic> route) => false,
+          );
         },
       ),
     ];

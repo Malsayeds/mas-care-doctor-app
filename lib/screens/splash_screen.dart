@@ -21,20 +21,15 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(
       Duration.zero,
       () async {
-        final langData = BlocProvider.of<LanguageCubit>(context);
+        final langData = BlocProvider.of<LanguageCubit>(context, listen: false);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         String? localeCode = prefs.getString(LOCALE_KEY);
-        if (localeCode != null && (localeCode == 'en' || localeCode == 'ar')) {
-          langData.setLocale(localeCode);
-          if (prefs.getString(TOKEN_KEY) != null) {
-            Navigator.of(context)
-                .pushReplacementNamed(PageRoutes.bottomNavigation);
-          } else {
-            Navigator.of(context).pushReplacementNamed(LoginScreen.ROUTE);
-          }
-        } else {
+        langData.setLocale(localeCode ?? 'en');
+        if (prefs.getString(TOKEN_KEY) != null) {
           Navigator.of(context)
-              .pushReplacementNamed(ChangeLanguagePage.ROUTE_NAME);
+              .pushReplacementNamed(PageRoutes.bottomNavigation);
+        } else {
+          Navigator.of(context).pushReplacementNamed(LoginScreen.ROUTE);
         }
       },
     );

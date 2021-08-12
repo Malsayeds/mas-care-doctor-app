@@ -21,7 +21,7 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
   @override
   void initState() {
     super.initState();
-    _languageCubit = BlocProvider.of<LanguageCubit>(context);
+    _languageCubit = BlocProvider.of<LanguageCubit>(context, listen: false);
   }
 
   @override
@@ -42,25 +42,17 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
               itemBuilder: (context, index) => ListTile(
                 title: Text(_languages[index]),
                 onTap: () async {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
                   _selectedLanguage = index;
                   if (_selectedLanguage == 0) {
                     await _languageCubit.selectEngLanguage();
                   } else if (_selectedLanguage == 1) {
                     await _languageCubit.selectArabicLanguage();
+                  } else {
+                    await _languageCubit.selectEngLanguage();
                   }
                   setState(() {
                     _selectedLanguage = index;
                   });
-                  if (prefs.getString(TOKEN_KEY) != null) {
-                    Navigator.of(context)
-                        .pushReplacementNamed(PageRoutes.bottomNavigation);
-                  } else {
-                    Navigator.of(context)
-                        .pushReplacementNamed(LoginScreen.ROUTE);
-                  }
-                  Navigator.pushNamed(context, LoginScreen.ROUTE);
                 },
               ),
             ),
@@ -71,14 +63,5 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
         );
       },
     );
-  }
-
-  int getCurrentLanguage(Locale locale) {
-    if (locale == Locale('en'))
-      return 0;
-    else if (locale == Locale('ar'))
-      return 1;
-    else
-      return -1;
   }
 }

@@ -1,15 +1,15 @@
-class Specification {
+class Specialization {
   final int id;
   final String name;
   bool isChecked;
 
-  Specification({
+  Specialization({
     required this.id,
     required this.name,
     required this.isChecked,
   });
 
-  factory Specification.fromJson(Map<String, dynamic> json) => Specification(
+  factory Specialization.fromJson(Map<String, dynamic> json) => Specialization(
         id: json['id'],
         name: json['name'],
         isChecked: json['is_checked'],
