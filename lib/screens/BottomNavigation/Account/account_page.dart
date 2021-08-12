@@ -106,10 +106,6 @@ class _AccountPageState extends State<AccountPage> {
         () async {
           final authData = BlocProvider.of<AuthCubit>(context, listen: false);
           await authData.logout();
-          Keys.navKey.currentState?.pushNamedAndRemoveUntil(
-            LoginScreen.ROUTE,
-            (Route<dynamic> route) => false,
-          );
         },
       ),
     ];
@@ -142,8 +138,7 @@ class _AccountPageState extends State<AccountPage> {
                         text: TextSpan(
                           children: <TextSpan>[
                             TextSpan(
-                                text:
-                                    '${userData.user?.firstName ?? ''} ${userData.user?.lastName ?? ''}',
+                                text: '${userData.user?.name ?? ''}',
                                 style: Theme.of(context).textTheme.headline5),
                             TextSpan(
                                 text: userData.user?.phone,

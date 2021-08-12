@@ -4,10 +4,12 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:doctoworld_doctor/models/availability.dart';
 import 'package:doctoworld_doctor/models/faq_question.dart';
+import 'package:doctoworld_doctor/models/hospital.dart';
 import 'package:doctoworld_doctor/models/service.dart';
 import 'package:doctoworld_doctor/models/specialization.dart';
 import 'package:doctoworld_doctor/models/user.dart';
 import 'package:doctoworld_doctor/utils/api_routes.dart';
+import 'package:doctoworld_doctor/utils/config.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import 'package:flutter/material.dart';
@@ -85,12 +87,85 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   List<Service> _services = [];
   List<Specialization> _specifications = [];
+  List<Hospital> _hospitals = [
+    Hospital(
+      isChecked: true,
+      title: 'Apple Hospital',
+      subtitle:
+          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
+    ),
+    Hospital(
+      isChecked: true,
+      title: 'Silver Soul Clinic',
+      subtitle:
+          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
+    ),
+    Hospital(
+      isChecked: false,
+      title: 'Rainbow Hospital',
+      subtitle:
+          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
+    ),
+    Hospital(
+      isChecked: false,
+      title: 'Jonathan Hospital',
+      subtitle:
+          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
+    ),
+    Hospital(
+      isChecked: false,
+      title: 'Lothal Hospital',
+      subtitle:
+          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
+    ),
+    Hospital(
+      isChecked: true,
+      title: 'Peter Johnson Hospital',
+      subtitle:
+          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
+    ),
+    Hospital(
+      isChecked: true,
+      title: 'Apple Hospital',
+      subtitle:
+          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
+    ),
+    Hospital(
+      isChecked: true,
+      title: 'Silver Soul Clinic',
+      subtitle:
+          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
+    ),
+    Hospital(
+      isChecked: false,
+      title: 'Rainbow Hospital',
+      subtitle:
+          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
+    ),
+    Hospital(
+      isChecked: false,
+      title: 'Jonathan Hospital',
+      subtitle:
+          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
+    ),
+    Hospital(
+      isChecked: false,
+      title: 'Lothal Hospital',
+      subtitle:
+          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
+    ),
+    Hospital(
+      isChecked: true,
+      title: 'Peter Johnson Hospital',
+      subtitle:
+          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
+    ),
+  ];
 
   List<Availability> get availabilities => _availabilities;
-
   List<Service> get services => _services;
-
   List<Specialization> get specifications => _specifications;
+  List<Hospital> get hospitals => _hospitals;
 
   void setFromDate(int i, TimeOfDay FromTime) {
     availabilities[i].from = FromTime;
@@ -107,6 +182,82 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(DayTimeChangedState());
   }
 
+  Future<void> getAccountInfo() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(ApiRoutes.ACCOUNT);
+      print('Bearer ${prefs.getString(TOKEN_KEY)}');
+      Response<Map<String, dynamic>?> response = await dio.get(
+        ApiRoutes.ACCOUNT,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+      final Map<String, dynamic>? decodedResponseBody = response.data;
+
+      print(decodedResponseBody);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        if (decodedResponseBody != null) {
+          _hospitals =
+              (decodedResponseBody['data']['hospitals'] as List<dynamic>)
+                  .map((hospital) => Hospital.fromJson(hospital))
+                  .toList();
+          emit(HospitalsLoadedState());
+        }
+      }
+    } on DioError catch (e) {
+      print(e.response?.data);
+      print(e.error);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticatedUser();
+      }
+      throw INTERNET_WARNING_MESSAGE;
+    }
+  }
+
+  Future<void> getHospitals() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(ApiRoutes.PROFILE);
+      print('Bearer ${prefs.getString(TOKEN_KEY)}');
+      Response<Map<String, dynamic>?> response = await dio.get(
+        '',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+      final Map<String, dynamic>? decodedResponseBody = response.data;
+
+      print(decodedResponseBody);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        if (decodedResponseBody != null) {
+          _hospitals =
+              (decodedResponseBody['data']['hospitals'] as List<dynamic>)
+                  .map((hospital) => Hospital.fromJson(hospital))
+                  .toList();
+          emit(HospitalsLoadedState());
+        }
+      }
+    } on DioError catch (e) {
+      print(e.response?.data);
+      print(e.error);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticatedUser();
+      }
+      throw INTERNET_WARNING_MESSAGE;
+    }
+  }
+
   Future<void> updatePersonalInfo({
     required String name,
     required String phone,
@@ -114,8 +265,9 @@ class ProfileCubit extends Cubit<ProfileState> {
   }) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(ApiRoutes.UPDATE_PERSONAL_INFO);
       Response response = await dio.put(
-        '',
+        ApiRoutes.UPDATE_PERSONAL_INFO,
         data: {
           'name': name,
           'contact_number': phone,
@@ -140,6 +292,9 @@ class ProfileCubit extends Cubit<ProfileState> {
         emit(PersonalInfoUpdatedState());
       }
     } on DioError catch (e) {
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticatedUser();
+      }
       throw Exception(e.message);
     }
   }
@@ -150,11 +305,12 @@ class ProfileCubit extends Cubit<ProfileState> {
   }) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(ApiRoutes.UPDATE_FEES_EXPERIENCE);
       Response response = await dio.put(
-        '',
+        ApiRoutes.UPDATE_FEES_EXPERIENCE,
         data: {
-          '': years,
-          '': fees,
+          'experience': years,
+          'fees': fees,
         },
         options: Options(
           headers: {
@@ -177,6 +333,9 @@ class ProfileCubit extends Cubit<ProfileState> {
     } on DioError catch (e) {
       print(e.response?.statusCode);
       print(e.response?.data);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticatedUser();
+      }
       throw INTERNET_WARNING_MESSAGE;
     }
   }
@@ -186,10 +345,11 @@ class ProfileCubit extends Cubit<ProfileState> {
   }) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(ApiRoutes.UPDATE_SERVICES);
       Response response = await dio.put(
-        '',
+        ApiRoutes.UPDATE_SERVICES,
         data: {
-          '': services,
+          'services': services,
         },
         options: Options(
           headers: {
@@ -212,6 +372,9 @@ class ProfileCubit extends Cubit<ProfileState> {
     } on DioError catch (e) {
       print(e.response?.statusCode);
       print(e.response?.data);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticatedUser();
+      }
       throw INTERNET_WARNING_MESSAGE;
     }
   }
@@ -221,10 +384,11 @@ class ProfileCubit extends Cubit<ProfileState> {
   }) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(ApiRoutes.UPDATE_SPECIFICATION);
       Response response = await dio.put(
-        '',
+        ApiRoutes.UPDATE_SPECIFICATION,
         data: {
-          '': specializations,
+          'specifications': specializations,
         },
         options: Options(
           headers: {
@@ -247,6 +411,9 @@ class ProfileCubit extends Cubit<ProfileState> {
     } on DioError catch (e) {
       print(e.response?.statusCode);
       print(e.response?.data);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticatedUser();
+      }
       throw INTERNET_WARNING_MESSAGE;
     }
   }
@@ -254,20 +421,26 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> changeProfilePic(File file) async {
     try {
       String fileName = file.path.split('/').last;
-      FormData formData = FormData.fromMap({
-        "file": await MultipartFile.fromFile(
-          file.path,
-          filename: fileName,
-        ),
-      });
+      FormData formData = FormData.fromMap(
+        {
+          'image': await MultipartFile.fromFile(
+            file.path,
+            filename: fileName,
+          ),
+          'app_type': ROLE_NAME,
+        },
+      );
 
       await dio.post(
-        '',
+        ApiRoutes.UPDATE_IMAGE,
         data: formData,
       );
     } on DioError catch (e) {
       print(e.response?.statusCode);
       print(e.response?.data);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticatedUser();
+      }
       throw INTERNET_WARNING_MESSAGE;
     }
   }
@@ -328,6 +501,9 @@ class ProfileCubit extends Cubit<ProfileState> {
     } on DioError catch (e) {
       print(e.response?.data);
       print(e.error);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticatedUser();
+      }
       throw INTERNET_WARNING_MESSAGE;
     }
   }
@@ -372,6 +548,9 @@ class ProfileCubit extends Cubit<ProfileState> {
     } on DioError catch (e) {
       print(e.response?.data);
       print(e.error);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticatedUser();
+      }
       throw INTERNET_WARNING_MESSAGE;
     } catch (e) {
       print(e.toString());
@@ -406,6 +585,9 @@ class ProfileCubit extends Cubit<ProfileState> {
     } on DioError catch (e) {
       print(e.response?.data);
       print(e.error);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticatedUser();
+      }
       throw Exception();
     } catch (e) {
       print(e.toString());
@@ -439,6 +621,9 @@ class ProfileCubit extends Cubit<ProfileState> {
       }
     } on DioError catch (e) {
       print(e.error);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticatedUser();
+      }
       throw INTERNET_WARNING_MESSAGE;
     }
   }

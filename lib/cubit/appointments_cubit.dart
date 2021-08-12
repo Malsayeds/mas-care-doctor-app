@@ -1,8 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:doctoworld_doctor/models/appointment.dart';
+import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
 import 'package:doctoworld_doctor/utils/api_routes.dart';
+import 'package:doctoworld_doctor/utils/config.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
+import 'package:doctoworld_doctor/utils/keys.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -50,6 +53,9 @@ class AppointmentsCubit extends Cubit<AppointmentsState> {
     } on DioError catch (e) {
       print(e.response?.data);
       print(e.error);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticatedUser();
+      }
       throw INTERNET_WARNING_MESSAGE;
     } catch (e) {
       print(e.toString());

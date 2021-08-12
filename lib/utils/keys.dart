@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
 class Keys {
-  static final loginFormKey = GlobalKey<FormState>();
-  static final registerFormKey = GlobalKey<FormState>();
-  static final contactSupportFormKey = GlobalKey<FormState>();
+  final loginFormKey = GlobalKey<FormState>();
+  final registerFormKey = GlobalKey<FormState>();
+  final contactSupportFormKey = GlobalKey<FormState>();
   static final navKey = GlobalKey<NavigatorState>();
 }

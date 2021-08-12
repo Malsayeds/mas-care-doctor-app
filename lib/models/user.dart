@@ -1,25 +1,28 @@
 class User {
-  final String firstName;
-  final String? lastName;
+  final int id;
+  final String name;
   final String email;
   final String phone;
   final String? image;
+  final String gender;
   final num? fees;
   final String? experience;
 
   User({
-    required this.firstName,
-    this.lastName,
+    required this.id,
+    required this.name,
     required this.email,
     required this.phone,
+    required this.gender,
     this.image,
     this.fees,
     this.experience,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-        firstName: json['first_name'],
-        lastName: json['last_name'],
+        id: json['id'],
+        gender: json['gender'],
+        name: json['name'],
         email: json['email'],
         phone: json['phone'],
         image: json['image'],

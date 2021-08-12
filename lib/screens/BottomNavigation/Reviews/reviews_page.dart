@@ -76,7 +76,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${reviewsData.user?.firstName ?? ''} ${reviewsData.user?.lastName ?? ''}',
+                              '${reviewsData.user?.name ?? ''}',
                               style: Theme.of(context)
                                   .textTheme
                                   .headline5!

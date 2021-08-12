@@ -22,7 +22,7 @@ class _SupportPageState extends State<SupportPage> {
 
   Future<void> _sendSupportMessage() async {
     try {
-      final isValid = Keys.contactSupportFormKey.currentState?.validate();
+      final isValid = Keys().contactSupportFormKey.currentState?.validate();
       if (isValid ?? false) {
         setState(() {
           _isLoading = true;
@@ -76,7 +76,7 @@ class _SupportPageState extends State<SupportPage> {
             child: Padding(
               padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
               child: Form(
-                key: Keys.contactSupportFormKey,
+                key: Keys().contactSupportFormKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [

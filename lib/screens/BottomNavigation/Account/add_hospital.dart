@@ -1,4 +1,6 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
+import 'package:doctoworld_doctor/cubit/profile_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/entry_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -9,43 +11,10 @@ class AddHospital extends StatefulWidget {
   _AddHospitalState createState() => _AddHospitalState();
 }
 
-class Hospital {
-  bool? isChecked;
-  String title;
-  String subtitle;
-
-  Hospital(this.isChecked, this.title, this.subtitle);
-}
-
 class _AddHospitalState extends State<AddHospital> {
-  List<Hospital> hospitals = [
-    Hospital(true, 'Apple Hospital',
-        'General Hospital' + '\n' + 'At Walter street, Wallington, New York'),
-    Hospital(true, 'Silver Soul Clinic',
-        'General Hospital' + '\n' + 'At Walter street, Wallington, New York'),
-    Hospital(false, 'Rainbow Hospital',
-        'General Hospital' + '\n' + 'At Walter street, Wallington, New York'),
-    Hospital(false, 'Jonathan Hospital',
-        'General Hospital' + '\n' + 'At Walter street, Wallington, New York'),
-    Hospital(false, 'Lothal Hospital',
-        'General Hospital' + '\n' + 'At Walter street, Wallington, New York'),
-    Hospital(true, 'Peter Johnson Hospital',
-        'General Hospital' + '\n' + 'At Walter street, Wallington, New York'),
-    Hospital(true, 'Apple Hospital',
-        'General Hospital' + '\n' + 'At Walter street, Wallington, New York'),
-    Hospital(true, 'Silver Soul Clinic',
-        'General Hospital' + '\n' + 'At Walter street, Wallington, New York'),
-    Hospital(false, 'Rainbow Hospital',
-        'General Hospital' + '\n' + 'At Walter street, Wallington, New York'),
-    Hospital(false, 'Jonathan Hospital',
-        'General Hospital' + '\n' + 'At Walter street, Wallington, New York'),
-    Hospital(false, 'Lothal Hospital',
-        'General Hospital' + '\n' + 'At Walter street, Wallington, New York'),
-    Hospital(true, 'Peter Johnson Hospital',
-        'General Hospital' + '\n' + 'At Walter street, Wallington, New York'),
-  ];
   @override
   Widget build(BuildContext context) {
+    final profileData = BlocProvider.of<ProfileCubit>(context);
     var locale = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
@@ -77,32 +46,31 @@ class _AddHospitalState extends State<AddHospital> {
                         .copyWith(color: Theme.of(context).disabledColor),
                   ),
                 ),
-                ListView.builder(
-                    itemCount: hospitals.length,
+                ListView.separated(
+                    itemCount: profileData.hospitals.length,
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
+                    separatorBuilder: (context, i) {
+                      return Divider(
+                        thickness: 6,
+                      );
+                    },
                     itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          ListTile(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 6),
-                            leading: Checkbox(
-                              activeColor: Theme.of(context).primaryColor,
-                              value: hospitals[index].isChecked,
-                              onChanged: (val) {
-                                setState(() {
-                                  hospitals[index].isChecked = val;
-                                });
-                              },
-                            ),
-                            title: Text(hospitals[index].title),
-                            subtitle: Text(hospitals[index].subtitle),
-                          ),
-                          Divider(
-                            thickness: 6,
-                          ),
-                        ],
+                      return CheckboxListTile(
+                        value: profileData.hospitals[index].isChecked,
+                        onChanged: (val) {
+                          setState(() {
+                            profileData.hospitals[index].isChecked =
+                                val ?? false;
+                          });
+                        },
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 16,
+                        ),
+                        title: Text(profileData.hospitals[index].title),
+                        subtitle:
+                            Text(profileData.hospitals[index].subtitle),
                       );
                     }),
                 SizedBox(

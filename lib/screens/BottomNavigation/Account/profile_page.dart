@@ -298,7 +298,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   EntryField(
                     prefixIcon: Icons.account_circle,
                     initialValue:
-                        '${profileData.user?.firstName ?? ''} ${profileData.user?.lastName ?? ''}',
+                        '${profileData.user?.name ?? ''}',
                     hint: 'Enter your Name',
                   ),
                   SizedBox(height: 20),
@@ -429,32 +429,38 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: profileData.services.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: Text(
-                            profileData.services[index].name,
-                            style: Theme.of(context).textTheme.subtitle1,
-                          ),
-                        );
-                      }),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    '${profileData.services.length - 2} ' + locale.more,
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1!
-                        .copyWith(color: Theme.of(context).primaryColor),
-                  )
+                  if (profileData.services.length >= 1)
+                    SizedBox(
+                      height: 12,
+                    ),
+                  if (profileData.services.length >= 1)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Text(
+                        profileData.services[0].name,
+                        style: Theme.of(context).textTheme.subtitle1,
+                      ),
+                    ),
+                  if (profileData.services.length >= 2)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Text(
+                        profileData.services[1].name,
+                        style: Theme.of(context).textTheme.subtitle1,
+                      ),
+                    ),
+                  if (profileData.services.length >= 1)
+                    SizedBox(
+                      height: 8,
+                    ),
+                  if (profileData.services.length >= 3)
+                    Text(
+                      '+${profileData.services.length - 2} ' + locale.more,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1!
+                          .copyWith(color: Theme.of(context).primaryColor),
+                    ),
                 ],
               ),
             ),
@@ -486,33 +492,38 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: profileData.services.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: Text(
-                          profileData.specifications[index].name,
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                      );
-                    },
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    '+${profileData.services.length - 2} ' + locale.more,
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1!
-                        .copyWith(color: Theme.of(context).primaryColor),
-                  )
+                  if (profileData.specifications.length >= 1)
+                    SizedBox(
+                      height: 12,
+                    ),
+                  if (profileData.specifications.length >= 1)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Text(
+                        profileData.specifications[0].name,
+                        style: Theme.of(context).textTheme.subtitle1,
+                      ),
+                    ),
+                  if (profileData.specifications.length >= 2)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Text(
+                        profileData.specifications[1].name,
+                        style: Theme.of(context).textTheme.subtitle1,
+                      ),
+                    ),
+                  if (profileData.specifications.length >= 1)
+                    SizedBox(
+                      height: 8,
+                    ),
+                  if (profileData.specifications.length >= 3)
+                    Text(
+                      '+${profileData.specifications.length - 2} ' + locale.more,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1!
+                          .copyWith(color: Theme.of(context).primaryColor),
+                    )
                 ],
               ),
             ),

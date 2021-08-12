@@ -17,6 +17,8 @@ class SupportMessageSentState extends ProfileState {}
 
 class ProfileLoadedState extends ProfileState {}
 
+class HospitalsLoadedState extends ProfileState {}
+
 class PersonalInfoUpdatedState extends ProfileState {}
 
 class ExperienceAndFeesUpdatedState extends ProfileState {}

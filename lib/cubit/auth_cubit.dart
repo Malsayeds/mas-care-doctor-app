@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:doctoworld_doctor/exceptions/auth_exception.dart';
 import 'package:doctoworld_doctor/utils/api_routes.dart';
+import 'package:doctoworld_doctor/utils/config.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import 'package:meta/meta.dart';
@@ -41,8 +42,8 @@ class AuthCubit extends Cubit<AuthState> {
       print(decodedResponseBody);
       print(response.statusCode);
       if (response.statusCode == 200) {
-        print(decodedResponseBody['token']);
-        await prefs.setString(TOKEN_KEY, decodedResponseBody['token']);
+        print(decodedResponseBody['access_token']);
+        await prefs.setString(TOKEN_KEY, decodedResponseBody['access_token']);
         emit(UserRegisteredSuccessfullyState());
       } else {
         throw AuthException(response.data['error']);
@@ -68,34 +69,36 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       print(ApiRoutes.LOGIN);
-      Response response = await dio.post(ApiRoutes.LOGIN,
-          data: {
-            "email": email,
-            "password": password,
-            "role_name": ROLE_NAME,
-          },
-          options: Options(headers: {
+      Response response = await dio.post(
+        ApiRoutes.LOGIN,
+        data: {
+          "email": email,
+          "password": password,
+          "role_name": ROLE_NAME,
+        },
+        options: Options(
+          headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-          }));
+          },
+        ),
+      );
       final decodedResponseBody = response.data;
       print(decodedResponseBody);
       print(response.statusCode);
       if (response.statusCode == 200) {
-        print(decodedResponseBody['token']);
-        await prefs.setString(TOKEN_KEY, decodedResponseBody['token']);
+        print(decodedResponseBody['access_token']);
+        await prefs.setString(TOKEN_KEY, decodedResponseBody['access_token']);
         emit(UserLoggedInSuccessfullyState());
-        //17|S8tgzygZt2o4CLtSNEPu4RRmhC7sdpyrtGsgfcoR
       }
     } on DioError catch (e) {
       print(e.error);
       print(e.response?.data);
       if (e.type == DioErrorType.response) {
         if (e.response?.statusCode == 400) {
-          throw e.response?.data['error'][0];
+          throw e.response?.data['message'];
         }
-        throw AuthException(
-            (e.response?.data as Map<String, List<String>>)['error']![0]);
+        throw AuthException(e.response?.data['message']);
       }
     } catch (e) {
       print(e.toString());
@@ -122,12 +125,18 @@ class AuthCubit extends Cubit<AuthState> {
       print(response.statusCode);
       if (response.statusCode == 200) {
         SharedWidgets.showToast(msg: decodedResponseBody['message']);
-        await prefs.remove(TOKEN_KEY);
+        await Config.unAuthenticatedUser();
         emit(UserLoggedOutSuccessfullyState());
       } else {
         throw INTERNET_WARNING_MESSAGE;
       }
     } on DioError catch (e) {
+      print(e.error);
+      print(e.response?.statusCode);
+      print(e.response?.data);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticatedUser();
+      }
       throw INTERNET_WARNING_MESSAGE;
     }
   }
