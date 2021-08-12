@@ -29,8 +29,7 @@ class AuthCubit extends Cubit<AuthState> {
           data: {
             "email": email,
             "password": password,
-            "first_name": firstName,
-            "last_name": lastName,
+            "name": '$firstName $lastName',
             "phone": phone,
             "role_name": ROLE_NAME,
           },
@@ -125,7 +124,7 @@ class AuthCubit extends Cubit<AuthState> {
       print(response.statusCode);
       if (response.statusCode == 200) {
         SharedWidgets.showToast(msg: decodedResponseBody['message']);
-        await Config.unAuthenticatedUser();
+        await Config.unAuthenticateUser();
         emit(UserLoggedOutSuccessfullyState());
       } else {
         throw INTERNET_WARNING_MESSAGE;
@@ -135,7 +134,7 @@ class AuthCubit extends Cubit<AuthState> {
       print(e.response?.statusCode);
       print(e.response?.data);
       if (e.response?.statusCode == 403) {
-        await Config.unAuthenticatedUser();
+        await Config.unAuthenticateUser();
       }
       throw INTERNET_WARNING_MESSAGE;
     }

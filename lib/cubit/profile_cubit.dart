@@ -214,7 +214,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(e.response?.data);
       print(e.error);
       if (e.response?.statusCode == 403) {
-        await Config.unAuthenticatedUser();
+        await Config.unAuthenticateUser();
       }
       throw INTERNET_WARNING_MESSAGE;
     }
@@ -252,7 +252,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(e.response?.data);
       print(e.error);
       if (e.response?.statusCode == 403) {
-        await Config.unAuthenticatedUser();
+        await Config.unAuthenticateUser();
       }
       throw INTERNET_WARNING_MESSAGE;
     }
@@ -293,7 +293,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       }
     } on DioError catch (e) {
       if (e.response?.statusCode == 403) {
-        await Config.unAuthenticatedUser();
+        await Config.unAuthenticateUser();
       }
       throw Exception(e.message);
     }
@@ -334,7 +334,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(e.response?.statusCode);
       print(e.response?.data);
       if (e.response?.statusCode == 403) {
-        await Config.unAuthenticatedUser();
+        await Config.unAuthenticateUser();
       }
       throw INTERNET_WARNING_MESSAGE;
     }
@@ -349,7 +349,11 @@ class ProfileCubit extends Cubit<ProfileState> {
       Response response = await dio.put(
         ApiRoutes.UPDATE_SERVICES,
         data: {
-          'services': services,
+          'services': services
+              .map((serv) => {
+                    serv.id: serv.name,
+                  })
+              .toList(),
         },
         options: Options(
           headers: {
@@ -373,7 +377,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(e.response?.statusCode);
       print(e.response?.data);
       if (e.response?.statusCode == 403) {
-        await Config.unAuthenticatedUser();
+        await Config.unAuthenticateUser();
       }
       throw INTERNET_WARNING_MESSAGE;
     }
@@ -388,7 +392,11 @@ class ProfileCubit extends Cubit<ProfileState> {
       Response response = await dio.put(
         ApiRoutes.UPDATE_SPECIFICATION,
         data: {
-          'specifications': specializations,
+          'specifications': specializations
+              .map((spec) => {
+                    spec.id: spec.name,
+                  })
+              .toList(),
         },
         options: Options(
           headers: {
@@ -412,7 +420,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(e.response?.statusCode);
       print(e.response?.data);
       if (e.response?.statusCode == 403) {
-        await Config.unAuthenticatedUser();
+        await Config.unAuthenticateUser();
       }
       throw INTERNET_WARNING_MESSAGE;
     }
@@ -439,7 +447,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(e.response?.statusCode);
       print(e.response?.data);
       if (e.response?.statusCode == 403) {
-        await Config.unAuthenticatedUser();
+        await Config.unAuthenticateUser();
       }
       throw INTERNET_WARNING_MESSAGE;
     }
@@ -502,7 +510,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(e.response?.data);
       print(e.error);
       if (e.response?.statusCode == 403) {
-        await Config.unAuthenticatedUser();
+        await Config.unAuthenticateUser();
       }
       throw INTERNET_WARNING_MESSAGE;
     }
@@ -549,7 +557,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(e.response?.data);
       print(e.error);
       if (e.response?.statusCode == 403) {
-        await Config.unAuthenticatedUser();
+        await Config.unAuthenticateUser();
       }
       throw INTERNET_WARNING_MESSAGE;
     } catch (e) {
@@ -586,7 +594,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(e.response?.data);
       print(e.error);
       if (e.response?.statusCode == 403) {
-        await Config.unAuthenticatedUser();
+        await Config.unAuthenticateUser();
       }
       throw Exception();
     } catch (e) {
@@ -622,7 +630,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     } on DioError catch (e) {
       print(e.error);
       if (e.response?.statusCode == 403) {
-        await Config.unAuthenticatedUser();
+        await Config.unAuthenticateUser();
       }
       throw INTERNET_WARNING_MESSAGE;
     }

@@ -54,7 +54,7 @@ class AppointmentsCubit extends Cubit<AppointmentsState> {
       print(e.response?.data);
       print(e.error);
       if (e.response?.statusCode == 403) {
-        await Config.unAuthenticatedUser();
+        await Config.unAuthenticateUser();
       }
       throw INTERNET_WARNING_MESSAGE;
     } catch (e) {
