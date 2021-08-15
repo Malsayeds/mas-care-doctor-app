@@ -24,8 +24,8 @@ class _AddSpecializationState extends State<AddSpecialization> {
       Duration.zero,
       () async {
         setState(() {
-          specializations =
-              ModalRoute.of(context)?.settings.arguments as List<Specialization>;
+          specializations = ModalRoute.of(context)?.settings.arguments
+              as List<Specialization>;
         });
       },
     );
@@ -34,13 +34,15 @@ class _AddSpecializationState extends State<AddSpecialization> {
   Future<void> updateSpecializations() async {
     try {
       final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
-      await profileData.updateSpecializations(specializations: this.specializations);
+      await profileData.updateSpecializations(
+          specializations: this.specializations);
       SharedWidgets.showToast(msg: 'Specializations Updated Successfully');
       Navigator.of(context).pop();
     } catch (e) {
       SharedWidgets.showToast(msg: INTERNET_WARNING_MESSAGE);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
@@ -55,8 +57,8 @@ class _AddSpecializationState extends State<AddSpecialization> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: 12.0, horizontal: 12),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12),
               child: EntryField(
                 prefixIcon: Icons.search,
                 hint: locale.searchSpecialization,
@@ -98,9 +100,7 @@ class _AddSpecializationState extends State<AddSpecialization> {
               ),
             ),
             CustomButton(
-              onTap: () {
-                Navigator.pop(context);
-              },
+              onTap: updateSpecializations,
               label: locale.save,
               radius: 0,
             ),

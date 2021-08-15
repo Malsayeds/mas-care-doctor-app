@@ -342,13 +342,16 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       print(ApiRoutes.UPDATE_SERVICES);
+      print(services
+          .where((serv) => serv.isChecked)
+          .map((serv) => serv.id)
+          .toList());
       Response response = await dio.put(
         ApiRoutes.UPDATE_SERVICES,
         data: {
           'services': services
-              .map((serv) => {
-                    serv.id: serv.name,
-                  })
+              .where((serv) => serv.isChecked)
+              .map((serv) => serv.id)
               .toList(),
         },
         options: Options(
@@ -383,13 +386,16 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       print(ApiRoutes.UPDATE_SPECIFICATION);
+      print(specializations
+          .where((spec) => spec.isChecked)
+          .map((spec) => spec.id)
+          .toList());
       Response response = await dio.put(
         ApiRoutes.UPDATE_SPECIFICATION,
         data: {
           'specifications': specializations
-              .map((spec) => {
-                    spec.id: spec.name,
-                  })
+              .where((spec) => spec.isChecked)
+              .map((spec) => spec.id)
               .toList(),
         },
         options: Options(

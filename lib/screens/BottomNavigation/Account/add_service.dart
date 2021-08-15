@@ -99,9 +99,7 @@ class _AddServiceState extends State<AddService> {
               ),
             ),
             CustomButton(
-              onTap: () {
-                Navigator.pop(context);
-              },
+              onTap: updateServices,
               label: locale.save,
               radius: 0,
             ),
