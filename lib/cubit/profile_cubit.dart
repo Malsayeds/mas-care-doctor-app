@@ -494,10 +494,11 @@ class ProfileCubit extends Cubit<ProfileState> {
               decodedResponseBody['data']['available_times']);
           unCheckedDays.forEach((day) {
             _availabilities.add(Availability(
-                day: day,
-                from: TimeOfDay(hour: 0, minute: 0),
-                to: TimeOfDay(hour: 0, minute: 0),
-                isChecked: false));
+              day: day,
+              from: TimeOfDay(hour: 0, minute: 0),
+              to: TimeOfDay(hour: 0, minute: 0),
+              isChecked: false,
+            ));
           });
           emit(ProfileLoadedState());
         }

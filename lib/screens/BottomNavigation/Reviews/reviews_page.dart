@@ -68,6 +68,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                           imgUrl:
                               reviewsData.user?.image ?? imagePlaceHolderError,
                           width: MediaQuery.of(context).size.width / 2.5,
+                          height: MediaQuery.of(context).size.width / 2.5,
                         ),
                         durationInMilliseconds: 400,
                       ),
@@ -125,10 +126,14 @@ class _ReviewsPageState extends State<ReviewsPage> {
                     children: [
                       ...reviewsData.rates
                           .map((rate) => buildReviewIndicator(
-                              context,
-                              rate.rate.toString(),
-                              rate.rateCount / reviewsData.reviews.length,
-                              '${rate.rateCount}'))
+                                context,
+                                rate.rate.toString(),
+                                reviewsData.reviews.length == 0
+                                    ? 0
+                                    : rate.rateCount /
+                                        reviewsData.reviews.length,
+                                '${rate.rateCount}',
+                              ))
                           .toList(),
                       SizedBox(
                         height: 12,

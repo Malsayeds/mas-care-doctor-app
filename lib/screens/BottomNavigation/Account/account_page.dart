@@ -130,6 +130,7 @@ class _AccountPageState extends State<AccountPage> {
                         SharedWidgets.buildImgNetwork(
                           imgUrl: userData.user?.image ?? imagePlaceHolderError,
                           width: MediaQuery.of(context).size.width / 2.5,
+                          height: MediaQuery.of(context).size.width / 2.5,
                         ),
                         durationInMilliseconds: 400,
                       ),
