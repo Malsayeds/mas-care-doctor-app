@@ -9,6 +9,7 @@ import 'package:doctoworld_doctor/utils/Theme/colors.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import '../../../widgets/entry_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../utils/Routes/routes.dart';
@@ -22,8 +23,70 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final _personalInfoFormKey = GlobalKey<FormState>();
+  final _expAndFeesFormKey = GlobalKey<FormState>();
+
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _mailController = TextEditingController();
+
+  final _expController = TextEditingController();
+  final _feesController = TextEditingController();
+
+  bool isPersonalInfoLoading = false;
+  bool isExpAndFeesLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
+    _nameController.text = '${profileData.user?.name ?? ''}';
+    _phoneController.text = profileData.user?.phone ?? '';
+    _mailController.text = profileData.user?.email ?? '';
+    _expController.text = '${profileData.user?.experience}';
+    _feesController.text = '${profileData.user?.fees}';
+  }
+
+  Future<void> updatePersonalInfo() async {
+    FocusScope.of(context).unfocus();
+    final isValid = _personalInfoFormKey.currentState?.validate();
+    if (isValid ?? false) {
+      setState(() {
+        isPersonalInfoLoading = true;
+      });
+      final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
+      await profileData.updatePersonalInfo(
+        name: _nameController.text,
+        phone: _phoneController.text,
+        email: _mailController.text,
+      );
+      setState(() {
+        isPersonalInfoLoading = false;
+      });
+    }
+  }
+
+  Future<void> updateExpAndFees() async {
+    FocusScope.of(context).unfocus();
+    final isValid = _expAndFeesFormKey.currentState?.validate();
+    if (isValid ?? false) {
+      setState(() {
+        isExpAndFeesLoading = true;
+      });
+      final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
+      await profileData.updateExperienceAndFees(
+        years: _expController.text,
+        fees: _feesController.text,
+      );
+      setState(() {
+        isExpAndFeesLoading = false;
+      });
+    }
+  }
+
   Future<void> changeProfilePic(File img) async {
     try {
+      FocusScope.of(context).unfocus();
       final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
       await profileData.changeProfilePic(img);
     } catch (e) {}
@@ -168,7 +231,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   TextButton buildTextButton({
     required String text,
-    required VoidCallback onPress,
+    required VoidCallback? onPress,
   }) {
     return TextButton(
       onPressed: onPress,
@@ -253,42 +316,69 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             Padding(
               padding: EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        'Personal Information',
-                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                              color: Theme.of(context).disabledColor,
-                              fontSize: 16,
-                            ),
+              child: Form(
+                key: _personalInfoFormKey,
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          'Personal Information',
+                          style:
+                              Theme.of(context).textTheme.subtitle2!.copyWith(
+                                    color: Theme.of(context).disabledColor,
+                                    fontSize: 16,
+                                  ),
+                        ),
+                        Spacer(),
+                        buildTextButton(
+                          text: locale.update,
+                          onPress:
+                              isPersonalInfoLoading ? null : updatePersonalInfo,
+                        ),
+                      ],
+                    ),
+                    EntryField(
+                      controller: _nameController,
+                      prefixIcon: Icons.account_circle,
+                      hint: 'Enter your Name',
+                      textInputType: TextInputType.name,
+                      onValidate: (text) {
+                        if (text == null || text.isEmpty) {
+                          return 'Name can\'t be empty';
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    EntryField(
+                      controller: _phoneController,
+                      prefixIcon: Icons.phone_iphone,
+                      hint: 'Enter your Phone Number',
+                      textInputType: TextInputType.phone,
+                      onValidate: (text) {
+                        if (text == null || text.isEmpty) {
+                          return 'Phone can\'t be empty';
+                        } else if (text.length != 11) {
+                          return 'Enter a valid phone number';
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    EntryField(
+                      controller: _mailController,
+                      prefixIcon: Icons.mail,
+                      hint: 'Enter your Email Address',
+                      textInputType: TextInputType.emailAddress,
+                      onValidate: EmailValidator(
+                        errorText: 'Enter a valid email address',
                       ),
-                      Spacer(),
-                      buildTextButton(
-                        text: locale.update,
-                        onPress: () {},
-                      ),
-                    ],
-                  ),
-                  EntryField(
-                    prefixIcon: Icons.account_circle,
-                    initialValue: '${profileData.user?.name ?? ''}',
-                    hint: 'Enter your Name',
-                  ),
-                  SizedBox(height: 20),
-                  EntryField(
-                    prefixIcon: Icons.phone_iphone,
-                    initialValue: profileData.user?.phone,
-                    hint: 'Enter your Phone Number',
-                  ),
-                  SizedBox(height: 20),
-                  EntryField(
-                    prefixIcon: Icons.mail,
-                    initialValue: profileData.user?.email,
-                    hint: 'Enter your Email Address',
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
             ),
             Divider(thickness: 6),
@@ -337,41 +427,75 @@ class _ProfilePageState extends State<ProfilePage> {
                 horizontal: 16.0,
                 vertical: 8,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        locale.expFees,
-                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                              color: Theme.of(context).disabledColor,
-                              fontSize: 15,
-                            ),
-                      ),
-                      buildTextButton(
-                        text: locale.update,
-                        onPress: () {},
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  EntryField(
-                    prefixIcon: Icons.work,
-                    initialValue:
-                        '${profileData.user?.experience} ' + locale.years,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  EntryField(
-                    prefixIcon: Icons.paid,
-                    initialValue: '${profileData.user?.fees}',
-                  ),
-                ],
+              child: Form(
+                key: _expAndFeesFormKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          locale.expFees,
+                          style:
+                              Theme.of(context).textTheme.subtitle2!.copyWith(
+                                    color: Theme.of(context).disabledColor,
+                                    fontSize: 15,
+                                  ),
+                        ),
+                        buildTextButton(
+                          text: locale.update,
+                          onPress:
+                              isExpAndFeesLoading ? null : updateExpAndFees,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: EntryField(
+                            controller: _expController,
+                            prefixIcon: Icons.work,
+                            textInputType: TextInputType.number,
+                            onValidate: (text) {
+                              if (text == null || text.isEmpty) {
+                                return 'Experience can\'t be empty';
+                              } else if (double.tryParse(text) == null) {
+                                return 'Enter a valid number';
+                              } else {
+                                return null;
+                              }
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(locale.years),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    EntryField(
+                      controller: _feesController,
+                      prefixIcon: Icons.paid,
+                      textInputType: TextInputType.number,
+                      onValidate: (text) {
+                        if (text == null || text.isEmpty) {
+                          return 'Fees can\'t be empty';
+                        } else if (double.tryParse(text) == null) {
+                          return 'Enter a valid number';
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
             Divider(thickness: 6),

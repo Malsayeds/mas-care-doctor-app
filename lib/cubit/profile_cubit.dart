@@ -286,8 +286,6 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(decodedResponseBody);
       print(response.statusCode);
 
-      print(decodedResponseBody);
-      print(response.statusCode);
       if (response.statusCode == 200) {
         emit(PersonalInfoUpdatedState());
       }
@@ -325,8 +323,6 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(decodedResponseBody);
       print(response.statusCode);
 
-      print(decodedResponseBody);
-      print(response.statusCode);
       if (response.statusCode == 200) {
         emit(ExperienceAndFeesUpdatedState());
       }
@@ -368,8 +364,6 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(decodedResponseBody);
       print(response.statusCode);
 
-      print(decodedResponseBody);
-      print(response.statusCode);
       if (response.statusCode == 200) {
         emit(ServicesUpdatedState());
       }
@@ -411,8 +405,6 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(decodedResponseBody);
       print(response.statusCode);
 
-      print(decodedResponseBody);
-      print(response.statusCode);
       if (response.statusCode == 200) {
         emit(SpecializationsUpdatedState());
       }
