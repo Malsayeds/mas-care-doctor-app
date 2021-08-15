@@ -436,8 +436,14 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         Spacer(),
                         buildTextButton(
-                          text: locale.update,
-                          onPress: () {},
+                          text: locale.edit,
+                          onPress: () {
+                            Navigator.pushNamed(
+                              context,
+                              PageRoutes.addHospital,
+                              arguments: profileData.hospitals,
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -445,11 +451,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       height: 10,
                     ),
                     EntryField(
-                      onTap: () {
-                        Navigator.pushNamed(context, PageRoutes.addHospital);
-                      },
                       readOnly: true,
-                      initialValue: ' Apple Hospital, Wallington, New York',
+                      initialValue: profileData.hospitals.isEmpty
+                          ? ''
+                          : profileData.hospitals[0].name,
                     ),
                   ],
                 ),

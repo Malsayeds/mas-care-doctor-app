@@ -1,19 +1,17 @@
-import 'package:doctoworld_doctor/screens/BottomNavigation/Account/add_hospital.dart';
-
 class Hospital {
-  final String title;
-  final String subtitle;
+  final int id;
+  final String name;
   bool isChecked;
 
   Hospital({
-    required this.title,
-    required this.subtitle,
+    required this.id,
+    required this.name,
     this.isChecked = false,
   });
 
   factory Hospital.fromJson(Map<String, dynamic> json) => Hospital(
-        title: json['title'],
-        subtitle: json['subtitle'],
-        isChecked: json['is_checked'] == null ? false : json['name'],
+        id: json['id'],
+        name: json['name'],
+        isChecked: json['is_checked'] == null ? false : json['is_checked'],
       );
 }

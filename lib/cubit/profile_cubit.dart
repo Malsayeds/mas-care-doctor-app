@@ -87,80 +87,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   List<Service> _services = [];
   List<Specialization> _specifications = [];
-  List<Hospital> _hospitals = [
-    Hospital(
-      isChecked: true,
-      title: 'Apple Hospital',
-      subtitle:
-          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
-    ),
-    Hospital(
-      isChecked: true,
-      title: 'Silver Soul Clinic',
-      subtitle:
-          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
-    ),
-    Hospital(
-      isChecked: false,
-      title: 'Rainbow Hospital',
-      subtitle:
-          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
-    ),
-    Hospital(
-      isChecked: false,
-      title: 'Jonathan Hospital',
-      subtitle:
-          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
-    ),
-    Hospital(
-      isChecked: false,
-      title: 'Lothal Hospital',
-      subtitle:
-          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
-    ),
-    Hospital(
-      isChecked: true,
-      title: 'Peter Johnson Hospital',
-      subtitle:
-          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
-    ),
-    Hospital(
-      isChecked: true,
-      title: 'Apple Hospital',
-      subtitle:
-          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
-    ),
-    Hospital(
-      isChecked: true,
-      title: 'Silver Soul Clinic',
-      subtitle:
-          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
-    ),
-    Hospital(
-      isChecked: false,
-      title: 'Rainbow Hospital',
-      subtitle:
-          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
-    ),
-    Hospital(
-      isChecked: false,
-      title: 'Jonathan Hospital',
-      subtitle:
-          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
-    ),
-    Hospital(
-      isChecked: false,
-      title: 'Lothal Hospital',
-      subtitle:
-          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
-    ),
-    Hospital(
-      isChecked: true,
-      title: 'Peter Johnson Hospital',
-      subtitle:
-          'General Hospital' + '\n' + 'At Walter street, Wallington, New York',
-    ),
-  ];
+  List<Hospital> _hospitals = [];
 
   List<Availability> get availabilities => _availabilities;
   List<Service> get services => _services;
@@ -180,82 +107,6 @@ class ProfileCubit extends Cubit<ProfileState> {
   void setDayCheck(int i, bool isChecked) {
     availabilities[i].isChecked = isChecked;
     emit(DayTimeChangedState());
-  }
-
-  Future<void> getAccountInfo() async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      print(ApiRoutes.ACCOUNT);
-      print('Bearer ${prefs.getString(TOKEN_KEY)}');
-      Response<Map<String, dynamic>?> response = await dio.get(
-        ApiRoutes.ACCOUNT,
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-        ),
-      );
-      final Map<String, dynamic>? decodedResponseBody = response.data;
-
-      print(decodedResponseBody);
-      print(response.statusCode);
-      if (response.statusCode == 200) {
-        if (decodedResponseBody != null) {
-          _hospitals =
-              (decodedResponseBody['data']['hospitals'] as List<dynamic>)
-                  .map((hospital) => Hospital.fromJson(hospital))
-                  .toList();
-          emit(HospitalsLoadedState());
-        }
-      }
-    } on DioError catch (e) {
-      print(e.response?.data);
-      print(e.error);
-      if (e.response?.statusCode == 403) {
-        await Config.unAuthenticateUser();
-      }
-      throw INTERNET_WARNING_MESSAGE;
-    }
-  }
-
-  Future<void> getHospitals() async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      print(ApiRoutes.PROFILE);
-      print('Bearer ${prefs.getString(TOKEN_KEY)}');
-      Response<Map<String, dynamic>?> response = await dio.get(
-        '',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-        ),
-      );
-      final Map<String, dynamic>? decodedResponseBody = response.data;
-
-      print(decodedResponseBody);
-      print(response.statusCode);
-      if (response.statusCode == 200) {
-        if (decodedResponseBody != null) {
-          _hospitals =
-              (decodedResponseBody['data']['hospitals'] as List<dynamic>)
-                  .map((hospital) => Hospital.fromJson(hospital))
-                  .toList();
-          emit(HospitalsLoadedState());
-        }
-      }
-    } on DioError catch (e) {
-      print(e.response?.data);
-      print(e.error);
-      if (e.response?.statusCode == 403) {
-        await Config.unAuthenticateUser();
-      }
-      throw INTERNET_WARNING_MESSAGE;
-    }
   }
 
   Future<void> updatePersonalInfo({
@@ -290,10 +141,21 @@ class ProfileCubit extends Cubit<ProfileState> {
         emit(PersonalInfoUpdatedState());
       }
     } on DioError catch (e) {
+      print(e.response?.data);
+      print(e.response?.statusCode);
       if (e.response?.statusCode == 403) {
         await Config.unAuthenticateUser();
+      } else if (e.response?.statusCode == 422) {
+        String errorMsg = 'Ops, Something went wrong';
+        if (e.response?.data['error']['email'] != null) {
+          errorMsg = e.response?.data['error']['email'][0];
+        } else if (e.response?.data['error']['contact_number'] != null) {
+          errorMsg = e.response?.data['error']['contact_number'][0];
+        } else if (e.response?.data['error']['name'] != null) {
+          errorMsg = e.response?.data['error']['name'][0];
+        }
+        SharedWidgets.showToast(msg: errorMsg, isError: true);
       }
-      throw Exception(e.message);
     }
   }
 
@@ -424,6 +286,50 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  Future<void> updateHospitals({
+    required List<Hospital> hospitals,
+  }) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(ApiRoutes.UPDATE_HOSPITAL);
+      print(hospitals
+          .where((spec) => spec.isChecked)
+          .map((spec) => spec.id)
+          .toList());
+      Response response = await dio.put(
+        ApiRoutes.UPDATE_HOSPITAL,
+        data: {
+          'hospitals': hospitals
+              .where((spec) => spec.isChecked)
+              .map((spec) => spec.id)
+              .toList(),
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+      final Map<String, dynamic>? decodedResponseBody = response.data;
+
+      print(decodedResponseBody);
+      print(response.statusCode);
+
+      if (response.statusCode == 200) {
+        emit(SpecializationsUpdatedState());
+      }
+    } on DioError catch (e) {
+      print(e.response?.statusCode);
+      print(e.response?.data);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticateUser();
+      }
+      throw INTERNET_WARNING_MESSAGE;
+    }
+  }
+
   Future<void> changeProfilePic(File file) async {
     try {
       String fileName = file.path.split('/').last;
@@ -489,6 +395,10 @@ class ProfileCubit extends Cubit<ProfileState> {
           _availabilities =
               (decodedResponseBody['data']['available_times'] as List<dynamic>)
                   .map((json) => Availability.fromJson(json))
+                  .toList();
+          _hospitals =
+              (decodedResponseBody['data']['hospitals'] as List<dynamic>)
+                  .map((json) => Hospital.fromJson(json))
                   .toList();
           List<String> unCheckedDays = getDisabledAvailabilities(
               decodedResponseBody['data']['available_times']);

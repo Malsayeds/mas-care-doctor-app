@@ -11,6 +11,7 @@ class ApiRoutes {
   static const String PROFILE = BASE_URL + 'doctor/profile';
   static const String UPDATE_IMAGE = BASE_URL + 'general/profile/image';
   static const String UPDATE_PERSONAL_INFO = BASE_URL + 'doctor/profile/update';
+  static const String UPDATE_HOSPITAL = BASE_URL + 'doctor/hospital/update';
   static const String UPDATE_AVAILABITLITY = BASE_URL + 'doctor/time/update';
   static const String UPDATE_SPECIFICATION = BASE_URL + 'doctor/specification/update';
   static const String UPDATE_SERVICES = BASE_URL + 'doctor/service/update';
