@@ -22,22 +22,11 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool isImgUploading = false;
   Future<void> changeProfilePic(File img) async {
     try {
-      setState(() {
-        isImgUploading = true;
-      });
       final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
       await profileData.changeProfilePic(img);
-      setState(() {
-        isImgUploading = false;
-      });
-    } catch (e) {
-      setState(() {
-        isImgUploading = false;
-      });
-    }
+    } catch (e) {}
   }
 
   Widget _buildTimeSlotButton({
@@ -214,24 +203,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   FadedScaleAnimation(
-                    isImgUploading
-                        ? Container(
-                            width: MediaQuery.of(context).size.width / 2.5,
-                            height: MediaQuery.of(context).size.width / 2.5,
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.circular(kBorderRadius),
-                            ),
-                            child: Center(
-                              child: SharedWidgets.showLoader(),
-                            ),
-                          )
-                        : SharedWidgets.buildImgNetwork(
-                            imgUrl: profileData.user?.image ??
-                                imagePlaceHolderError,
-                            width: MediaQuery.of(context).size.width / 2.5,
-                            height: MediaQuery.of(context).size.width / 2.5,
-                          ),
+                    SharedWidgets.buildImgNetwork(
+                      imgUrl: profileData.user?.image ?? imagePlaceHolderError,
+                      width: MediaQuery.of(context).size.width / 2.5,
+                      height: MediaQuery.of(context).size.width / 2.5,
+                    ),
                     durationInMilliseconds: 400,
                   ),
                   SizedBox(width: 20),
@@ -297,8 +273,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   EntryField(
                     prefixIcon: Icons.account_circle,
-                    initialValue:
-                        '${profileData.user?.name ?? ''}',
+                    initialValue: '${profileData.user?.name ?? ''}',
                     hint: 'Enter your Name',
                   ),
                   SizedBox(height: 20),
@@ -518,7 +493,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   if (profileData.specifications.length >= 3)
                     Text(
-                      '+${profileData.specifications.length - 2} ' + locale.more,
+                      '+${profileData.specifications.length - 2} ' +
+                          locale.more,
                       style: Theme.of(context)
                           .textTheme
                           .subtitle1!

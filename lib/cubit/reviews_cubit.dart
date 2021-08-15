@@ -15,7 +15,7 @@ class ReviewsCubit extends Cubit<ReviewsState> {
   ReviewsCubit() : super(ReviewsInitial());
   Dio dio = Dio();
 
-  double avgReviews = 0.0;
+  double avgReviews = 0;
   int appointmentsCount = 0;
   User? user;
   List<Review> reviews = [];
@@ -42,7 +42,8 @@ class ReviewsCubit extends Cubit<ReviewsState> {
       print(response.statusCode);
       if (response.statusCode == 200) {
         if (decodedResponseBody != null) {
-          avgReviews = decodedResponseBody['data']['avg_reviews'];
+          avgReviews = double.parse(
+              decodedResponseBody['data']['avg_reviews'].toString());
           appointmentsCount = decodedResponseBody['data']['appointments_count'];
           user = User.fromJson(decodedResponseBody['data']['user']);
           reviews = (decodedResponseBody['data']['reviews'] as List<dynamic>)

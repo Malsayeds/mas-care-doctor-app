@@ -111,7 +111,8 @@ class _FAQPageState extends State<FAQPage> {
                             Divider(thickness: 4),
                           ],
                         );
-                      }),
+                      },
+                    ),
               beginOffset: Offset(0, 0.3),
               endOffset: Offset(0, 0),
               slideCurve: Curves.linearToEaseOut,

@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
   ]);
 
   Future<void> loginUser() async {
-    final isValid = Keys().loginFormKey.currentState?.validate();
+    final isValid = Keys.loginFormKey.currentState?.validate();
     if (isValid ?? false) {
       try {
         setState(() {
@@ -113,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Padding(
                   padding: EdgeInsets.all(20.0),
                   child: Form(
-                    key: Keys().loginFormKey,
+                    key: Keys.loginFormKey,
                     child: Column(
                       children: [
                         SizedBox(

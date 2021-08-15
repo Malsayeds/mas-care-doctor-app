@@ -134,15 +134,18 @@ class _AccountPageState extends State<AccountPage> {
                         durationInMilliseconds: 400,
                       ),
                       SizedBox(width: 16),
-                      RichText(
-                        text: TextSpan(
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: '${userData.user?.name ?? ''}',
-                                style: Theme.of(context).textTheme.headline5),
-                            TextSpan(
-                                text: userData.user?.phone,
-                                style: Theme.of(context).textTheme.subtitle2),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${userData.user?.name ?? ''}',
+                              style: Theme.of(context).textTheme.headline5,
+                            ),
+                            Text(
+                              '${userData.user?.phone ?? ''}',
+                              style: Theme.of(context).textTheme.subtitle2,
+                            ),
                           ],
                         ),
                       ),

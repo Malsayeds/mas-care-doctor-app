@@ -22,71 +22,61 @@ class _AddHospitalState extends State<AddHospital> {
         centerTitle: true,
       ),
       body: FadedSlideAnimation(
-        Stack(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ListView(
-              physics: BouncingScrollPhysics(),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 12),
-                  child: EntryField(
-                    prefixIcon: Icons.search,
-                    hint: locale.searchHospital,
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                  color: Theme.of(context).dividerColor,
-                  child: Text(
-                    locale.selectHospitalsToAdd,
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle2!
-                        .copyWith(color: Theme.of(context).disabledColor),
-                  ),
-                ),
-                ListView.separated(
-                    itemCount: profileData.hospitals.length,
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    separatorBuilder: (context, i) {
-                      return Divider(
-                        thickness: 6,
-                      );
-                    },
-                    itemBuilder: (context, index) {
-                      return CheckboxListTile(
-                        value: profileData.hospitals[index].isChecked,
-                        onChanged: (val) {
-                          setState(() {
-                            profileData.hospitals[index].isChecked =
-                                val ?? false;
-                          });
-                        },
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 16,
-                        ),
-                        title: Text(profileData.hospitals[index].title),
-                        subtitle:
-                            Text(profileData.hospitals[index].subtitle),
-                      );
-                    }),
-                SizedBox(
-                  height: 100,
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: CustomButton(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                label: locale.save,
-                radius: 0,
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12),
+              child: EntryField(
+                prefixIcon: Icons.search,
+                hint: locale.searchHospital,
               ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              color: Theme.of(context).dividerColor,
+              child: Text(
+                locale.selectHospitalsToAdd,
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle2!
+                    .copyWith(color: Theme.of(context).disabledColor),
+              ),
+            ),
+            Expanded(
+              child: ListView.separated(
+                  itemCount: profileData.hospitals.length,
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  separatorBuilder: (context, i) {
+                    return Divider(
+                      thickness: 6,
+                    );
+                  },
+                  itemBuilder: (context, index) {
+                    return CheckboxListTile(
+                      value: profileData.hospitals[index].isChecked,
+                      onChanged: (val) {
+                        setState(() {
+                          profileData.hospitals[index].isChecked = val ?? false;
+                        });
+                      },
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 16,
+                      ),
+                      title: Text(profileData.hospitals[index].title),
+                      subtitle: Text(profileData.hospitals[index].subtitle),
+                    );
+                  }),
+            ),
+            CustomButton(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              label: locale.save,
+              radius: 0,
             ),
           ],
         ),
