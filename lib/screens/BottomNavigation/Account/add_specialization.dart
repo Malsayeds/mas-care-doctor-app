@@ -15,6 +15,7 @@ class AddSpecialization extends StatefulWidget {
 }
 
 class _AddSpecializationState extends State<AddSpecialization> {
+  bool isLoading = false;
   List<Specialization> specializations = [];
 
   @override
@@ -33,12 +34,20 @@ class _AddSpecializationState extends State<AddSpecialization> {
 
   Future<void> updateSpecializations() async {
     try {
+      setState(() {
+        isLoading = true;
+      });
       final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
       await profileData.updateSpecializations(
           specializations: this.specializations);
       SharedWidgets.showToast(msg: 'Specializations Updated Successfully');
-      Navigator.of(context).pop();
+      setState(() {
+        isLoading = false;
+      });
     } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
       SharedWidgets.showToast(msg: INTERNET_WARNING_MESSAGE);
     }
   }
@@ -100,7 +109,7 @@ class _AddSpecializationState extends State<AddSpecialization> {
               ),
             ),
             CustomButton(
-              onTap: updateSpecializations,
+              onTap: isLoading ? null : updateSpecializations,
               label: locale.save,
               radius: 0,
             ),

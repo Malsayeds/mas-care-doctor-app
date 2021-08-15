@@ -15,6 +15,7 @@ class AddService extends StatefulWidget {
 }
 
 class _AddServiceState extends State<AddService> {
+  bool isLoading = false;
   List<Service> services = [];
 
   @override
@@ -33,11 +34,19 @@ class _AddServiceState extends State<AddService> {
 
   Future<void> updateServices() async {
     try {
+      setState(() {
+        isLoading = true;
+      });
       final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
       await profileData.updateServices(services: this.services);
       SharedWidgets.showToast(msg: 'Services Updated Successfully');
-      Navigator.of(context).pop();
+      setState(() {
+        isLoading = false;
+      });
     } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
       SharedWidgets.showToast(msg: INTERNET_WARNING_MESSAGE);
     }
   }
@@ -99,7 +108,7 @@ class _AddServiceState extends State<AddService> {
               ),
             ),
             CustomButton(
-              onTap: updateServices,
+              onTap: isLoading ? null : updateServices,
               label: locale.save,
               radius: 0,
             ),
