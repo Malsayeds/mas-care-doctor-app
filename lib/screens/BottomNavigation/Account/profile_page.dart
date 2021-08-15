@@ -250,80 +250,163 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
     final profileData = BlocProvider.of<ProfileCubit>(context);
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(locale.myProfile),
-        textTheme: Theme.of(context).textTheme,
-      ),
-      body: FadedSlideAnimation(
-        ListView(
-          physics: BouncingScrollPhysics(),
-          children: [
-            Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  FadedScaleAnimation(
-                    SharedWidgets.buildImgNetwork(
-                      imgUrl: profileData.user?.image ?? imagePlaceHolderError,
-                      width: MediaQuery.of(context).size.width / 2.5,
-                      height: MediaQuery.of(context).size.width / 2.5,
+    return BlocListener<ProfileCubit, ProfileState>(
+      listener: (context, state) {
+        if (state is PersonalInfoUpdatedState) {
+          SharedWidgets.showToast(
+              msg: 'Personal Information Updated Successfully!');
+        }
+        if (state is ExperienceAndFeesUpdatedState) {
+          SharedWidgets.showToast(msg: 'Exp. and Fees Updated Successfully!');
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(locale.myProfile),
+          textTheme: Theme.of(context).textTheme,
+        ),
+        body: FadedSlideAnimation(
+          ListView(
+            physics: BouncingScrollPhysics(),
+            children: [
+              Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    FadedScaleAnimation(
+                      SharedWidgets.buildImgNetwork(
+                        imgUrl:
+                            profileData.user?.image ?? imagePlaceHolderError,
+                        width: MediaQuery.of(context).size.width / 2.5,
+                        height: MediaQuery.of(context).size.width / 2.5,
+                      ),
+                      durationInMilliseconds: 400,
                     ),
-                    durationInMilliseconds: 400,
-                  ),
-                  SizedBox(width: 20),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 16),
-                      TextButton.icon(
-                        icon: Icon(
-                          Icons.camera_alt,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        label: Text(
-                          locale.changeImage,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText2!
-                              .copyWith(color: Theme.of(context).primaryColor),
-                        ),
-                        onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(kBorderRadius),
-                                topLeft: Radius.circular(kBorderRadius),
+                    SizedBox(width: 20),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 16),
+                        TextButton.icon(
+                          icon: Icon(
+                            Icons.camera_alt,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          label: Text(
+                            locale.changeImage,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2!
+                                .copyWith(
+                                    color: Theme.of(context).primaryColor),
+                          ),
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(kBorderRadius),
+                                  topLeft: Radius.circular(kBorderRadius),
+                                ),
                               ),
-                            ),
-                            builder: (ctx) {
-                              return buildChangeImgBottomSheetBody(ctx);
-                            },
-                          );
+                              builder: (ctx) {
+                                return buildChangeImgBottomSheetBody(ctx);
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                thickness: 8,
+              ),
+              Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Form(
+                  key: _personalInfoFormKey,
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'Personal Information',
+                            style:
+                                Theme.of(context).textTheme.subtitle2!.copyWith(
+                                      color: Theme.of(context).disabledColor,
+                                      fontSize: 16,
+                                    ),
+                          ),
+                          Spacer(),
+                          buildTextButton(
+                            text: locale.update,
+                            onPress: isPersonalInfoLoading
+                                ? null
+                                : updatePersonalInfo,
+                          ),
+                        ],
+                      ),
+                      EntryField(
+                        controller: _nameController,
+                        prefixIcon: Icons.account_circle,
+                        hint: 'Enter your Name',
+                        textInputType: TextInputType.name,
+                        onValidate: (text) {
+                          if (text == null || text.isEmpty) {
+                            return 'Name can\'t be empty';
+                          } else {
+                            return null;
+                          }
                         },
+                      ),
+                      SizedBox(height: 20),
+                      EntryField(
+                        controller: _phoneController,
+                        prefixIcon: Icons.phone_iphone,
+                        hint: 'Enter your Phone Number',
+                        textInputType: TextInputType.phone,
+                        onValidate: (text) {
+                          if (text == null || text.isEmpty) {
+                            return 'Phone can\'t be empty';
+                          } else if (text.length != 11) {
+                            return 'Enter a valid phone number';
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+                      SizedBox(height: 20),
+                      EntryField(
+                        controller: _mailController,
+                        prefixIcon: Icons.mail,
+                        hint: 'Enter your Email Address',
+                        textInputType: TextInputType.emailAddress,
+                        onValidate: EmailValidator(
+                          errorText: 'Enter a valid email address',
+                        ),
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-            Divider(
-              thickness: 8,
-            ),
-            Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Form(
-                key: _personalInfoFormKey,
+              Divider(thickness: 6),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8,
+                ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Row(
                       children: [
                         Text(
-                          'Personal Information',
+                          locale.servicesAt,
                           style:
                               Theme.of(context).textTheme.subtitle2!.copyWith(
                                     color: Theme.of(context).disabledColor,
@@ -333,395 +416,336 @@ class _ProfilePageState extends State<ProfilePage> {
                         Spacer(),
                         buildTextButton(
                           text: locale.update,
-                          onPress:
-                              isPersonalInfoLoading ? null : updatePersonalInfo,
+                          onPress: () {},
                         ),
                       ],
                     ),
-                    EntryField(
-                      controller: _nameController,
-                      prefixIcon: Icons.account_circle,
-                      hint: 'Enter your Name',
-                      textInputType: TextInputType.name,
-                      onValidate: (text) {
-                        if (text == null || text.isEmpty) {
-                          return 'Name can\'t be empty';
-                        } else {
-                          return null;
-                        }
-                      },
+                    SizedBox(
+                      height: 10,
                     ),
-                    SizedBox(height: 20),
                     EntryField(
-                      controller: _phoneController,
-                      prefixIcon: Icons.phone_iphone,
-                      hint: 'Enter your Phone Number',
-                      textInputType: TextInputType.phone,
-                      onValidate: (text) {
-                        if (text == null || text.isEmpty) {
-                          return 'Phone can\'t be empty';
-                        } else if (text.length != 11) {
-                          return 'Enter a valid phone number';
-                        } else {
-                          return null;
-                        }
+                      onTap: () {
+                        Navigator.pushNamed(context, PageRoutes.addHospital);
                       },
-                    ),
-                    SizedBox(height: 20),
-                    EntryField(
-                      controller: _mailController,
-                      prefixIcon: Icons.mail,
-                      hint: 'Enter your Email Address',
-                      textInputType: TextInputType.emailAddress,
-                      onValidate: EmailValidator(
-                        errorText: 'Enter a valid email address',
-                      ),
+                      readOnly: true,
+                      initialValue: ' Apple Hospital, Wallington, New York',
                     ),
                   ],
                 ),
               ),
-            ),
-            Divider(thickness: 6),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 8,
+              Divider(
+                thickness: 8,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8,
+                ),
+                child: Form(
+                  key: _expAndFeesFormKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text(
-                        locale.servicesAt,
-                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                              color: Theme.of(context).disabledColor,
-                              fontSize: 16,
-                            ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            locale.expFees,
+                            style:
+                                Theme.of(context).textTheme.subtitle2!.copyWith(
+                                      color: Theme.of(context).disabledColor,
+                                      fontSize: 15,
+                                    ),
+                          ),
+                          buildTextButton(
+                            text: locale.update,
+                            onPress:
+                                isExpAndFeesLoading ? null : updateExpAndFees,
+                          ),
+                        ],
                       ),
-                      Spacer(),
-                      buildTextButton(
-                        text: locale.update,
-                        onPress: () {},
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: EntryField(
+                              controller: _expController,
+                              prefixIcon: Icons.work,
+                              textInputType: TextInputType.number,
+                              onValidate: (text) {
+                                if (text == null || text.isEmpty) {
+                                  return 'Experience can\'t be empty';
+                                } else if (double.tryParse(text) == null) {
+                                  return 'Enter a valid number';
+                                } else {
+                                  return null;
+                                }
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(locale.years),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      EntryField(
+                        controller: _feesController,
+                        prefixIcon: Icons.paid,
+                        textInputType: TextInputType.number,
+                        onValidate: (text) {
+                          if (text == null || text.isEmpty) {
+                            return 'Fees can\'t be empty';
+                          } else if (double.tryParse(text) == null) {
+                            return 'Enter a valid number';
+                          } else {
+                            return null;
+                          }
+                        },
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  EntryField(
-                    onTap: () {
-                      Navigator.pushNamed(context, PageRoutes.addHospital);
-                    },
-                    readOnly: true,
-                    initialValue: ' Apple Hospital, Wallington, New York',
-                  ),
-                ],
+                ),
               ),
-            ),
-            Divider(
-              thickness: 8,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 8,
-              ),
-              child: Form(
-                key: _expAndFeesFormKey,
+              Divider(thickness: 6),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          locale.expFees,
+                          locale.services,
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2!
+                              .copyWith(
+                                  color: Theme.of(context).disabledColor,
+                                  fontSize: 15),
+                        ),
+                        Spacer(),
+                        buildTextButton(
+                          text: locale.edit,
+                          onPress: () {
+                            Navigator.pushNamed(
+                              context,
+                              PageRoutes.addService,
+                              arguments: profileData.services,
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    if (profileData.services.length >= 1)
+                      SizedBox(
+                        height: 12,
+                      ),
+                    if (profileData.services.length >= 1)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Text(
+                          profileData.services[0].name,
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ),
+                    if (profileData.services.length >= 2)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Text(
+                          profileData.services[1].name,
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ),
+                    if (profileData.services.length >= 1)
+                      SizedBox(
+                        height: 8,
+                      ),
+                    if (profileData.services.length >= 3)
+                      Text(
+                        '+${profileData.services.length - 2} ' + locale.more,
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle1!
+                            .copyWith(color: Theme.of(context).primaryColor),
+                      ),
+                  ],
+                ),
+              ),
+              Divider(thickness: 6),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          locale.specifications,
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2!
+                              .copyWith(
+                                  color: Theme.of(context).disabledColor,
+                                  fontSize: 15),
+                        ),
+                        Spacer(),
+                        buildTextButton(
+                          text: locale.edit,
+                          onPress: () {
+                            Navigator.pushNamed(
+                              context,
+                              PageRoutes.addSpecialization,
+                              arguments: profileData.specifications,
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    if (profileData.specifications.length >= 1)
+                      SizedBox(
+                        height: 12,
+                      ),
+                    if (profileData.specifications.length >= 1)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Text(
+                          profileData.specifications[0].name,
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ),
+                    if (profileData.specifications.length >= 2)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Text(
+                          profileData.specifications[1].name,
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ),
+                    if (profileData.specifications.length >= 1)
+                      SizedBox(
+                        height: 8,
+                      ),
+                    if (profileData.specifications.length >= 3)
+                      Text(
+                        '+${profileData.specifications.length - 2} ' +
+                            locale.more,
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle1!
+                            .copyWith(color: Theme.of(context).primaryColor),
+                      )
+                  ],
+                ),
+              ),
+              Divider(
+                thickness: 6,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 8),
+                    child: Row(
+                      children: [
+                        Text(
+                          locale.availability,
                           style:
                               Theme.of(context).textTheme.subtitle2!.copyWith(
                                     color: Theme.of(context).disabledColor,
                                     fontSize: 15,
                                   ),
                         ),
+                        Spacer(),
                         buildTextButton(
                           text: locale.update,
-                          onPress:
-                              isExpAndFeesLoading ? null : updateExpAndFees,
+                          onPress: () {},
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: EntryField(
-                            controller: _expController,
-                            prefixIcon: Icons.work,
-                            textInputType: TextInputType.number,
-                            onValidate: (text) {
-                              if (text == null || text.isEmpty) {
-                                return 'Experience can\'t be empty';
-                              } else if (double.tryParse(text) == null) {
-                                return 'Enter a valid number';
-                              } else {
-                                return null;
-                              }
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(locale.years),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    EntryField(
-                      controller: _feesController,
-                      prefixIcon: Icons.paid,
-                      textInputType: TextInputType.number,
-                      onValidate: (text) {
-                        if (text == null || text.isEmpty) {
-                          return 'Fees can\'t be empty';
-                        } else if (double.tryParse(text) == null) {
-                          return 'Enter a valid number';
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Divider(thickness: 6),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 8,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        locale.services,
-                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                            color: Theme.of(context).disabledColor,
-                            fontSize: 15),
-                      ),
-                      Spacer(),
-                      buildTextButton(
-                        text: locale.edit,
-                        onPress: () {
-                          Navigator.pushNamed(
-                            context,
-                            PageRoutes.addService,
-                            arguments: profileData.services,
-                          );
-                        },
-                      ),
-                    ],
                   ),
-                  if (profileData.services.length >= 1)
-                    SizedBox(
-                      height: 12,
-                    ),
-                  if (profileData.services.length >= 1)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: Text(
-                        profileData.services[0].name,
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                    ),
-                  if (profileData.services.length >= 2)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: Text(
-                        profileData.services[1].name,
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                    ),
-                  if (profileData.services.length >= 1)
-                    SizedBox(
-                      height: 8,
-                    ),
-                  if (profileData.services.length >= 3)
-                    Text(
-                      '+${profileData.services.length - 2} ' + locale.more,
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle1!
-                          .copyWith(color: Theme.of(context).primaryColor),
-                    ),
-                ],
-              ),
-            ),
-            Divider(thickness: 6),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        locale.specifications,
-                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                            color: Theme.of(context).disabledColor,
-                            fontSize: 15),
-                      ),
-                      Spacer(),
-                      buildTextButton(
-                        text: locale.edit,
-                        onPress: () {
-                          Navigator.pushNamed(
-                            context,
-                            PageRoutes.addSpecialization,
-                            arguments: profileData.specifications,
-                          );
-                        },
-                      ),
-                    ],
+                  SizedBox(
+                    height: 12,
                   ),
-                  if (profileData.specifications.length >= 1)
-                    SizedBox(
-                      height: 12,
-                    ),
-                  if (profileData.specifications.length >= 1)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: Text(
-                        profileData.specifications[0].name,
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                    ),
-                  if (profileData.specifications.length >= 2)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: Text(
-                        profileData.specifications[1].name,
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                    ),
-                  if (profileData.specifications.length >= 1)
-                    SizedBox(
-                      height: 8,
-                    ),
-                  if (profileData.specifications.length >= 3)
-                    Text(
-                      '+${profileData.specifications.length - 2} ' +
-                          locale.more,
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle1!
-                          .copyWith(color: Theme.of(context).primaryColor),
-                    )
-                ],
-              ),
-            ),
-            Divider(
-              thickness: 6,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-                  child: Row(
-                    children: [
-                      Text(
-                        locale.availability,
-                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                              color: Theme.of(context).disabledColor,
-                              fontSize: 15,
-                            ),
-                      ),
-                      Spacer(),
-                      buildTextButton(
-                        text: locale.update,
-                        onPress: () {},
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 12,
-                ),
-                ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: profileData.availabilities.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    final availabilityItem = profileData.availabilities[index];
-                    return BlocBuilder<ProfileCubit, ProfileState>(
-                      builder: (context, state) {
-                        return Padding(
-                          padding:
-                              EdgeInsetsDirectional.only(end: 8, bottom: 6),
-                          child: Row(
-                            children: [
-                              Checkbox(
-                                value: availabilityItem.isChecked,
-                                onChanged: (val) {
-                                  if (val != null) {
-                                    profileData.setDayCheck(index, val);
-                                  }
-                                },
-                                activeColor: Theme.of(context).primaryColor,
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  availabilityItem.day.capitalize(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1!
-                                      .copyWith(
-                                        color: Theme.of(context).disabledColor,
-                                      ),
+                  ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: profileData.availabilities.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      final availabilityItem =
+                          profileData.availabilities[index];
+                      return BlocBuilder<ProfileCubit, ProfileState>(
+                        builder: (context, state) {
+                          return Padding(
+                            padding:
+                                EdgeInsetsDirectional.only(end: 8, bottom: 6),
+                            child: Row(
+                              children: [
+                                Checkbox(
+                                  value: availabilityItem.isChecked,
+                                  onChanged: (val) {
+                                    if (val != null) {
+                                      profileData.setDayCheck(index, val);
+                                    }
+                                  },
+                                  activeColor: Theme.of(context).primaryColor,
                                 ),
-                              ),
-                              _buildTimeSlotButton(
-                                isFrom: true,
-                                availabilityItem: availabilityItem,
-                                index: index,
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 4.0),
-                                child: Text(locale.to),
-                              ),
-                              _buildTimeSlotButton(
-                                isFrom: false,
-                                availabilityItem: availabilityItem,
-                                index: index,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                )
-              ],
-            ),
-            SizedBox(
-              height: 16,
-            ),
-          ],
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    availabilityItem.day.capitalize(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1!
+                                        .copyWith(
+                                          color:
+                                              Theme.of(context).disabledColor,
+                                        ),
+                                  ),
+                                ),
+                                _buildTimeSlotButton(
+                                  isFrom: true,
+                                  availabilityItem: availabilityItem,
+                                  index: index,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 4.0),
+                                  child: Text(locale.to),
+                                ),
+                                _buildTimeSlotButton(
+                                  isFrom: false,
+                                  availabilityItem: availabilityItem,
+                                  index: index,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 16,
+              ),
+            ],
+          ),
+          beginOffset: Offset(0, 0.3),
+          endOffset: Offset(0, 0),
+          slideCurve: Curves.linearToEaseOut,
         ),
-        beginOffset: Offset(0, 0.3),
-        endOffset: Offset(0, 0),
-        slideCurve: Curves.linearToEaseOut,
       ),
     );
   }

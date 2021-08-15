@@ -64,8 +64,9 @@ class _ReviewsPageState extends State<ReviewsPage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       FadedScaleAnimation(
-                        Image.network(
-                          reviewsData.user?.image ?? imagePlaceHolderError,
+                        SharedWidgets.buildImgNetwork(
+                          imgUrl:
+                              reviewsData.user?.image ?? imagePlaceHolderError,
                           width: MediaQuery.of(context).size.width / 2.5,
                         ),
                         durationInMilliseconds: 400,
@@ -219,11 +220,11 @@ class _ReviewsPageState extends State<ReviewsPage> {
                 ),
                 reviewsData.reviews.length == 0
                     ? SizedBox(
-                      height: 75,
-                      child: Center(
+                        height: 75,
+                        child: Center(
                           child: Text(locale.noReviewsAvailable),
                         ),
-                    )
+                      )
                     : ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         itemCount: reviewsData.reviews.length,

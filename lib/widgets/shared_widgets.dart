@@ -54,7 +54,7 @@ class SharedWidgets {
     double? height,
   }) {
     return Image.network(
-      '',
+      imgUrl,
       width: width,
       height: height,
       loadingBuilder: (

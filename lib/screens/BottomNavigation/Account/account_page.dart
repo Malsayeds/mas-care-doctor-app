@@ -127,8 +127,8 @@ class _AccountPageState extends State<AccountPage> {
                   child: Row(
                     children: [
                       FadedScaleAnimation(
-                        Image.network(
-                          userData.user?.image ?? imagePlaceHolderError,
+                        SharedWidgets.buildImgNetwork(
+                          imgUrl: userData.user?.image ?? imagePlaceHolderError,
                           width: MediaQuery.of(context).size.width / 2.5,
                         ),
                         durationInMilliseconds: 400,
