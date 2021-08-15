@@ -35,6 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   bool isPersonalInfoLoading = false;
   bool isExpAndFeesLoading = false;
+  bool isAvailabilityLoading = false;
 
   @override
   void initState() {
@@ -228,6 +229,26 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+  // Future<void> updateAvailability() async {
+  //   try {
+  //     setState(() {
+  //       isAvailabilityLoading = true;
+  //     });
+  //     final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
+  //     await profileData.updateSpecializations(
+  //         specializations: this.specializations);
+  //     SharedWidgets.showToast(msg: 'Specializations Updated Successfully');
+  //     setState(() {
+  //       isAvailabilityLoading = false;
+  //     });
+  //   } catch (e) {
+  //     setState(() {
+  //       isAvailabilityLoading = false;
+  //     });
+  //     SharedWidgets.showToast(msg: INTERNET_WARNING_MESSAGE);
+  //   }
+  // }
 
   TextButton buildTextButton({
     required String text,

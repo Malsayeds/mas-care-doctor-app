@@ -16,13 +16,16 @@ class SupportPage extends StatefulWidget {
 }
 
 class _SupportPageState extends State<SupportPage> {
-  bool _isLoading = false;
+  final contactSupportFormKey = GlobalKey<FormState>();
+
   final emailController = TextEditingController();
   final messageController = TextEditingController();
 
+  bool _isLoading = false;
+
   Future<void> _sendSupportMessage() async {
     try {
-      final isValid = Keys().contactSupportFormKey.currentState?.validate();
+      final isValid = contactSupportFormKey.currentState?.validate();
       if (isValid ?? false) {
         setState(() {
           _isLoading = true;
@@ -76,7 +79,7 @@ class _SupportPageState extends State<SupportPage> {
             child: Padding(
               padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
               child: Form(
-                key: Keys().contactSupportFormKey,
+                key: contactSupportFormKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [

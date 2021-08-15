@@ -21,6 +21,8 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  final registerFormKey = GlobalKey<FormState>();
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
@@ -37,7 +39,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   ]);
 
   Future<void> registerUser() async {
-    final isValid = Keys().registerFormKey.currentState?.validate();
+    final isValid = registerFormKey.currentState?.validate();
     if (isValid ?? false) {
       try {
         setState(() {
@@ -94,7 +96,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       body: FadedSlideAnimation(
         SingleChildScrollView(
           child: Form(
-            key: Keys().registerFormKey,
+            key: registerFormKey,
             child: Padding(
               padding: EdgeInsets.all(20.0),
               child: Column(

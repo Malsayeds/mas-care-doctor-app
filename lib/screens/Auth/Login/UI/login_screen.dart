@@ -22,8 +22,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final loginFormKey = GlobalKey<FormState>();
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
   bool isHidden = true;
   bool isLoading = false;
 
@@ -36,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
   ]);
 
   Future<void> loginUser() async {
-    final isValid = Keys.loginFormKey.currentState?.validate();
+    final isValid = loginFormKey.currentState?.validate();
     if (isValid ?? false) {
       try {
         setState(() {
@@ -113,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Padding(
                   padding: EdgeInsets.all(20.0),
                   child: Form(
-                    key: Keys.loginFormKey,
+                    key: loginFormKey,
                     child: Column(
                       children: [
                         SizedBox(

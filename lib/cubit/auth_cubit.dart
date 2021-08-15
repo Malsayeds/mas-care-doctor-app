@@ -30,7 +30,7 @@ class AuthCubit extends Cubit<AuthState> {
             "email": email,
             "password": password,
             "name": '$firstName $lastName',
-            "phone": phone,
+            "contact_number": phone,
             "role_name": ROLE_NAME,
           },
           options: Options(headers: {
@@ -53,6 +53,9 @@ class AuthCubit extends Cubit<AuthState> {
       print(e.error);
       print(e.response);
       String errorMessage = '';
+      if (e.response?.statusCode == 422) {
+        throw AuthException(e.response?.data['message'][0]);
+      }
       if (e.type == DioErrorType.response) {
         (e.response?.data as Map<String, List<String>>).forEach((key, value) {
           errorMessage += '${value[0]}\n';
