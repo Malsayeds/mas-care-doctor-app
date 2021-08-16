@@ -35,6 +35,15 @@ class SharedWidgets {
           );
   }
 
+  static Future<void> launchPhoneCall(String phone) async {
+    await canLaunch('tel:$phone')
+        ? await launch('tel:$phone')
+        : showToast(
+            msg: 'Could not Call $phone',
+            isError: true,
+          );
+  }
+
   static void showToast({
     required String msg,
     bool? isError,

@@ -168,5 +168,7 @@
   "phoneNumber": "Phone Number",
   "noApptsFoundToday": "No appointments found for today.",
   "noApptsFoundTomorrow": "No appointments found for tomorrow.",
-  "noReviewsAvailable": "No reviews available"
+  "noReviewsAvailable": "No reviews available",
+  "approve": "Approve",
+  "reject": "Reject"
 }

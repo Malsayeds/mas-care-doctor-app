@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:doctoworld_doctor/cubit/appointments_cubit.dart';
 import 'package:doctoworld_doctor/models/appointment.dart';
@@ -8,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import "package:doctoworld_doctor/utils/extensions.dart";
 
 class MyAppointmentsPage extends StatelessWidget {
   @override
@@ -49,34 +52,114 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
     }
   }
 
-  Widget buildAppointmentCard(Appointment appt) {
+  Widget buildAppointmentBottomSheet(BuildContext ctx) {
+    final locale = AppLocalizations.of(context)!;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
-      color: Colors.white,
-      child: Stack(
-        children: [
-          Row(
-            children: [
-              FadedScaleAnimation(
-                Image.network(
-                  appt.image ?? imagePlaceHolderError,
-                  width: 75,
-                  height: 75,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 48,
+              child: TextButton(
+                onPressed: () async {},
+                child: Text(locale.approve),
+                style: TextButton.styleFrom(
+                  textStyle: TextStyle(
+                    fontSize: 18,
+                    color: greenColor,
+                  ),
                 ),
-                durationInMilliseconds: 400,
               ),
-              SizedBox(
-                width: 12,
+            ),
+            Divider(
+              color: Colors.grey,
+            ),
+            SizedBox(
+              height: 48,
+              child: TextButton(
+                onPressed: () async {},
+                child: Text(locale.reject),
+                style: TextButton.styleFrom(
+                  textStyle: TextStyle(
+                    fontSize: 18,
+                    color: redColor,
+                  ),
+                ),
               ),
-              Column(
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String getStatusText(int status) {
+    return status == 0
+        ? 'Pending'
+        : status == 1
+            ? 'Approved'
+            : 'Rejected';
+  }
+
+  Widget buildAppointmentCard(Appointment appt) {
+    return InkWell(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(kBorderRadius),
+              topLeft: Radius.circular(kBorderRadius),
+            ),
+          ),
+          builder: (ctx) {
+            return buildAppointmentBottomSheet(ctx);
+          },
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
+        color: Colors.white,
+        child: Row(
+          children: [
+            FadedScaleAnimation(
+              Image.network(
+                appt.image ?? imagePlaceHolderError,
+                width: 75,
+                height: 75,
+              ),
+              durationInMilliseconds: 400,
+            ),
+            SizedBox(
+              width: 12,
+            ),
+            Expanded(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    appt.patientName,
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1!
-                        .copyWith(fontWeight: FontWeight.w600),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          appt.patientName,
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1!
+                              .copyWith(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      Text(
+                        getStatusText(appt.status),
+                        style: TextStyle(
+                          color: appt.status.getStatusColor(),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(
                     height: 4,
@@ -89,56 +172,60 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
                   SizedBox(
                     height: 10,
                   ),
-                  Text('${appt.date} | ${appt.time}'),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '${appt.date} | ${appt.time}',
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          if (appt.phone != null) {
+                            await SharedWidgets.launchPhoneCall(appt.phone!);
+                          } else {
+                            SharedWidgets.showToast(
+                                msg: 'No Phone number specified');
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: FadedScaleAnimation(
+                            Icon(
+                              Icons.call,
+                              color: Theme.of(context).primaryColor,
+                              size: 18,
+                            ),
+                            durationInMilliseconds: 400,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, ChatScreen.ROUTE_NAME);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: FadedScaleAnimation(
+                            Icon(
+                              Icons.message,
+                              color: Theme.of(context).primaryColor,
+                              size: 18,
+                            ),
+                            durationInMilliseconds: 400,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ],
               ),
-            ],
-          ),
-          PositionedDirectional(
-            bottom: 0,
-            end: 6,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 10,
-                ),
-                InkWell(
-                  onTap: () {},
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: FadedScaleAnimation(
-                      Icon(
-                        Icons.call,
-                        color: Theme.of(context).primaryColor,
-                        size: 18,
-                      ),
-                      durationInMilliseconds: 400,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, ChatScreen.ROUTE_NAME);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: FadedScaleAnimation(
-                      Icon(
-                        Icons.message,
-                        color: Theme.of(context).primaryColor,
-                        size: 18,
-                      ),
-                      durationInMilliseconds: 400,
-                    ),
-                  ),
-                )
-              ],
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }

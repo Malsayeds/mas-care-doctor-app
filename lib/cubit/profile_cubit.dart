@@ -40,50 +40,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   User? user;
 
-  List<Availability> _availabilities = [
-    Availability(
-      isChecked: true,
-      day: 'fri',
-      from: TimeOfDay(hour: 1, minute: 0),
-      to: TimeOfDay(hour: 2, minute: 0),
-    ),
-    Availability(
-      isChecked: true,
-      day: 'sat',
-      from: TimeOfDay(hour: 1, minute: 0),
-      to: TimeOfDay(hour: 2, minute: 0),
-    ),
-    Availability(
-      isChecked: false,
-      day: 'sun',
-      from: TimeOfDay(hour: 1, minute: 0),
-      to: TimeOfDay(hour: 2, minute: 0),
-    ),
-    Availability(
-      isChecked: true,
-      day: 'mon',
-      from: TimeOfDay(hour: 1, minute: 0),
-      to: TimeOfDay(hour: 2, minute: 0),
-    ),
-    Availability(
-      isChecked: true,
-      day: 'tue',
-      from: TimeOfDay(hour: 1, minute: 0),
-      to: TimeOfDay(hour: 2, minute: 0),
-    ),
-    Availability(
-      isChecked: true,
-      day: 'wed',
-      from: TimeOfDay(hour: 1, minute: 0),
-      to: TimeOfDay(hour: 2, minute: 0),
-    ),
-    Availability(
-      isChecked: true,
-      day: 'thu',
-      from: TimeOfDay(hour: 1, minute: 0),
-      to: TimeOfDay(hour: 2, minute: 0),
-    ),
-  ];
+  List<Availability> _availabilities = [];
 
   List<Service> _services = [];
   List<Specialization> _specifications = [];

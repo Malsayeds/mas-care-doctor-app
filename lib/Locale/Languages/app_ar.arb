@@ -168,5 +168,7 @@
   "phoneNumber": "رقم الهاتف",
   "noApptsFoundToday": "لا يوجد مواعيد محجوزة اليوم",
   "noApptsFoundTomorrow": "لا يوجد مواعيد محجوزة غدا",
-  "noReviewsAvailable": "لا يوجد تقييمات"
+  "noReviewsAvailable": "لا يوجد تقييمات",
+  "approve": "قبول",
+  "reject": "رفض"
 }
