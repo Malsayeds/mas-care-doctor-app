@@ -236,6 +236,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               ListTile(
                                 leading: CircleAvatar(
@@ -301,18 +302,16 @@ class _ReviewsPageState extends State<ReviewsPage> {
                                   ],
                                 ),
                               ),
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 20.0, right: 20.0, bottom: 10.0),
-                                    child: Text(
-                                      reviewsData.reviews[index].review,
-                                      textAlign: TextAlign.start,
-                                    ),
-                                  ),
-                                  Spacer(),
-                                ],
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 20.0,
+                                  right: 20.0,
+                                  bottom: 10.0,
+                                ),
+                                child: Text(
+                                  reviewsData.reviews[index].review,
+                                  textAlign: TextAlign.start,
+                                ),
                               ),
                               Divider(thickness: 6),
                             ],

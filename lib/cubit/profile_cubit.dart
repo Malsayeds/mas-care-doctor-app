@@ -23,14 +23,49 @@ class ProfileCubit extends Cubit<ProfileState> {
     dio = Dio();
   }
 
-  final List<String> daysOfWeek = const [
-    'Sat',
-    'Sun',
-    'Mon',
-    'Tue',
-    'Wed',
-    'Thu',
-    'Fri',
+  List<Availability> _availabilities = [
+    Availability(
+      day: 'Saturday',
+      from: TimeOfDay(hour: 0, minute: 0),
+      to: TimeOfDay(hour: 0, minute: 0),
+      isChecked: false,
+    ),
+    Availability(
+      day: 'Sunday',
+      from: TimeOfDay(hour: 0, minute: 0),
+      to: TimeOfDay(hour: 0, minute: 0),
+      isChecked: false,
+    ),
+    Availability(
+      day: 'Monday',
+      from: TimeOfDay(hour: 0, minute: 0),
+      to: TimeOfDay(hour: 0, minute: 0),
+      isChecked: false,
+    ),
+    Availability(
+      day: 'Tuesday',
+      from: TimeOfDay(hour: 0, minute: 0),
+      to: TimeOfDay(hour: 0, minute: 0),
+      isChecked: false,
+    ),
+    Availability(
+      day: 'Wednesday',
+      from: TimeOfDay(hour: 0, minute: 0),
+      to: TimeOfDay(hour: 0, minute: 0),
+      isChecked: false,
+    ),
+    Availability(
+      day: 'Thursday',
+      from: TimeOfDay(hour: 0, minute: 0),
+      to: TimeOfDay(hour: 0, minute: 0),
+      isChecked: false,
+    ),
+    Availability(
+      day: 'Friday',
+      from: TimeOfDay(hour: 0, minute: 0),
+      to: TimeOfDay(hour: 0, minute: 0),
+      isChecked: false,
+    ),
   ];
 
   late Dio dio;
@@ -39,8 +74,6 @@ class ProfileCubit extends Cubit<ProfileState> {
   String termsAndConditionsText = '';
 
   User? user;
-
-  List<Availability> _availabilities = [];
 
   List<Service> _services = [];
   List<Specialization> _specifications = [];
@@ -243,6 +276,56 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  Future<void> updateAvailabilities() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(ApiRoutes.UPDATE_AVAILABITLITY);
+      print(availabilities
+          .where((avail) => avail.isChecked)
+          .map((avail) => {
+                'day': avail.day,
+                'from': '${avail.from.hour}:${avail.from.minute}',
+                'to': '${avail.to.hour}:${avail.to.minute}',
+              })
+          .toList());
+      Response response = await dio.put(
+        ApiRoutes.UPDATE_AVAILABITLITY,
+        data: {
+          'available_times': availabilities
+              .where((avail) => avail.isChecked)
+              .map((avail) => {
+                    'day': avail.day,
+                    'from': '${avail.from.hour}:${avail.from.minute}',
+                    'to': '${avail.to.hour}:${avail.to.minute}',
+                  })
+              .toList(),
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+      final Map<String, dynamic>? decodedResponseBody = response.data;
+
+      print(decodedResponseBody);
+      print(response.statusCode);
+
+      if (response.statusCode == 200) {
+        emit(AvailabilitiesUpdatedState());
+      }
+    } on DioError catch (e) {
+      print(e.response?.statusCode);
+      print(e.response?.data);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticateUser();
+      }
+      throw INTERNET_WARNING_MESSAGE;
+    }
+  }
+
   Future<void> updateHospitals({
     required List<Hospital> hospitals,
   }) async {
@@ -341,6 +424,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(response.statusCode);
       if (response.statusCode == 200) {
         if (decodedResponseBody != null) {
+          List<Availability> checkedAvailabilities = [];
           user = User.fromJson(decodedResponseBody['data']['user']);
           _services = (decodedResponseBody['data']['services'] as List<dynamic>)
               .map((serv) => Service.fromJson(serv))
@@ -349,7 +433,7 @@ class ProfileCubit extends Cubit<ProfileState> {
               (decodedResponseBody['data']['specifications'] as List<dynamic>)
                   .map((spec) => Specialization.fromJson(spec))
                   .toList();
-          _availabilities =
+          checkedAvailabilities =
               (decodedResponseBody['data']['available_times'] as List<dynamic>)
                   .map((json) => Availability.fromJson(json))
                   .toList();
@@ -357,16 +441,16 @@ class ProfileCubit extends Cubit<ProfileState> {
               (decodedResponseBody['data']['hospitals'] as List<dynamic>)
                   .map((json) => Hospital.fromJson(json))
                   .toList();
-          List<String> unCheckedDays = getDisabledAvailabilities(
-              decodedResponseBody['data']['available_times']);
-          unCheckedDays.forEach((day) {
-            _availabilities.add(Availability(
-              day: day,
-              from: TimeOfDay(hour: 0, minute: 0),
-              to: TimeOfDay(hour: 0, minute: 0),
-              isChecked: false,
-            ));
-          });
+
+          for (int i = 0; i < _availabilities.length; i++) {
+            for (int j = 0; j < checkedAvailabilities.length; j++) {
+              if (_availabilities[i] == checkedAvailabilities[j]) {
+                _availabilities[i] = checkedAvailabilities[j];
+                print(_availabilities[i].toString());
+              }
+            }
+          }
+
           emit(ProfileLoadedState());
         }
       }
@@ -380,16 +464,6 @@ class ProfileCubit extends Cubit<ProfileState> {
       }
       throw INTERNET_WARNING_MESSAGE;
     }
-  }
-
-  List<String> getDisabledAvailabilities(List<dynamic> responseAvail) {
-    List<String> unCheckedDays = daysOfWeek;
-    for (Map<String, String> res in responseAvail) {
-      if (res['day'] != null && daysOfWeek.contains(res['day'])) {
-        unCheckedDays.remove(res['day']);
-      }
-    }
-    return unCheckedDays;
   }
 
   Future<void> getFAQs() async {

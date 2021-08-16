@@ -230,25 +230,24 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  // Future<void> updateAvailability() async {
-  //   try {
-  //     setState(() {
-  //       isAvailabilityLoading = true;
-  //     });
-  //     final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
-  //     await profileData.updateSpecializations(
-  //         specializations: this.specializations);
-  //     SharedWidgets.showToast(msg: 'Specializations Updated Successfully');
-  //     setState(() {
-  //       isAvailabilityLoading = false;
-  //     });
-  //   } catch (e) {
-  //     setState(() {
-  //       isAvailabilityLoading = false;
-  //     });
-  //     SharedWidgets.showToast(msg: INTERNET_WARNING_MESSAGE);
-  //   }
-  // }
+  Future<void> updateAvailability() async {
+    try {
+      setState(() {
+        isAvailabilityLoading = true;
+      });
+      final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
+      await profileData.updateAvailabilities();
+      SharedWidgets.showToast(msg: 'Availabilities Updated Successfully');
+      setState(() {
+        isAvailabilityLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isAvailabilityLoading = false;
+      });
+      SharedWidgets.showToast(msg: INTERNET_WARNING_MESSAGE);
+    }
+  }
 
   TextButton buildTextButton({
     required String text,
@@ -695,7 +694,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         Spacer(),
                         buildTextButton(
                           text: locale.update,
-                          onPress: () {},
+                          onPress:
+                              isAvailabilityLoading ? null : updateAvailability,
                         ),
                       ],
                     ),
@@ -729,7 +729,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Expanded(
                                   flex: 2,
                                   child: Text(
-                                    availabilityItem.day.capitalize(),
+                                    availabilityItem.day
+                                        .substring(0, 3)
+                                        .capitalize(),
                                     style: Theme.of(context)
                                         .textTheme
                                         .subtitle1!

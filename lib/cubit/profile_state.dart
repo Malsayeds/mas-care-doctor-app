@@ -26,3 +26,5 @@ class ExperienceAndFeesUpdatedState extends ProfileState {}
 class ServicesUpdatedState extends ProfileState {}
 
 class SpecializationsUpdatedState extends ProfileState {}
+
+class AvailabilitiesUpdatedState extends ProfileState {}

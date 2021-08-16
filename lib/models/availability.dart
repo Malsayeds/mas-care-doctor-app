@@ -1,8 +1,9 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-class Availability {
+class Availability extends Equatable {
   bool isChecked;
-  String day;
+  final String day;
   TimeOfDay from;
   TimeOfDay to;
 
@@ -12,6 +13,9 @@ class Availability {
     required this.from,
     required this.to,
   });
+
+  @override
+  List<Object> get props => [day];
 
   @override
   String toString() => 'Data(day: $day, from: $from, to: $to)';
