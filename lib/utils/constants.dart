@@ -12,7 +12,7 @@ final Color greenColor = Colors.greenAccent[700]!;
 
 const String ROLE_NAME = 'Doctor';
 
-const double kBorderRadius = 8.0;
+const double kBorderRadius = 4.0;
 
 const String INTERNET_WARNING_MESSAGE =
     'Check your internet connection then try again.';

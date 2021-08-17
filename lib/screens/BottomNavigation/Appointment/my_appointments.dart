@@ -26,6 +26,7 @@ class MyAppointmentsBody extends StatefulWidget {
 
 class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
   bool _isLoading = false;
+  bool _isStatusLoading = false;
 
   @override
   void initState() {
@@ -52,7 +53,7 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
     }
   }
 
-  Widget buildAppointmentBottomSheet(BuildContext ctx) {
+  Widget buildAppointmentBottomSheet(BuildContext ctx, Appointment appt) {
     final locale = AppLocalizations.of(context)!;
     return Container(
       child: Padding(
@@ -64,12 +65,22 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
             SizedBox(
               height: 48,
               child: TextButton(
-                onPressed: () async {},
-                child: Text(locale.approve),
+                onPressed: _isStatusLoading
+                    ? null
+                    : appt.status == 1
+                        ? null
+                        : () async {
+                            await updateStatus(appt, 1);
+                            Navigator.of(context).pop();
+                            await getAppointments();
+                          },
+                child: Text(
+                  locale.approve,
+                ),
                 style: TextButton.styleFrom(
+                  primary: greenColor,
                   textStyle: TextStyle(
                     fontSize: 18,
-                    color: greenColor,
                   ),
                 ),
               ),
@@ -80,14 +91,23 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
             SizedBox(
               height: 48,
               child: TextButton(
-                onPressed: () async {},
-                child: Text(locale.reject),
-                style: TextButton.styleFrom(
-                  textStyle: TextStyle(
-                    fontSize: 18,
-                    color: redColor,
-                  ),
+                onPressed: _isStatusLoading
+                    ? null
+                    : appt.status == 2
+                        ? null
+                        : () async {
+                            await updateStatus(appt, 2);
+                            Navigator.of(context).pop();
+                            await getAppointments();
+                          },
+                child: Text(
+                  locale.reject,
                 ),
+                style: TextButton.styleFrom(
+                    primary: redColor,
+                    textStyle: TextStyle(
+                      fontSize: 18,
+                    )),
               ),
             ),
           ],
@@ -104,127 +124,157 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
             : 'Rejected';
   }
 
+  Future<void> updateStatus(Appointment appt, int newStatus) async {
+    try {
+      setState(() {
+        _isStatusLoading = true;
+      });
+      final apptData =
+          BlocProvider.of<AppointmentsCubit>(context, listen: false);
+      await apptData.editAppointmentStatus(
+        apptId: appt.id,
+        status: newStatus,
+      );
+      setState(() {
+        _isStatusLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isStatusLoading = false;
+      });
+      SharedWidgets.showToast(msg: e.toString());
+    }
+  }
+
   Widget buildAppointmentCard(Appointment appt) {
-    return InkWell(
-      onTap: () {
-        showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(kBorderRadius),
-              topLeft: Radius.circular(kBorderRadius),
+    final width = MediaQuery.of(context).size.width;
+    return Card(
+      margin: const EdgeInsets.all(0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0),
+      ),
+      color: Colors.white,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(0),
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(kBorderRadius),
+                topLeft: Radius.circular(kBorderRadius),
+              ),
             ),
+            builder: (ctx) {
+              return buildAppointmentBottomSheet(ctx, appt);
+            },
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
+          child: Row(
+            children: [
+              FadedScaleAnimation(
+                Image.network(
+                  appt.image ?? imagePlaceHolderError,
+                  width: 75,
+                  height: 75,
+                ),
+                durationInMilliseconds: 400,
+              ),
+              SizedBox(
+                width: 12,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            appt.patientName,
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1!
+                                .copyWith(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        Text(
+                          getStatusText(appt.status),
+                          style: TextStyle(
+                            color: appt.status.getStatusColor(),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      appt.diagnosis ?? '',
+                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                          fontSize: 12, color: Theme.of(context).disabledColor),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '${appt.date} | ${appt.time}',
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            if (appt.phone != null) {
+                              await SharedWidgets.launchPhoneCall(appt.phone!);
+                            } else {
+                              SharedWidgets.showToast(
+                                  msg: 'No Phone number specified');
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: FadedScaleAnimation(
+                              Icon(
+                                Icons.call,
+                                color: Theme.of(context).primaryColor,
+                                size: 18,
+                              ),
+                              durationInMilliseconds: 400,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(context, ChatScreen.ROUTE_NAME);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: FadedScaleAnimation(
+                              Icon(
+                                Icons.message,
+                                color: Theme.of(context).primaryColor,
+                                size: 18,
+                              ),
+                              durationInMilliseconds: 400,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          builder: (ctx) {
-            return buildAppointmentBottomSheet(ctx);
-          },
-        );
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
-        color: Colors.white,
-        child: Row(
-          children: [
-            FadedScaleAnimation(
-              Image.network(
-                appt.image ?? imagePlaceHolderError,
-                width: 75,
-                height: 75,
-              ),
-              durationInMilliseconds: 400,
-            ),
-            SizedBox(
-              width: 12,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          appt.patientName,
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle1!
-                              .copyWith(fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      Text(
-                        getStatusText(appt.status),
-                        style: TextStyle(
-                          color: appt.status.getStatusColor(),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Text(
-                    appt.diagnosis ?? '',
-                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                        fontSize: 12, color: Theme.of(context).disabledColor),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          '${appt.date} | ${appt.time}',
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () async {
-                          if (appt.phone != null) {
-                            await SharedWidgets.launchPhoneCall(appt.phone!);
-                          } else {
-                            SharedWidgets.showToast(
-                                msg: 'No Phone number specified');
-                          }
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: FadedScaleAnimation(
-                            Icon(
-                              Icons.call,
-                              color: Theme.of(context).primaryColor,
-                              size: 18,
-                            ),
-                            durationInMilliseconds: 400,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(context, ChatScreen.ROUTE_NAME);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: FadedScaleAnimation(
-                            Icon(
-                              Icons.message,
-                              color: Theme.of(context).primaryColor,
-                              size: 18,
-                            ),
-                            durationInMilliseconds: 400,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
         ),
       ),
     );

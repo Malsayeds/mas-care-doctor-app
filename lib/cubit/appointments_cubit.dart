@@ -5,7 +5,6 @@ import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
 import 'package:doctoworld_doctor/utils/api_routes.dart';
 import 'package:doctoworld_doctor/utils/config.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
-import 'package:doctoworld_doctor/utils/keys.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,6 +16,43 @@ class AppointmentsCubit extends Cubit<AppointmentsState> {
 
   List<Appointment> todayAppointments = [];
   List<Appointment> tomorrowAppointments = [];
+
+  Future<void> editAppointmentStatus(
+      {required int apptId, required int status}) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(ApiRoutes.UPDATE_APPT_STATUS);
+      Response response = await dio.put(
+        ApiRoutes.UPDATE_APPT_STATUS,
+        data: {
+          'appointment_id': apptId,
+          'status': status,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+      final Map<String, dynamic>? decodedResponseBody = response.data;
+
+      print(decodedResponseBody);
+      print(response.statusCode);
+
+      if (response.statusCode == 200) {
+        emit(AppointmentStatusChangedState());
+      }
+    } on DioError catch (e) {
+      print(e.response?.statusCode);
+      print(e.response?.data);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticateUser();
+      }
+      throw INTERNET_WARNING_MESSAGE;
+    }
+  }
 
   Future<void> getAppointments() async {
     try {

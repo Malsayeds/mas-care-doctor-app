@@ -13,7 +13,8 @@ class ApiRoutes {
   static const String UPDATE_PERSONAL_INFO = BASE_URL + 'doctor/profile/update';
   static const String UPDATE_HOSPITAL = BASE_URL + 'doctor/hospital/update';
   static const String UPDATE_AVAILABITLITY = BASE_URL + 'doctor/time/update';
-  static const String UPDATE_SPECIFICATION = BASE_URL + 'doctor/specification/update';
+  static const String UPDATE_SPECIFICATION =
+      BASE_URL + 'doctor/specification/update';
   static const String UPDATE_SERVICES = BASE_URL + 'doctor/service/update';
   static const String UPDATE_FEES_EXPERIENCE = BASE_URL + 'doctor/fees/update';
   static const String CONTACT_SUPPORT = BASE_URL + 'doctor/contact-support';
@@ -23,6 +24,7 @@ class ApiRoutes {
 
   //? Appointments
   static const String appointments = BASE_URL + 'doctor/appointments';
+    static const String UPDATE_APPT_STATUS = BASE_URL + 'doctor/appointment/edit';
   static const String reviews = BASE_URL + 'doctor/reviews';
 
   //? Reviews
