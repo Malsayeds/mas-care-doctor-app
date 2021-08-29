@@ -21,11 +21,12 @@ class ApiRoutes {
   static const String FAQ = BASE_URL + 'general/faqs?app_type=doctor';
   static const String TERMS_AND_CONDITIONS =
       BASE_URL + 'general/terms_conditions';
+  static const String CHANGE_LANGUAGE = BASE_URL + 'change-language';
 
   //? Appointments
   static const String appointments = BASE_URL + 'doctor/appointments';
-    static const String UPDATE_APPT_STATUS = BASE_URL + 'doctor/appointment/edit';
+  static const String UPDATE_APPT_STATUS = BASE_URL + 'doctor/appointment/edit';
   static const String reviews = BASE_URL + 'doctor/reviews';
 
-  //? Reviews
+//? Reviews
 }

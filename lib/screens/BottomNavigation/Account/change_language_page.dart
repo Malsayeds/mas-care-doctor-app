@@ -1,6 +1,9 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
+import 'package:doctoworld_doctor/cubit/auth_cubit.dart';
+import 'package:doctoworld_doctor/cubit/profile_cubit.dart';
 import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
+import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Locale/language_cubit.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -10,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChangeLanguagePage extends StatefulWidget {
   static const String ROUTE_NAME = 'language_page';
+
   @override
   _ChangeLanguagePageState createState() => _ChangeLanguagePageState();
 }
@@ -17,6 +21,7 @@ class ChangeLanguagePage extends StatefulWidget {
 class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
   late LanguageCubit _languageCubit;
   int? _selectedLanguage = -1;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -24,8 +29,18 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
     _languageCubit = BlocProvider.of<LanguageCubit>(context, listen: false);
   }
 
+  Future<void> getUserData() async {
+    try {
+      final apptData = BlocProvider.of<ProfileCubit>(context, listen: false);
+      await apptData.getProfileData();
+    } catch (e) {
+      SharedWidgets.showToast(msg: e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final authData = BlocProvider.of<AuthCubit>(context);
     final List<String> _languages = [
       'English',
       'عربى',
@@ -36,30 +51,52 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)!.changeLanguage),
           ),
-          body: FadedSlideAnimation(
-            ListView.builder(
-              itemCount: _languages.length,
-              itemBuilder: (context, index) => ListTile(
-                title: Text(_languages[index]),
-                onTap: () async {
-                  _selectedLanguage = index;
-                  if (_selectedLanguage == 0) {
-                    await _languageCubit.selectEngLanguage();
-                  } else if (_selectedLanguage == 1) {
-                    await _languageCubit.selectArabicLanguage();
-                  } else {
-                    await _languageCubit.selectEngLanguage();
-                  }
-                  setState(() {
-                    _selectedLanguage = index;
-                  });
-                },
-              ),
-            ),
-            beginOffset: Offset(0, 0.3),
-            endOffset: Offset(0, 0),
-            slideCurve: Curves.linearToEaseOut,
-          ),
+          body: isLoading
+              ? SharedWidgets.showLoader()
+              : FadedSlideAnimation(
+                  ListView.builder(
+                    itemCount: _languages.length,
+                    itemBuilder: (context, index) => ListTile(
+                      title: Text(_languages[index]),
+                      onTap: () async {
+                        try {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          print(index);
+                          _selectedLanguage = index;
+                          if (_selectedLanguage == 0) {
+                            await authData.changeLanguage('en');
+                            await _languageCubit.selectEngLanguage();
+                          } else if (_selectedLanguage == 1) {
+                            await authData.changeLanguage('ar');
+                            await _languageCubit.selectArabicLanguage();
+                          } else {
+                            await authData.changeLanguage('en');
+                            await _languageCubit.selectEngLanguage();
+                          }
+                          await getUserData();
+
+                          setState(() {
+                            _selectedLanguage = index;
+                            isLoading = false;
+                          });
+                        } catch (e) {
+                          SharedWidgets.showToast(
+                            msg: INTERNET_WARNING_MESSAGE,
+                            isError: true,
+                          );
+                          setState(() {
+                            isLoading = false;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                  beginOffset: Offset(0, 0.3),
+                  endOffset: Offset(0, 0),
+                  slideCurve: Curves.linearToEaseOut,
+                ),
         );
       },
     );

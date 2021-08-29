@@ -11,7 +11,7 @@ class LanguageCubit extends Cubit<Locale> {
   Future<void> selectEngLanguage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(LOCALE_KEY, 'en');
-    print('selectArabicLanguage: en');
+    print('selectEnglishLanguage: en');
     emit(Locale('en'));
   }
 

@@ -107,6 +107,8 @@ class SharedWidgets {
   }
 
   static Widget showLoader() {
-    return CircularProgressIndicator.adaptive();
+    return Center(
+      child: CircularProgressIndicator.adaptive(),
+    );
   }
 }

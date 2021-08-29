@@ -10,3 +10,5 @@ class UserRegisteredSuccessfullyState extends AuthState {}
 class UserLoggedInSuccessfullyState extends AuthState {}
 
 class UserLoggedOutSuccessfullyState extends AuthState {}
+
+class UserChangedLanguageState extends AuthState {}

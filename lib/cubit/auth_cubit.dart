@@ -31,6 +31,7 @@ class AuthCubit extends Cubit<AuthState> {
             "password": password,
             "name": '$firstName $lastName',
             "contact_number": phone,
+            "language": prefs.getString(LOCALE_KEY) ?? DEFAULT_LANGUAGE_CODE,
             "role_name": ROLE_NAME,
           },
           options: Options(headers: {
@@ -105,6 +106,42 @@ class AuthCubit extends Cubit<AuthState> {
     } catch (e) {
       print(e.toString());
       throw e;
+    }
+  }
+
+  Future<void> changeLanguage(String langCode) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(ApiRoutes.CHANGE_LANGUAGE);
+      Response response = await dio.post(
+        ApiRoutes.CHANGE_LANGUAGE,
+        data: {
+          "language": langCode,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+      final decodedResponseBody = response.data;
+      print(decodedResponseBody);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        emit(UserChangedLanguageState());
+      } else {
+        throw INTERNET_WARNING_MESSAGE;
+      }
+    } on DioError catch (e) {
+      print(e.error);
+      print(e.response?.statusCode);
+      print(e.response?.data);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticateUser();
+      }
+      throw INTERNET_WARNING_MESSAGE;
     }
   }
 

@@ -6,6 +6,8 @@ const String imagePlaceHolderError =
 const String LOCALE_KEY = 'locale';
 const String TOKEN_KEY = 'accessToken';
 
+const String DEFAULT_LANGUAGE_CODE = 'en';
+
 const Color mainColor = Color(0xffc59433);
 final Color redColor = Colors.red[600]!;
 final Color greenColor = Colors.greenAccent[700]!;
