@@ -1,11 +1,12 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
-import 'package:doctoworld_doctor/cubit/profile_cubit.dart';
+import 'package:doctoworld_doctor/providers/profile.dart';
 import 'package:doctoworld_doctor/models/faq_question.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FAQPage extends StatefulWidget {
   @override
@@ -42,7 +43,7 @@ class _FAQPageState extends State<FAQPage> {
       setState(() {
         _isLoading = true;
       });
-      final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
+      final profileData = Provider.of<Profile>(context, listen: false);
       await profileData.getFAQs();
       setState(() {
         _isLoading = false;
@@ -58,7 +59,7 @@ class _FAQPageState extends State<FAQPage> {
   @override
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
-    final profileData = BlocProvider.of<ProfileCubit>(context);
+    final profileData = Provider.of<Profile>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(locale.faq),

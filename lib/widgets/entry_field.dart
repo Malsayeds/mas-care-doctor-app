@@ -1,7 +1,11 @@
+import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class EntryField extends StatelessWidget {
   final String? hint;
+  final String? label;
+  final String? prefixText;
+  final String? suffixText;
   final IconData? prefixIcon;
   final Color? color;
   final TextEditingController? controller;
@@ -20,6 +24,9 @@ class EntryField extends StatelessWidget {
 
   EntryField({
     this.hint,
+    this.label,
+    this.prefixText,
+    this.suffixText,
     this.prefixIcon,
     this.color,
     this.controller,
@@ -56,6 +63,8 @@ class EntryField extends StatelessWidget {
                 color: Theme.of(context).primaryColor,
               )
             : null,
+        prefixText: prefixText,
+        suffixText: suffixText,
         suffixIcon: IconButton(
           icon: Icon(
             suffixIcon,
@@ -64,10 +73,11 @@ class EntryField extends StatelessWidget {
           onPressed: suffixOnTap,
         ),
         hintText: hint,
+        labelText: label,
         filled: true,
         fillColor: color ?? Theme.of(context).primaryColorLight,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(kBorderRadius),
           borderSide: BorderSide.none,
         ),
       ),

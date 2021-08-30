@@ -143,7 +143,7 @@
   "consultant": "مستشار",
   "diabetologist": "مرض السكر",
   "servicesAt": "الخدمات في",
-  "expFees": "تجربة والرسوم",
+  "expFees": "المؤهلات و التكلفة",
   "years": "سنوات",
   "services": "خدمات",
   "edit": "تعديل",
@@ -170,5 +170,6 @@
   "noApptsFoundTomorrow": "لا يوجد مواعيد محجوزة غدا",
   "noReviewsAvailable": "لا يوجد تقييمات",
   "approve": "قبول",
-  "reject": "رفض"
+  "reject": "رفض",
+  "clinicDetails": "تفاصيل العيادة"
 }

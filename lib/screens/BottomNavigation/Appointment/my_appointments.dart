@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:animation_wrappers/animation_wrappers.dart';
-import 'package:doctoworld_doctor/cubit/appointments_cubit.dart';
+import 'package:doctoworld_doctor/providers/appointments.dart';
 import 'package:doctoworld_doctor/models/appointment.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Appointment/chat_page.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
@@ -11,6 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import "package:doctoworld_doctor/utils/extensions.dart";
+import 'package:provider/provider.dart';
 
 class MyAppointmentsPage extends StatelessWidget {
   @override
@@ -40,7 +41,7 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
         _isLoading = true;
       });
       final apptData =
-          BlocProvider.of<AppointmentsCubit>(context, listen: false);
+          Provider.of<Appointments>(context, listen: false);
       await apptData.getAppointments();
       setState(() {
         _isLoading = false;
@@ -130,7 +131,7 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
         _isStatusLoading = true;
       });
       final apptData =
-          BlocProvider.of<AppointmentsCubit>(context, listen: false);
+      Provider.of<Appointments>(context, listen: false);
       await apptData.editAppointmentStatus(
         apptId: appt.id,
         status: newStatus,
@@ -283,7 +284,7 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
   @override
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
-    final apptsData = BlocProvider.of<AppointmentsCubit>(context);
+    final apptsData = Provider.of<Appointments>(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColorLight,

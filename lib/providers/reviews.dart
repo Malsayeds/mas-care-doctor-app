@@ -6,13 +6,11 @@ import 'package:doctoworld_doctor/models/user.dart';
 import 'package:doctoworld_doctor/utils/api_routes.dart';
 import 'package:doctoworld_doctor/utils/config.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
+import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'reviews_state.dart';
-
-class ReviewsCubit extends Cubit<ReviewsState> {
-  ReviewsCubit() : super(ReviewsInitial());
+class Reviews extends ChangeNotifier {
   Dio dio = Dio();
 
   double avgReviews = 0;
@@ -52,7 +50,7 @@ class ReviewsCubit extends Cubit<ReviewsState> {
           rates = (decodedResponseBody['data']['rates'] as List<dynamic>)
               .map((map) => Rate.fromJson(map))
               .toList();
-          emit(ReviewsLoadedState());
+          notifyListeners();
         }
       }
     } on DioError catch (e) {

@@ -1,9 +1,10 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
-import 'package:doctoworld_doctor/cubit/reviews_cubit.dart';
+import 'package:doctoworld_doctor/providers/reviews.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import '../../../utils/Theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -28,7 +29,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
       setState(() {
         _isLoading = true;
       });
-      final reviewsData = BlocProvider.of<ReviewsCubit>(context, listen: false);
+      final reviewsData = Provider.of<Reviews>(context, listen: false);
       await reviewsData.getReviews();
       setState(() {
         _isLoading = false;
@@ -44,7 +45,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
   @override
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
-    final reviewsData = BlocProvider.of<ReviewsCubit>(context);
+    final reviewsData = Provider.of<Reviews>(context);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,

@@ -1,6 +1,6 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
-import 'package:doctoworld_doctor/cubit/auth_cubit.dart';
-import 'package:doctoworld_doctor/cubit/profile_cubit.dart';
+import 'package:doctoworld_doctor/providers/auth.dart';
+import 'package:doctoworld_doctor/providers/profile.dart';
 import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/change_language_page.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/profile_page.dart';
@@ -9,6 +9,7 @@ import 'package:doctoworld_doctor/utils/keys.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import '../../../utils/Routes/routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class MenuTile {
   String? subtitle;
   IconData iconData;
   Function onTap;
+
   MenuTile(this.title, this.subtitle, this.iconData, this.onTap);
 }
 
@@ -41,7 +43,7 @@ class _AccountPageState extends State<AccountPage> {
       setState(() {
         _isLoading = true;
       });
-      final apptData = BlocProvider.of<ProfileCubit>(context, listen: false);
+      final apptData = Provider.of<Profile>(context, listen: false);
       await apptData.getProfileData();
       setState(() {
         _isLoading = false;
@@ -57,7 +59,7 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
-    final userData = BlocProvider.of<ProfileCubit>(context);
+    final userData = Provider.of<Profile>(context);
     List<MenuTile> _menu = [
       MenuTile(
         locale.myProfile,
@@ -104,7 +106,7 @@ class _AccountPageState extends State<AccountPage> {
         locale.seeYouSoon,
         Icons.exit_to_app,
         () async {
-          final authData = BlocProvider.of<AuthCubit>(context, listen: false);
+          final authData = Provider.of<Auth>(context, listen: false);
           await authData.logout();
         },
       ),

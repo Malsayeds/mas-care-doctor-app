@@ -5,13 +5,11 @@ import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
 import 'package:doctoworld_doctor/utils/api_routes.dart';
 import 'package:doctoworld_doctor/utils/config.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'appointments_state.dart';
-
-class AppointmentsCubit extends Cubit<AppointmentsState> {
-  AppointmentsCubit() : super(AppointmentsInitial());
+class Appointments extends ChangeNotifier {
   Dio dio = Dio();
 
   List<Appointment> todayAppointments = [];
@@ -42,7 +40,7 @@ class AppointmentsCubit extends Cubit<AppointmentsState> {
       print(response.statusCode);
 
       if (response.statusCode == 200) {
-        emit(AppointmentStatusChangedState());
+        notifyListeners();
       }
     } on DioError catch (e) {
       print(e.response?.statusCode);
@@ -83,7 +81,7 @@ class AppointmentsCubit extends Cubit<AppointmentsState> {
               (decodedResponseBody['data']['tomorrow'] as List<dynamic>)
                   .map((json) => Appointment.fromJson(json))
                   .toList();
-          emit(AppointmentsLoadedState());
+          notifyListeners();
         }
       }
     } on DioError catch (e) {

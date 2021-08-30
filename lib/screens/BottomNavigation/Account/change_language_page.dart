@@ -1,9 +1,11 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
-import 'package:doctoworld_doctor/cubit/auth_cubit.dart';
-import 'package:doctoworld_doctor/cubit/profile_cubit.dart';
+import 'package:doctoworld_doctor/providers/auth.dart';
+import 'package:doctoworld_doctor/providers/profile.dart';
 import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
+import 'package:doctoworld_doctor/screens/splash_screen.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Locale/language_cubit.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -20,7 +22,6 @@ class ChangeLanguagePage extends StatefulWidget {
 
 class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
   late LanguageCubit _languageCubit;
-  int? _selectedLanguage = -1;
   bool isLoading = false;
 
   @override
@@ -31,7 +32,7 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
 
   Future<void> getUserData() async {
     try {
-      final apptData = BlocProvider.of<ProfileCubit>(context, listen: false);
+      final apptData = Provider.of<Profile>(context, listen: false);
       await apptData.getProfileData();
     } catch (e) {
       SharedWidgets.showToast(msg: e.toString());
@@ -40,7 +41,7 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
 
   @override
   Widget build(BuildContext context) {
-    final authData = BlocProvider.of<AuthCubit>(context);
+    final authData = Provider.of<Auth>(context);
     final List<String> _languages = [
       'English',
       'عربى',
@@ -64,11 +65,10 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
                             isLoading = true;
                           });
                           print(index);
-                          _selectedLanguage = index;
-                          if (_selectedLanguage == 0) {
+                          if (index == 0) {
                             await authData.changeLanguage('en');
                             await _languageCubit.selectEngLanguage();
-                          } else if (_selectedLanguage == 1) {
+                          } else if (index == 1) {
                             await authData.changeLanguage('ar');
                             await _languageCubit.selectArabicLanguage();
                           } else {
@@ -76,12 +76,11 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
                             await _languageCubit.selectEngLanguage();
                           }
                           await getUserData();
-
                           setState(() {
-                            _selectedLanguage = index;
                             isLoading = false;
                           });
                         } catch (e) {
+                          print(e);
                           SharedWidgets.showToast(
                             msg: INTERNET_WARNING_MESSAGE,
                             isError: true,

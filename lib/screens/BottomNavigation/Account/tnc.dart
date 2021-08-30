@@ -1,9 +1,9 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
-import 'package:doctoworld_doctor/cubit/profile_cubit.dart';
+import 'package:doctoworld_doctor/providers/profile.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class TnCPage extends StatefulWidget {
   @override
@@ -23,7 +23,7 @@ class _TnCPageState extends State<TnCPage> {
       setState(() {
         _isLoading = true;
       });
-      final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
+      final profileData = Provider.of<Profile>(context, listen: false);
       await profileData.getTermsAndConditions();
       setState(() {
         _isLoading = false;
@@ -39,7 +39,7 @@ class _TnCPageState extends State<TnCPage> {
   @override
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
-    final profileData = BlocProvider.of<ProfileCubit>(context);
+    final profileData = Provider.of<Profile>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(locale.termsNConditions),

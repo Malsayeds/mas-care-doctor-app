@@ -1,9 +1,10 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
-import 'package:doctoworld_doctor/cubit/profile_cubit.dart';
+import 'package:doctoworld_doctor/providers/profile.dart';
 import 'package:doctoworld_doctor/models/hospital.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/entry_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -37,7 +38,7 @@ class _AddHospitalState extends State<AddHospital> {
       setState(() {
         isLoading = true;
       });
-      final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
+      final profileData = Provider.of<Profile>(context, listen: false);
       await profileData.updateHospitals(hospitals: this.hospitals);
       SharedWidgets.showToast(msg: 'Hospitals Updated Successfully');
       setState(() {
@@ -53,7 +54,7 @@ class _AddHospitalState extends State<AddHospital> {
 
   @override
   Widget build(BuildContext context) {
-    final profileData = BlocProvider.of<ProfileCubit>(context);
+    final profileData = Provider.of<Profile>(context);
     var locale = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(

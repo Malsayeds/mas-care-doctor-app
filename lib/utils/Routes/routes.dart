@@ -9,6 +9,7 @@ import 'package:doctoworld_doctor/screens/BottomNavigation/Account/faq_page.dart
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/profile_page.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/support_page.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/tnc.dart';
+import 'package:doctoworld_doctor/screens/BottomNavigation/Appointment/appointment_details.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Appointment/chat_page.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/bottom_navigation.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,7 @@ class PageRoutes {
       LoginScreen.ROUTE: (context) => LoginScreen(),
       RegistrationScreen.ROUTE: (context) => RegistrationScreen(),
       VerificationScreen.ROUTE: (context) => VerificationScreen(),
+      AppointmentDetails.ROUTE_NAME: (context) => AppointmentDetails(),
     };
   }
 }

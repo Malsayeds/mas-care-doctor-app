@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
+  static const String ROUTE_NAME = '/splashScreen';
 
   @override
   _SplashScreenState createState() => _SplashScreenState();

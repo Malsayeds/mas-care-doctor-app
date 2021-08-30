@@ -1,4 +1,4 @@
-import 'package:doctoworld_doctor/cubit/auth_cubit.dart';
+import 'package:doctoworld_doctor/providers/auth.dart';
 import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
 import 'package:doctoworld_doctor/utils/Theme/colors.dart';
 import 'package:doctoworld_doctor/utils/keys.dart';

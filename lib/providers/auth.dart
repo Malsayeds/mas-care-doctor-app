@@ -1,19 +1,14 @@
-import 'package:bloc/bloc.dart';
 import 'package:doctoworld_doctor/exceptions/auth_exception.dart';
 import 'package:doctoworld_doctor/utils/api_routes.dart';
 import 'package:doctoworld_doctor/utils/config.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'auth_state.dart';
-
-class AuthCubit extends Cubit<AuthState> {
+class Auth with ChangeNotifier {
   Dio dio = Dio();
-
-  AuthCubit() : super(AuthInitial());
 
   Future<void> registerWithEmailAndPasswrod({
     required String email,
@@ -44,7 +39,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (response.statusCode == 200) {
         print(decodedResponseBody['access_token']);
         await prefs.setString(TOKEN_KEY, decodedResponseBody['access_token']);
-        emit(UserRegisteredSuccessfullyState());
+
       } else {
         throw AuthException(response.data['error']);
       }
@@ -92,7 +87,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (response.statusCode == 200) {
         print(decodedResponseBody['access_token']);
         await prefs.setString(TOKEN_KEY, decodedResponseBody['access_token']);
-        emit(UserLoggedInSuccessfullyState());
+        notifyListeners();
       }
     } on DioError catch (e) {
       print(e.error);
@@ -130,7 +125,7 @@ class AuthCubit extends Cubit<AuthState> {
       print(decodedResponseBody);
       print(response.statusCode);
       if (response.statusCode == 200) {
-        emit(UserChangedLanguageState());
+        notifyListeners();
       } else {
         throw INTERNET_WARNING_MESSAGE;
       }
@@ -165,7 +160,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (response.statusCode == 200) {
         SharedWidgets.showToast(msg: decodedResponseBody['message']);
         await Config.unAuthenticateUser();
-        emit(UserLoggedOutSuccessfullyState());
+        notifyListeners();
       } else {
         throw INTERNET_WARNING_MESSAGE;
       }

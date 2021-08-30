@@ -13,13 +13,10 @@ import 'package:doctoworld_doctor/utils/config.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'profile_state.dart';
-
-class ProfileCubit extends Cubit<ProfileState> {
-  ProfileCubit() : super(ProfileInitialState()) {
+class Profile extends ChangeNotifier {
+  Profile() {
     dio = Dio();
   }
 
@@ -80,32 +77,42 @@ class ProfileCubit extends Cubit<ProfileState> {
   List<Hospital> _hospitals = [];
 
   List<Availability> get availabilities => _availabilities;
+
   List<Service> get services => _services;
+
   List<Specialization> get specifications => _specifications;
+
   List<Hospital> get hospitals => _hospitals;
 
   void setFromDate(int i, TimeOfDay FromTime) {
     availabilities[i].from = FromTime;
-    emit(FromTimeChangedState());
+    notifyListeners();
   }
 
   void setToDate(int i, TimeOfDay FromTime) {
     availabilities[i].to = FromTime;
-    emit(ToTimeChangedState());
+    notifyListeners();
   }
 
   void setDayCheck(int i, bool isChecked) {
     availabilities[i].isChecked = isChecked;
-    emit(DayTimeChangedState());
+    notifyListeners();
   }
 
   Future<void> updatePersonalInfo({
     required String name,
     required String phone,
     required String email,
+    required String address,
+    required String bio,
+    required String about,
+    required String title,
+    required String qualification,
   }) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      String langCode = prefs.getString(LOCALE_KEY) ?? 'en';
+      print(langCode);
       print(ApiRoutes.UPDATE_PERSONAL_INFO);
       Response response = await dio.put(
         ApiRoutes.UPDATE_PERSONAL_INFO,
@@ -113,6 +120,11 @@ class ProfileCubit extends Cubit<ProfileState> {
           'name': name,
           'contact_number': phone,
           'email': email,
+          'detailed_address': address,
+          'bio': bio,
+          'about': about,
+          'title': title,
+          'qualification': qualification,
         },
         options: Options(
           headers: {
@@ -128,7 +140,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(response.statusCode);
 
       if (response.statusCode == 200) {
-        emit(PersonalInfoUpdatedState());
+        notifyListeners();
       }
     } on DioError catch (e) {
       print(e.response?.data);
@@ -150,8 +162,10 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   Future<void> updateExperienceAndFees({
-    required String years,
     required String fees,
+    required String consFees,
+    required bool canApproveCoupons,
+    required bool canCheckUpHome,
   }) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -159,8 +173,10 @@ class ProfileCubit extends Cubit<ProfileState> {
       Response response = await dio.put(
         ApiRoutes.UPDATE_FEES_EXPERIENCE,
         data: {
-          'experience': years,
           'fees': fees,
+          'consultation_fees': consFees,
+          'approved_coupons': canApproveCoupons,
+          'inhome_checkup': canCheckUpHome
         },
         options: Options(
           headers: {
@@ -176,7 +192,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(response.statusCode);
 
       if (response.statusCode == 200) {
-        emit(ExperienceAndFeesUpdatedState());
+        notifyListeners();
       }
     } on DioError catch (e) {
       print(e.response?.statusCode);
@@ -220,7 +236,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(response.statusCode);
 
       if (response.statusCode == 200) {
-        emit(ServicesUpdatedState());
+        notifyListeners();
       }
     } on DioError catch (e) {
       print(e.response?.statusCode);
@@ -264,7 +280,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(response.statusCode);
 
       if (response.statusCode == 200) {
-        emit(SpecializationsUpdatedState());
+        notifyListeners();
       }
     } on DioError catch (e) {
       print(e.response?.statusCode);
@@ -314,7 +330,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(response.statusCode);
 
       if (response.statusCode == 200) {
-        emit(AvailabilitiesUpdatedState());
+        notifyListeners();
       }
     } on DioError catch (e) {
       print(e.response?.statusCode);
@@ -358,7 +374,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(response.statusCode);
 
       if (response.statusCode == 200) {
-        emit(SpecializationsUpdatedState());
+        notifyListeners();
       }
     } on DioError catch (e) {
       print(e.response?.statusCode);
@@ -451,7 +467,7 @@ class ProfileCubit extends Cubit<ProfileState> {
             }
           }
 
-          emit(ProfileLoadedState());
+          notifyListeners();
         }
       }
 
@@ -487,7 +503,7 @@ class ProfileCubit extends Cubit<ProfileState> {
               .map((e) => FAQQuestion.fromJson(e))
               .toList();
           print(faqs);
-          emit(FAQsLoadedSuccessfullyState());
+          notifyListeners();
         }
       } else {
         print('sadcscd');
@@ -525,7 +541,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         if (decodedResponseBody != null) {
           termsAndConditionsText = decodedResponseBody['body'];
           print(faqs);
-          emit(FAQsLoadedSuccessfullyState());
+          notifyListeners();
         }
       } else {
         throw Exception();
@@ -563,7 +579,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       print(response.statusCode);
       if (response.statusCode == 200) {
         SharedWidgets.showToast(msg: decodedResponseBody['message']);
-        emit(SupportMessageSentState());
+        notifyListeners();
       } else {
         throw INTERNET_WARNING_MESSAGE;
       }

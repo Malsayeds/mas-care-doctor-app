@@ -143,7 +143,7 @@
   "consultant": "Consultant",
   "diabetologist": "Diabetologist",
   "servicesAt": "Services at",
-  "expFees": "Experience & Fees",
+  "expFees": "Qualifications & Fees",
   "years": "years",
   "services": "Services",
   "edit": "EDIT",
@@ -170,5 +170,6 @@
   "noApptsFoundTomorrow": "No appointments found for tomorrow.",
   "noReviewsAvailable": "No reviews available",
   "approve": "Approve",
-  "reject": "Reject"
+  "reject": "Reject",
+  "clinicDetails": "Clinic Details"
 }

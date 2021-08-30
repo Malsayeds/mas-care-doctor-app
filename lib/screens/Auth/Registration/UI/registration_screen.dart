@@ -1,5 +1,6 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
-import 'package:doctoworld_doctor/cubit/auth_cubit.dart';
+import 'package:doctoworld_doctor/Locale/language_cubit.dart';
+import 'package:doctoworld_doctor/providers/auth.dart';
 import 'package:doctoworld_doctor/exceptions/auth_exception.dart';
 import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
 import 'package:doctoworld_doctor/screens/Auth/Verification/UI/verification_screen.dart';
@@ -9,6 +10,8 @@ import 'package:doctoworld_doctor/utils/keys.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../widgets/custom_button.dart';
 import '../../../../widgets/entry_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,6 +19,7 @@ import 'package:flutter/material.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String ROUTE = 'registrationScreen';
+
   @override
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }
@@ -45,7 +49,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         setState(() {
           isLoading = true;
         });
-        final authData = BlocProvider.of<AuthCubit>(context, listen: false);
+        final authData = Provider.of<Auth>(context, listen: false);
+        final langData = BlocProvider.of<LanguageCubit>(context, listen: false);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
         await authData.registerWithEmailAndPasswrod(
           email: _emailController.text,
           password: _passwordController.text,
@@ -53,6 +59,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           lastName: _lastNameController.text,
           phone: _phoneController.text,
         );
+        String? localeCode = prefs.getString(LOCALE_KEY);
+        langData.setLocale(localeCode ?? 'en');
         Navigator.of(context).pushNamed(VerificationScreen.ROUTE);
         setState(() {
           isLoading = false;

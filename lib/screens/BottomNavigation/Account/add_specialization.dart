@@ -1,9 +1,10 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
-import 'package:doctoworld_doctor/cubit/profile_cubit.dart';
+import 'package:doctoworld_doctor/providers/profile.dart';
 import 'package:doctoworld_doctor/models/specialization.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/entry_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -37,7 +38,7 @@ class _AddSpecializationState extends State<AddSpecialization> {
       setState(() {
         isLoading = true;
       });
-      final profileData = BlocProvider.of<ProfileCubit>(context, listen: false);
+      final profileData = Provider.of<Profile>(context, listen: false);
       await profileData.updateSpecializations(
           specializations: this.specializations);
       SharedWidgets.showToast(msg: 'Specializations Updated Successfully');
