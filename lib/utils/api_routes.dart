@@ -24,9 +24,10 @@ class ApiRoutes {
   static const String CHANGE_LANGUAGE = BASE_URL + 'change-language';
 
   //? Appointments
-  static const String appointments = BASE_URL + 'doctor/appointments';
+  static const String APPOINTMENTS = BASE_URL + 'doctor/appointments';
+  static const String APPOINTMENT_DETAILS = BASE_URL + 'doctor/patient-appointment';
   static const String UPDATE_APPT_STATUS = BASE_URL + 'doctor/appointment/edit';
-  static const String reviews = BASE_URL + 'doctor/reviews';
+  static const String REVIEWS = BASE_URL + 'doctor/reviews';
 
 //? Reviews
 }

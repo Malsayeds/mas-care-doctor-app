@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:doctoworld_doctor/models/appointment.dart';
+import 'package:doctoworld_doctor/models/patient.dart';
 import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
 import 'package:doctoworld_doctor/utils/api_routes.dart';
 import 'package:doctoworld_doctor/utils/config.dart';
@@ -14,6 +15,9 @@ class Appointments extends ChangeNotifier {
 
   List<Appointment> todayAppointments = [];
   List<Appointment> tomorrowAppointments = [];
+
+  Patient? patient;
+  Appointment? appointment;
 
   Future<void> editAppointmentStatus(
       {required int apptId, required int status}) async {
@@ -55,10 +59,10 @@ class Appointments extends ChangeNotifier {
   Future<void> getAppointments() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      print(ApiRoutes.appointments);
+      print(ApiRoutes.APPOINTMENTS);
       print('Bearer ${prefs.getString(TOKEN_KEY)}');
       Response<Map<String, dynamic>?> response = await dio.get(
-        ApiRoutes.appointments,
+        ApiRoutes.APPOINTMENTS,
         options: Options(
           headers: {
             'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
@@ -81,6 +85,45 @@ class Appointments extends ChangeNotifier {
               (decodedResponseBody['data']['tomorrow'] as List<dynamic>)
                   .map((json) => Appointment.fromJson(json))
                   .toList();
+          notifyListeners();
+        }
+      }
+    } on DioError catch (e) {
+      print(e.response?.data);
+      print(e.error);
+      if (e.response?.statusCode == 403) {
+        await Config.unAuthenticateUser();
+      }
+      throw INTERNET_WARNING_MESSAGE;
+    } catch (e) {
+      print(e.toString());
+      throw INTERNET_WARNING_MESSAGE;
+    }
+  }
+
+  Future<void> getAppointmentDetails(int apptId) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print('${ApiRoutes.APPOINTMENT_DETAILS}/$apptId');
+      print('Bearer ${prefs.getString(TOKEN_KEY)}');
+      Response<Map<String, dynamic>?> response = await dio.get(
+        '${ApiRoutes.APPOINTMENT_DETAILS}/$apptId',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+      final Map<String, dynamic>? decodedResponseBody = response.data;
+
+      print(decodedResponseBody);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        if (decodedResponseBody != null) {
+          appointment = Appointment.fromJson(decodedResponseBody['appointment']);
+          patient = Patient.fromMap(decodedResponseBody['patient']);
           notifyListeners();
         }
       }

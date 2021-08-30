@@ -1,14 +1,12 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:doctoworld_doctor/providers/auth.dart';
 import 'package:doctoworld_doctor/providers/profile.dart';
-import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/change_language_page.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/profile_page.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
-import 'package:doctoworld_doctor/utils/keys.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:provider/provider.dart';
 import '../../../utils/Routes/routes.dart';
 import 'package:flutter/cupertino.dart';

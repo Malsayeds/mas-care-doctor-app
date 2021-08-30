@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:doctoworld_doctor/providers/appointments.dart';
 import 'package:doctoworld_doctor/models/appointment.dart';
+import 'package:doctoworld_doctor/screens/BottomNavigation/Appointment/appointment_details.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Appointment/chat_page.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
@@ -27,7 +28,6 @@ class MyAppointmentsBody extends StatefulWidget {
 
 class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
   bool _isLoading = false;
-  bool _isStatusLoading = false;
 
   @override
   void initState() {
@@ -40,8 +40,7 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
       setState(() {
         _isLoading = true;
       });
-      final apptData =
-          Provider.of<Appointments>(context, listen: false);
+      final apptData = Provider.of<Appointments>(context, listen: false);
       await apptData.getAppointments();
       setState(() {
         _isLoading = false;
@@ -54,97 +53,12 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
     }
   }
 
-  Widget buildAppointmentBottomSheet(BuildContext ctx, Appointment appt) {
-    final locale = AppLocalizations.of(context)!;
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: 48,
-              child: TextButton(
-                onPressed: _isStatusLoading
-                    ? null
-                    : appt.status == 1
-                        ? null
-                        : () async {
-                            await updateStatus(appt, 1);
-                            Navigator.of(context).pop();
-                            await getAppointments();
-                          },
-                child: Text(
-                  locale.approve,
-                ),
-                style: TextButton.styleFrom(
-                  primary: greenColor,
-                  textStyle: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-            ),
-            Divider(
-              color: Colors.grey,
-            ),
-            SizedBox(
-              height: 48,
-              child: TextButton(
-                onPressed: _isStatusLoading
-                    ? null
-                    : appt.status == 2
-                        ? null
-                        : () async {
-                            await updateStatus(appt, 2);
-                            Navigator.of(context).pop();
-                            await getAppointments();
-                          },
-                child: Text(
-                  locale.reject,
-                ),
-                style: TextButton.styleFrom(
-                    primary: redColor,
-                    textStyle: TextStyle(
-                      fontSize: 18,
-                    )),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   String getStatusText(int status) {
     return status == 0
         ? 'Pending'
         : status == 1
             ? 'Approved'
             : 'Rejected';
-  }
-
-  Future<void> updateStatus(Appointment appt, int newStatus) async {
-    try {
-      setState(() {
-        _isStatusLoading = true;
-      });
-      final apptData =
-      Provider.of<Appointments>(context, listen: false);
-      await apptData.editAppointmentStatus(
-        apptId: appt.id,
-        status: newStatus,
-      );
-      setState(() {
-        _isStatusLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isStatusLoading = false;
-      });
-      SharedWidgets.showToast(msg: e.toString());
-    }
   }
 
   Widget buildAppointmentCard(Appointment appt) {
@@ -158,18 +72,9 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
       child: InkWell(
         borderRadius: BorderRadius.circular(0),
         onTap: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(kBorderRadius),
-                topLeft: Radius.circular(kBorderRadius),
-              ),
-            ),
-            builder: (ctx) {
-              return buildAppointmentBottomSheet(ctx, appt);
-            },
+          Navigator.of(context).pushNamed(
+            AppointmentDetails.ROUTE_NAME,
+            arguments: appt.id,
           );
         },
         child: Padding(
@@ -298,9 +203,7 @@ class _MyAppointmentsBodyState extends State<MyAppointmentsBody> {
         backgroundColor: Colors.white,
       ),
       body: _isLoading
-          ? Center(
-              child: SharedWidgets.showLoader(),
-            )
+          ? SharedWidgets.showLoader()
           : FadedSlideAnimation(
               ListView(
                 physics: BouncingScrollPhysics(),

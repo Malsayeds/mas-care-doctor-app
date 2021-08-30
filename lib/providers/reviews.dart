@@ -22,10 +22,10 @@ class Reviews extends ChangeNotifier {
   Future<void> getReviews() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      print(ApiRoutes.reviews);
+      print(ApiRoutes.REVIEWS);
       print('Bearer ${prefs.getString(TOKEN_KEY)}');
       Response<Map<String, dynamic>?> response = await dio.get(
-        ApiRoutes.reviews,
+        ApiRoutes.REVIEWS,
         options: Options(
           headers: {
             'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
