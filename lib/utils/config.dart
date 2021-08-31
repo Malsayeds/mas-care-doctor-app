@@ -1,4 +1,4 @@
-import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
+import 'package:doctoworld_doctor/screens/Auth/Login/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constants.dart';

@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:doctoworld_doctor/models/appointment.dart';
 import 'package:doctoworld_doctor/models/patient.dart';
-import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
+import 'package:doctoworld_doctor/screens/Auth/Login/login_screen.dart';
 import 'package:doctoworld_doctor/utils/api_routes.dart';
 import 'package:doctoworld_doctor/utils/config.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';

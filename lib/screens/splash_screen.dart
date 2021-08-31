@@ -1,5 +1,6 @@
 import 'package:doctoworld_doctor/Locale/language_cubit.dart';
-import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
+import 'package:doctoworld_doctor/screens/Auth/Login/login_screen.dart';
+import 'package:doctoworld_doctor/screens/Auth/Verification/identity_screen.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/change_language_page.dart';
 import 'package:doctoworld_doctor/utils/Routes/routes.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
@@ -26,12 +27,13 @@ class _SplashScreenState extends State<SplashScreen> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         String? localeCode = prefs.getString(LOCALE_KEY);
         langData.setLocale(localeCode ?? 'en');
-        if (prefs.getString(TOKEN_KEY) != null) {
-          Navigator.of(context)
-              .pushReplacementNamed(PageRoutes.bottomNavigation);
-        } else {
-          Navigator.of(context).pushReplacementNamed(LoginScreen.ROUTE);
-        }
+        Navigator.of(context).pushReplacementNamed(IdentityScreen.ROUTE_NAME);
+        // if (prefs.getString(TOKEN_KEY) != null) {
+        //   Navigator.of(context)
+        //       .pushReplacementNamed(PageRoutes.bottomNavigation);
+        // } else {
+        //   Navigator.of(context).pushReplacementNamed(LoginScreen.ROUTE);
+        // }
       },
     );
   }

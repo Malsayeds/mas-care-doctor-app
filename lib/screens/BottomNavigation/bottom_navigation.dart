@@ -1,5 +1,5 @@
 import 'package:doctoworld_doctor/providers/auth.dart';
-import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
+import 'package:doctoworld_doctor/screens/Auth/Login/login_screen.dart';
 import 'package:doctoworld_doctor/utils/Theme/colors.dart';
 import 'package:doctoworld_doctor/utils/keys.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

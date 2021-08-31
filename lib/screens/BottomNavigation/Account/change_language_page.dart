@@ -1,7 +1,7 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:doctoworld_doctor/providers/auth.dart';
 import 'package:doctoworld_doctor/providers/profile.dart';
-import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
+import 'package:doctoworld_doctor/screens/Auth/Login/login_screen.dart';
 import 'package:doctoworld_doctor/screens/splash_screen.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';

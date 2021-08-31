@@ -17,6 +17,7 @@ class EntryField extends StatelessWidget {
   final int? maxLines;
   final bool? isDense;
   final bool? isHidden;
+  bool canAutoValidate;
   final VoidCallback? onTap;
   final VoidCallback? suffixOnTap;
   final Function(String? text)? onSaved;
@@ -42,6 +43,7 @@ class EntryField extends StatelessWidget {
     this.onSaved,
     this.onValidate,
     this.suffixOnTap,
+    this.canAutoValidate = false,
   });
 
   @override
@@ -55,6 +57,7 @@ class EntryField extends StatelessWidget {
       obscureText: isHidden ?? false,
       textAlign: textAlign ?? TextAlign.start,
       keyboardType: textInputType,
+      autovalidateMode: canAutoValidate ? AutovalidateMode.onUserInteraction : null,
       decoration: InputDecoration(
         isDense: isDense ?? false,
         prefixIcon: prefixIcon != null

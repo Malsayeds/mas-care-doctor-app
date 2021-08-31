@@ -120,6 +120,7 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
         status: newStatus,
       );
       await getAppointmentDetails();
+      await getAppointments();
       setState(() {
         _isStatusLoading = false;
       });
@@ -127,6 +128,15 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
       setState(() {
         _isStatusLoading = false;
       });
+      SharedWidgets.showToast(msg: e.toString());
+    }
+  }
+
+  Future<void> getAppointments() async {
+    try {
+      final apptData = Provider.of<Appointments>(context, listen: false);
+      await apptData.getAppointments();
+    } catch (e) {
       SharedWidgets.showToast(msg: e.toString());
     }
   }
@@ -169,6 +179,7 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
                 child: Column(
                   children: [
                     ListTile(
+                      contentPadding: const EdgeInsets.all(0),
                       leading: apptData.patient?.image == null
                           ? null
                           : CircleAvatar(
@@ -177,15 +188,30 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
                               ),
                             ),
                       title: Text(apptData.patient?.name ?? ''),
-                      subtitle: Text(apptData.appointment?.diagnosis ?? ''),
-                      trailing: Text(
+                      subtitle: Text(
                         getStatusText(apptData.appointment?.status),
                         style: TextStyle(
                           color: apptData.appointment?.status.getStatusColor(),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      trailing: IconButton(
+                        onPressed: () async {
+                          if (apptData.patient?.phoneNumber != null) {
+                            await SharedWidgets.launchPhoneCall(
+                                apptData.patient!.phoneNumber!);
+                          } else {
+                            SharedWidgets.showToast(
+                                msg: 'No Phone number specified');
+                          }
+                        },
+                        icon: Icon(
+                          Icons.call,
+                          color: greenColor,
+                        ),
+                      ),
                     ),
+                    Divider(),
                     SizedBox(
                       height: sizedBoxHeight + 8,
                     ),

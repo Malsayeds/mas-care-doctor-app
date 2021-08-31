@@ -1,6 +1,8 @@
-import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
-import 'package:doctoworld_doctor/screens/Auth/Registration/UI/registration_screen.dart';
-import 'package:doctoworld_doctor/screens/Auth/Verification/UI/verification_screen.dart';
+import 'package:doctoworld_doctor/screens/Auth/Login/login_screen.dart';
+import 'package:doctoworld_doctor/screens/Auth/Registration/registration_screen.dart';
+import 'package:doctoworld_doctor/screens/Auth/Verification/identity_screen.dart';
+import 'package:doctoworld_doctor/screens/Auth/Verification/pending_screen.dart';
+import 'package:doctoworld_doctor/screens/Auth/Verification/verification_screen.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/add_hospital.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/add_service.dart';
 import 'package:doctoworld_doctor/screens/BottomNavigation/Account/add_specialization.dart';
@@ -41,6 +43,8 @@ class PageRoutes {
       RegistrationScreen.ROUTE: (context) => RegistrationScreen(),
       VerificationScreen.ROUTE: (context) => VerificationScreen(),
       AppointmentDetails.ROUTE_NAME: (context) => AppointmentDetails(),
+      IdentityScreen.ROUTE_NAME: (context) => IdentityScreen(),
+      PendingScreen.ROUTE_NAME: (context) => PendingScreen(),
     };
   }
 }
