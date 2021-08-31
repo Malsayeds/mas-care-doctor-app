@@ -171,5 +171,9 @@
   "noReviewsAvailable": "لا يوجد تقييمات",
   "approve": "قبول",
   "reject": "رفض",
-  "clinicDetails": "تفاصيل العيادة"
+  "approved": "مقبول",
+  "rejected": "مرفوض",
+  "clinicDetails": "تفاصيل العيادة",
+  "yes": "نعم",
+  "no": "لا"
 }

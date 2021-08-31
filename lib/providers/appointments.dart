@@ -6,6 +6,7 @@ import 'package:doctoworld_doctor/screens/Auth/Login/UI/login_screen.dart';
 import 'package:doctoworld_doctor/utils/api_routes.dart';
 import 'package:doctoworld_doctor/utils/config.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
+import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,6 +45,7 @@ class Appointments extends ChangeNotifier {
       print(response.statusCode);
 
       if (response.statusCode == 200) {
+        SharedWidgets.showToast(msg: decodedResponseBody?['message']);
         notifyListeners();
       }
     } on DioError catch (e) {

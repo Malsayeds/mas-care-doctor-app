@@ -171,5 +171,10 @@
   "noReviewsAvailable": "No reviews available",
   "approve": "Approve",
   "reject": "Reject",
-  "clinicDetails": "Clinic Details"
+  "approved": "Approved",
+  "rejected": "Rejected",
+  "clinicDetails": "Clinic Details",
+  "yes": "Yes",
+  "no": "No"
+
 }

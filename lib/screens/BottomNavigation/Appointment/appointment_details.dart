@@ -24,6 +24,10 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
   bool _isLoading = false;
   bool _isStatusLoading = false;
 
+  static const int PENDING_VALUE = 0;
+  static const int APPROVE_VALUE = 1;
+  static const int REJECT_VALUE = 2;
+
   Future<void> getAppointmentDetails() async {
     try {
       final apptData = Provider.of<Appointments>(context, listen: false);
@@ -39,7 +43,7 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
     }
   }
 
-  Widget buildAppointmentBottomSheet(String action) {
+  Widget buildAppointmentBottomSheet(String action, int statusValue) {
     final locale = AppLocalizations.of(context)!;
     return Container(
       child: Padding(
@@ -63,9 +67,11 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
                   child: SizedBox(
                     height: 48,
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                      },
                       child: Text(
-                        locale.reject,
+                        locale.no,
                       ),
                       style: TextButton.styleFrom(
                           primary: redColor,
@@ -79,9 +85,12 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
                   child: SizedBox(
                     height: 48,
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        await updateStatus(statusValue);
+                      },
                       child: Text(
-                        locale.approve,
+                        locale.yes,
                       ),
                       style: TextButton.styleFrom(
                         primary: greenColor,
@@ -110,6 +119,7 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
         apptId: id,
         status: newStatus,
       );
+      await getAppointmentDetails();
       setState(() {
         _isStatusLoading = false;
       });
@@ -134,11 +144,12 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
   }
 
   String getStatusText(int? status) {
-    return status == 0
-        ? 'Pending'
-        : status == 1
-            ? 'Approved'
-            : 'Rejected';
+    final locale = AppLocalizations.of(context)!;
+    return status == PENDING_VALUE
+        ? locale.pending
+        : status == APPROVE_VALUE
+            ? locale.approved
+            : locale.rejected;
   }
 
   @override
@@ -148,18 +159,6 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Appointment Details'),
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: Text(
-              getStatusText(apptData.appointment?.status),
-              style: TextStyle(
-                color: apptData.appointment?.status.getStatusColor(),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
       ),
       body: _isLoading
           ? SharedWidgets.showLoader()
@@ -169,27 +168,31 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
                     const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 child: Column(
                   children: [
-                    if (apptData.patient?.image != null)
-                      SharedWidgets.buildImgNetwork(
-                        imgUrl: apptData.patient!.image!,
+                    ListTile(
+                      leading: apptData.patient?.image == null
+                          ? null
+                          : CircleAvatar(
+                              child: SharedWidgets.buildImgNetwork(
+                                imgUrl: apptData.patient!.image!,
+                              ),
+                            ),
+                      title: Text(apptData.patient?.name ?? ''),
+                      subtitle: Text(apptData.appointment?.diagnosis ?? ''),
+                      trailing: Text(
+                        getStatusText(apptData.appointment?.status),
+                        style: TextStyle(
+                          color: apptData.appointment?.status.getStatusColor(),
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    if (apptData.patient?.image != null)
-                      SizedBox(
-                        height: sizedBoxHeight + 8,
-                      ),
-                    EntryField(
-                      initialValue: apptData.patient?.name,
-                      hint: 'Patient Name',
-                      label: 'Patient Name',
-                      readOnly: true,
                     ),
                     SizedBox(
-                      height: sizedBoxHeight,
+                      height: sizedBoxHeight + 8,
                     ),
                     EntryField(
                       initialValue: apptData.patient?.email,
-                      hint: 'Patient E-mail',
-                      label: 'Patient E-mail',
+                      hint: 'E-mail',
+                      label: 'E-mail',
                       readOnly: true,
                     ),
                     SizedBox(
@@ -197,8 +200,8 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
                     ),
                     EntryField(
                       initialValue: apptData.patient?.phoneNumber,
-                      hint: 'Patient Phone Number',
-                      label: 'Patient Phone Number',
+                      hint: 'Phone Number',
+                      label: 'Phone Number',
                       readOnly: true,
                     ),
                     SizedBox(
@@ -206,8 +209,8 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
                     ),
                     EntryField(
                       initialValue: apptData.patient?.diagnosis,
-                      hint: 'Patient Diagnosis',
-                      label: 'Patient Diagnosis',
+                      hint: 'Diagnosis',
+                      label: 'Diagnosis',
                       readOnly: true,
                     ),
                     SizedBox(
@@ -215,8 +218,8 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
                     ),
                     EntryField(
                       initialValue: apptData.patient?.gender,
-                      hint: 'Patient Gender',
-                      label: 'Patient Gender',
+                      hint: 'Gender',
+                      label: 'Gender',
                       readOnly: true,
                     ),
                     SizedBox(
@@ -224,8 +227,18 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
                     ),
                     EntryField(
                       initialValue: apptData.patient?.age.toString(),
-                      hint: 'Patient Age',
-                      label: 'Patient Age',
+                      hint: 'Age',
+                      label: 'Age',
+                      readOnly: true,
+                    ),
+                    SizedBox(
+                      height: sizedBoxHeight + 8,
+                    ),
+                    EntryField(
+                      initialValue:
+                          '${apptData.patient?.city}, ${apptData.patient?.area}',
+                      hint: 'Address',
+                      label: 'Address',
                       readOnly: true,
                     ),
                     SizedBox(
@@ -237,22 +250,28 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
                           child: SizedBox(
                             height: 48,
                             child: ElevatedButton(
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(kBorderRadius),
-                                      topLeft: Radius.circular(kBorderRadius),
-                                    ),
-                                  ),
-                                  builder: (ctx) {
-                                    return buildAppointmentBottomSheet(
-                                        'reject');
-                                  },
-                                );
-                              },
+                              onPressed: _isStatusLoading
+                                  ? null
+                                  : () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                            topRight:
+                                                Radius.circular(kBorderRadius),
+                                            topLeft:
+                                                Radius.circular(kBorderRadius),
+                                          ),
+                                        ),
+                                        builder: (ctx) {
+                                          return buildAppointmentBottomSheet(
+                                            'reject',
+                                            REJECT_VALUE,
+                                          );
+                                        },
+                                      );
+                                    },
                               style: ElevatedButton.styleFrom(
                                 primary: redColor,
                               ),
@@ -267,22 +286,28 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
                           child: SizedBox(
                             height: 48,
                             child: ElevatedButton(
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(kBorderRadius),
-                                      topLeft: Radius.circular(kBorderRadius),
-                                    ),
-                                  ),
-                                  builder: (ctx) {
-                                    return buildAppointmentBottomSheet(
-                                        'approve');
-                                  },
-                                );
-                              },
+                              onPressed: _isStatusLoading
+                                  ? null
+                                  : () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                            topRight:
+                                                Radius.circular(kBorderRadius),
+                                            topLeft:
+                                                Radius.circular(kBorderRadius),
+                                          ),
+                                        ),
+                                        builder: (ctx) {
+                                          return buildAppointmentBottomSheet(
+                                            'approve',
+                                            APPROVE_VALUE,
+                                          );
+                                        },
+                                      );
+                                    },
                               style: ElevatedButton.styleFrom(
                                 primary: greenColor,
                               ),
