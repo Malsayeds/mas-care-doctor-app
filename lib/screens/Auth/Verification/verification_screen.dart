@@ -72,7 +72,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
               SizedBox(height: 20.0),
               CustomButton(
                 onTap: () {
-                  Navigator.of(context).pushNamed(IdentityScreen.ROUTE_NAME);
+                  Navigator.of(context).pushReplacementNamed(IdentityScreen.ROUTE_NAME);
                 },
                 label: locale.submit,
               ),

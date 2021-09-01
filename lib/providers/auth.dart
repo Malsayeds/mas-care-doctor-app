@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:doctoworld_doctor/exceptions/auth_exception.dart';
 import 'package:doctoworld_doctor/utils/api_routes.dart';
 import 'package:doctoworld_doctor/utils/config.dart';
@@ -5,10 +7,15 @@ import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
+import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth with ChangeNotifier {
   Dio dio = Dio();
+  int isVerified = 0; // Documents Approved in Identity Screen
+  int hasCredentials = 0; // Doctor Uploaded Documents in Identity Screen
+  String? status;
+  String? message;
 
   Future<void> registerWithEmailAndPasswrod({
     required String email,
@@ -39,7 +46,6 @@ class Auth with ChangeNotifier {
       if (response.statusCode == 200) {
         print(decodedResponseBody['access_token']);
         await prefs.setString(TOKEN_KEY, decodedResponseBody['access_token']);
-
       } else {
         throw AuthException(response.data['error']);
       }
@@ -86,7 +92,14 @@ class Auth with ChangeNotifier {
       print(response.statusCode);
       if (response.statusCode == 200) {
         print(decodedResponseBody['access_token']);
+        isVerified = decodedResponseBody['is_verified'];
+        hasCredentials = decodedResponseBody['has_credentials'];
+        status = decodedResponseBody['status'];
+        message = decodedResponseBody['message'];
         await prefs.setString(TOKEN_KEY, decodedResponseBody['access_token']);
+        await prefs.setInt(VERIFIED_KEY, decodedResponseBody['is_verified']);
+        await prefs.setInt(
+            CREDENTIALS_KEY, decodedResponseBody['has_credentials']);
         notifyListeners();
       }
     } on DioError catch (e) {
@@ -98,6 +111,70 @@ class Auth with ChangeNotifier {
         }
         throw AuthException(e.response?.data['message']);
       }
+    } catch (e) {
+      print(e.toString());
+      throw e;
+    }
+  }
+
+  Future<void> verifyIdentity(
+      {required File profileImg,
+      required File certificateImg,
+      required File nationalIDImg,
+      required String qualification}) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(ApiRoutes.IDENTITY_VERIFICATION);
+      FormData formData = FormData.fromMap(
+        {
+          'photo': await MultipartFile.fromFile(
+            profileImg.path,
+            filename: basename(profileImg.path),
+          ),
+          'certificate': await MultipartFile.fromFile(
+            certificateImg.path,
+            filename: basename(certificateImg.path),
+          ),
+          'personal_id': await MultipartFile.fromFile(
+            nationalIDImg.path,
+            filename: basename(nationalIDImg.path),
+          ),
+          'qualification': qualification,
+        },
+      );
+
+      Response response = await dio.post(
+        ApiRoutes.IDENTITY_VERIFICATION,
+        data: formData,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${prefs.getString(TOKEN_KEY)}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+      final decodedResponseBody = response.data;
+      print(decodedResponseBody);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        isVerified = decodedResponseBody['is_verified'];
+        hasCredentials = decodedResponseBody['has_credentials'];
+        status = decodedResponseBody['status'];
+        message = decodedResponseBody['message'];
+        await prefs.setInt(VERIFIED_KEY, isVerified);
+        await prefs.setInt(CREDENTIALS_KEY, hasCredentials);
+        notifyListeners();
+      }
+    } on DioError catch (e) {
+      print(e.error);
+      print(e.response?.data);
+      if (e.type == DioErrorType.response) {
+        if (e.response?.statusCode == 403) {
+          await Config.unAuthenticateUser();
+        }
+      }
+      throw Exception(e.message);
     } catch (e) {
       print(e.toString());
       throw e;

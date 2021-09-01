@@ -1,12 +1,13 @@
 import 'package:doctoworld_doctor/Locale/language_cubit.dart';
-import 'package:doctoworld_doctor/screens/Auth/Login/login_screen.dart';
 import 'package:doctoworld_doctor/screens/Auth/Verification/identity_screen.dart';
-import 'package:doctoworld_doctor/screens/BottomNavigation/Account/change_language_page.dart';
 import 'package:doctoworld_doctor/utils/Routes/routes.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'Auth/Login/login_screen.dart';
+import 'Auth/Verification/pending_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -27,13 +28,19 @@ class _SplashScreenState extends State<SplashScreen> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         String? localeCode = prefs.getString(LOCALE_KEY);
         langData.setLocale(localeCode ?? 'en');
-        Navigator.of(context).pushReplacementNamed(IdentityScreen.ROUTE_NAME);
-        // if (prefs.getString(TOKEN_KEY) != null) {
-        //   Navigator.of(context)
-        //       .pushReplacementNamed(PageRoutes.bottomNavigation);
-        // } else {
-        //   Navigator.of(context).pushReplacementNamed(LoginScreen.ROUTE);
-        // }
+
+        int isVerified = prefs.getInt(VERIFIED_KEY) ?? 0;
+        int hasCredentials = prefs.getInt(CREDENTIALS_KEY) ?? 0;
+
+        if (prefs.getString(TOKEN_KEY) != null) {
+          if (isVerified == 1) {
+            Navigator.of(context).pushReplacementNamed(PageRoutes.bottomNavigation);
+          } else {
+            Navigator.of(context).pushReplacementNamed(LoginScreen.ROUTE);
+          }
+        } else {
+          Navigator.of(context).pushReplacementNamed(LoginScreen.ROUTE);
+        }
       },
     );
   }

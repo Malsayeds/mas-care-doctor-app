@@ -3,6 +3,8 @@ import 'package:doctoworld_doctor/Locale/language_cubit.dart';
 import 'package:doctoworld_doctor/providers/auth.dart';
 import 'package:doctoworld_doctor/exceptions/auth_exception.dart';
 import 'package:doctoworld_doctor/screens/Auth/Registration/registration_screen.dart';
+import 'package:doctoworld_doctor/screens/Auth/Verification/identity_screen.dart';
+import 'package:doctoworld_doctor/screens/Auth/Verification/pending_screen.dart';
 import 'package:doctoworld_doctor/utils/Routes/routes.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/utils/keys.dart';
@@ -57,7 +59,17 @@ class _LoginScreenState extends State<LoginScreen> {
         );
         String? localeCode = prefs.getString(LOCALE_KEY);
         langData.setLocale(localeCode ?? 'en');
-        Navigator.of(context).pushNamed(PageRoutes.bottomNavigation);
+
+        if (authData.isVerified == 1) {
+          Navigator.of(context).pushNamed(PageRoutes.bottomNavigation);
+        } else {
+          if (authData.hasCredentials == 1) {
+            Navigator.of(context).pushNamed(PendingScreen.ROUTE_NAME);
+          } else {
+            Navigator.of(context).pushNamed(IdentityScreen.ROUTE_NAME);
+          }
+        }
+
         setState(() {
           isLoading = false;
         });

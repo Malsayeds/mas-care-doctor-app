@@ -1,8 +1,10 @@
+import 'package:doctoworld_doctor/providers/auth.dart';
 import 'package:doctoworld_doctor/utils/Routes/routes.dart';
 import 'package:doctoworld_doctor/utils/Theme/colors.dart';
 import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PendingScreen extends StatefulWidget {
   static const String ROUTE_NAME = '/pendingScreen';
@@ -16,8 +18,9 @@ class PendingScreen extends StatefulWidget {
 class _PendingScreenState extends State<PendingScreen> {
   @override
   Widget build(BuildContext context) {
+    final authData = Provider.of<Auth>(context);
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: secondaryBackgroundColor,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -37,11 +40,11 @@ class _PendingScreenState extends State<PendingScreen> {
                         ),
                       ),
                       TextSpan(
-                        text: 'Approved',
+                        text: authData.status,
                         style: TextStyle(
-                          color: greenColor,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: primaryColor,
                         ),
                       ),
                     ],
@@ -53,19 +56,13 @@ class _PendingScreenState extends State<PendingScreen> {
                 height: 16,
               ),
               Text(
-                'Your request is being reviewed, please come back later.',
+                authData.message ?? '',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 18,
                 ),
               ),
               Spacer(),
-              CustomButton(
-                label: 'Proceed',
-                onTap: () {
-                  Navigator.of(context).pushNamed(PageRoutes.bottomNavigation);
-                },
-              ),
             ],
           ),
         ),

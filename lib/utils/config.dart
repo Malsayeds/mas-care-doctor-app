@@ -7,7 +7,7 @@ import 'keys.dart';
 class Config {
   static Future<void> unAuthenticateUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove(TOKEN_KEY);
+    await prefs.clear();
     Keys.navKey.currentState
         ?.pushNamedAndRemoveUntil(LoginScreen.ROUTE, (route) => false);
   }

@@ -1,12 +1,15 @@
 import 'dart:io';
 
 import 'package:doctoworld_doctor/enums/image_type.dart';
+import 'package:doctoworld_doctor/providers/auth.dart';
 import 'package:doctoworld_doctor/screens/Auth/Verification/pending_screen.dart';
+import 'package:doctoworld_doctor/utils/constants.dart';
 import 'package:doctoworld_doctor/widgets/custom_button.dart';
 import 'package:doctoworld_doctor/widgets/entry_field.dart';
 import 'package:doctoworld_doctor/widgets/shared_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class IdentityScreen extends StatefulWidget {
   static const String ROUTE_NAME = '/identityScreen';
@@ -22,6 +25,33 @@ class _IdentityScreenState extends State<IdentityScreen> {
   File? profile;
   File? certificate;
   File? nationalId;
+
+  bool isSending = false;
+
+  Future<void> verifyIdentity() async {
+    try {
+      setState(() {
+        isSending = true;
+      });
+      final authData = Provider.of<Auth>(context, listen: false);
+      await authData.verifyIdentity(
+        profileImg: profile!,
+        certificateImg: certificate!,
+        nationalIDImg: nationalId!,
+        qualification: qualificationController.text,
+      );
+      Navigator.of(context).pushReplacementNamed(PendingScreen.ROUTE_NAME);
+      setState(() {
+        isSending = false;
+      });
+    } catch (e) {
+      print(e);
+      SharedWidgets.showToast(msg: INTERNET_WARNING_MESSAGE);
+      setState(() {
+        isSending = false;
+      });
+    }
+  }
 
   Widget buildTitleText({required String title}) {
     return Text(
@@ -195,20 +225,23 @@ class _IdentityScreenState extends State<IdentityScreen> {
               ),
               CustomButton(
                 label: locale.submit,
-                onTap: () {
-                  FocusScope.of(context).unfocus();
-                  if (profile == null ||
-                      certificate == null ||
-                      nationalId == null ||
-                      qualificationController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Fill the missing data to proceed'),
-                      ),
-                    );
-                  }
-                  Navigator.of(context).pushNamed(PendingScreen.ROUTE_NAME);
-                },
+                onTap: isSending
+                    ? null
+                    : () async {
+                        FocusScope.of(context).unfocus();
+                        if (profile != null &&
+                            certificate != null &&
+                            nationalId != null &&
+                            qualificationController.text.isNotEmpty) {
+                          await verifyIdentity();
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Fill the missing data to proceed'),
+                            ),
+                          );
+                        }
+                      },
               ),
             ],
           ),

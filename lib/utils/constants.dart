@@ -5,6 +5,8 @@ const String imagePlaceHolderError =
 
 const String LOCALE_KEY = 'locale';
 const String TOKEN_KEY = 'accessToken';
+const String VERIFIED_KEY = 'verification';
+const String CREDENTIALS_KEY = 'credentials';
 
 const String DEFAULT_LANGUAGE_CODE = 'en';
 

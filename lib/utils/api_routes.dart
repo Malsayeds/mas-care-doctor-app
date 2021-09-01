@@ -5,6 +5,7 @@ class ApiRoutes {
   static const String LOGIN = BASE_URL + 'login';
   static const String REGISTER = BASE_URL + 'register';
   static const String LOGOUT = BASE_URL + 'logout';
+  static const String IDENTITY_VERIFICATION = BASE_URL + 'doctor/profile/credentials';
 
   //? Account
   static const String ACCOUNT = BASE_URL + 'doctor/account';

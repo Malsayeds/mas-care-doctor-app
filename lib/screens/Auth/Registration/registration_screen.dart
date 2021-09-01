@@ -61,7 +61,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         );
         String? localeCode = prefs.getString(LOCALE_KEY);
         langData.setLocale(localeCode ?? 'en');
-        Navigator.of(context).pushNamed(VerificationScreen.ROUTE);
+        Navigator.of(context).pushReplacementNamed(VerificationScreen.ROUTE);
         setState(() {
           isLoading = false;
         });
