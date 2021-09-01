@@ -93,13 +93,15 @@ class Auth with ChangeNotifier {
       if (response.statusCode == 200) {
         print(decodedResponseBody['access_token']);
         isVerified = decodedResponseBody['is_verified'];
-        hasCredentials = decodedResponseBody['has_credentials'];
-        status = decodedResponseBody['status'];
-        message = decodedResponseBody['message'];
+        if (isVerified != 1) {
+          hasCredentials = decodedResponseBody['has_credentials'];
+          status = decodedResponseBody['status'];
+          message = decodedResponseBody['message'];
+          await prefs.setInt(
+              CREDENTIALS_KEY, decodedResponseBody['has_credentials']);
+        }
         await prefs.setString(TOKEN_KEY, decodedResponseBody['access_token']);
         await prefs.setInt(VERIFIED_KEY, decodedResponseBody['is_verified']);
-        await prefs.setInt(
-            CREDENTIALS_KEY, decodedResponseBody['has_credentials']);
         notifyListeners();
       }
     } on DioError catch (e) {
@@ -159,11 +161,13 @@ class Auth with ChangeNotifier {
       print(response.statusCode);
       if (response.statusCode == 200) {
         isVerified = decodedResponseBody['is_verified'];
-        hasCredentials = decodedResponseBody['has_credentials'];
-        status = decodedResponseBody['status'];
-        message = decodedResponseBody['message'];
+        if (isVerified != 1) {
+          hasCredentials = decodedResponseBody['has_credentials'];
+          status = decodedResponseBody['status'];
+          message = decodedResponseBody['message'];
+          await prefs.setInt(CREDENTIALS_KEY, hasCredentials);
+        }
         await prefs.setInt(VERIFIED_KEY, isVerified);
-        await prefs.setInt(CREDENTIALS_KEY, hasCredentials);
         notifyListeners();
       }
     } on DioError catch (e) {

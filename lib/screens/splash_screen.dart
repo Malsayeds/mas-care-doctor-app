@@ -30,7 +30,6 @@ class _SplashScreenState extends State<SplashScreen> {
         langData.setLocale(localeCode ?? 'en');
 
         int isVerified = prefs.getInt(VERIFIED_KEY) ?? 0;
-        int hasCredentials = prefs.getInt(CREDENTIALS_KEY) ?? 0;
 
         if (prefs.getString(TOKEN_KEY) != null) {
           if (isVerified == 1) {
